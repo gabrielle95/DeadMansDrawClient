@@ -1,0 +1,17 @@
+{
+  "name": "spc22_arena_example",
+  "version": "1.0.0",
+  "description": "SPC 22 Arena Example desciption",
+  "license": "ISC",
+  "main": "_example_game.js",
+  "dependencies": {
+    "press-any-key": "^0.1.1",
+    "slhpc23_arena": "file:lib",
+    "spc22_arena": "file:lib"
+  },
+  "scripts": {
+    "npmlink": "npm link ./lib",
+    "devstart": "node .",
+    "start": "npm run npmlink devstart"
+  }
+}

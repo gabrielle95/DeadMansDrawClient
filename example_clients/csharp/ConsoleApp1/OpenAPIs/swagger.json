@@ -1,0 +1,1026 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"ObjectId": {
+				"type": "string",
+				"description": "A class representation of the BSON ObjectId type."
+			},
+			"MatchId": {
+				"$ref": "#/components/schemas/ObjectId"
+			},
+			"PlayerId": {
+				"$ref": "#/components/schemas/ObjectId"
+			},
+			"Pick_Match.MatchResponseReturnedProps_": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/MatchId"
+					},
+					"players": {
+						"items": {
+							"$ref": "#/components/schemas/PlayerId"
+						},
+						"type": "array"
+					},
+					"startedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"moveCount": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"turnCount": {
+						"type": "integer",
+						"format": "int32"
+					},
+					"moveCountInTurn": {
+						"type": "integer",
+						"format": "int32",
+						"nullable": true
+					},
+					"lastMoveAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"createdByPlayerId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/PlayerId"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"_id",
+					"players",
+					"startedAt",
+					"moveCount",
+					"lastMoveAt"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"CardSuitStack": {
+				"items": {},
+				"type": "array",
+				"description": "Card suit stack - for effective representation of bank collection ordered by suits\r\nconsists of a set of cardvalues in the given suit stack"
+			},
+			"Bank": {
+				"properties": {},
+				"additionalProperties": {
+					"$ref": "#/components/schemas/CardSuitStack"
+				},
+				"type": "object",
+				"description": "Bank - object for a player's bank"
+			},
+			"CardSuit": {
+				"type": "string",
+				"enum": [
+					"Anchor",
+					"Hook",
+					"Cannon",
+					"Key",
+					"Chest",
+					"Map",
+					"Oracle",
+					"Sword",
+					"Kraken",
+					"Mermaid"
+				],
+				"nullable": false
+			},
+			"CardValue": {
+				"type": "number",
+				"enum": [
+					2,
+					3,
+					4,
+					5,
+					6,
+					7,
+					8,
+					9
+				],
+				"description": "Card Value including all possible values"
+			},
+			"Card": {
+				"description": "Card interface representing a game card",
+				"properties": {
+					"suit": {
+						"$ref": "#/components/schemas/CardSuit"
+					},
+					"value": {
+						"$ref": "#/components/schemas/CardValue"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false,
+				"example": {
+					"suit": "Mermaid",
+					"value": 9
+				}
+			},
+			"DrawCardPile": {
+				"description": "Draw card pile - contains all remining cards",
+				"properties": {
+					"cards": {
+						"items": {
+							"$ref": "#/components/schemas/Card"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"cards"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"DiscardCardPile": {
+				"items": {
+					"$ref": "#/components/schemas/Card"
+				},
+				"type": "array",
+				"description": "Discard pile - object to represent discard pile"
+			},
+			"PlayArea": {
+				"items": {
+					"$ref": "#/components/schemas/Card"
+				},
+				"type": "array",
+				"description": "Play area - object to represent the play area"
+			},
+			"integer": {
+				"type": "integer",
+				"format": "int32"
+			},
+			"CardEffectType": {
+				"type": "string",
+				"enum": [
+					"Oracle",
+					"Hook",
+					"Cannon",
+					"Sword",
+					"Map"
+				]
+			},
+			"CardEffect": {
+				"description": "Card effect associated with a special card",
+				"properties": {
+					"effectType": {
+						"$ref": "#/components/schemas/CardEffectType"
+					},
+					"card": {
+						"$ref": "#/components/schemas/Card"
+					},
+					"cards": {
+						"items": {
+							"$ref": "#/components/schemas/Card"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"State": {
+				"description": "Match state associated with an atomic event",
+				"properties": {
+					"banks": {
+						"items": {
+							"$ref": "#/components/schemas/Bank"
+						},
+						"type": "array"
+					},
+					"drawPile": {
+						"$ref": "#/components/schemas/DrawCardPile"
+					},
+					"discardPile": {
+						"$ref": "#/components/schemas/DiscardCardPile"
+					},
+					"playArea": {
+						"$ref": "#/components/schemas/PlayArea"
+					},
+					"currentPlayerIndex": {
+						"$ref": "#/components/schemas/integer"
+					},
+					"pendingEffect": {
+						"$ref": "#/components/schemas/CardEffect"
+					},
+					"pendingKrakenCards": {
+						"$ref": "#/components/schemas/integer"
+					}
+				},
+				"required": [
+					"banks",
+					"playArea"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MatchResponseReturnedProps2": {
+				"properties": {
+					"currentPlayerId": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/PlayerId"
+							}
+						],
+						"nullable": true
+					},
+					"state": {
+						"$ref": "#/components/schemas/State"
+					}
+				},
+				"type": "object"
+			},
+			"MatchResponse": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/Pick_Match.MatchResponseReturnedProps_"
+					},
+					{
+						"$ref": "#/components/schemas/MatchResponseReturnedProps2"
+					}
+				]
+			},
+			"ObjectIdString": {
+				"type": "string",
+				"example": "30d2b1b242ea506dcc6504de",
+				"format": "ObjectId",
+				"description": "Stringified Object Id.",
+				"pattern": "[0-9a-f]{24}|[0-9a-f]{12}"
+			},
+			"MatchCreationParams": {
+				"description": "Match creation parameters including players, drawpile, discardpile and randomseed",
+				"properties": {
+					"players": {
+						"items": {
+							"$ref": "#/components/schemas/ObjectIdString"
+						},
+						"type": "array",
+						"description": "List of players. Omit to request a 'practice' match.",
+						"example": [
+							"269b4f148ce2269b4f148ce2",
+							"269b4f148ce2269b4f148ab3"
+						],
+						"minItems": 2,
+						"maxItems": 2
+					},
+					"drawPile": {
+						"items": {
+							"$ref": "#/components/schemas/Card"
+						},
+						"type": "array",
+						"description": "[Debug purposes] Draw pile initial contents of cards. When omitted default will be generated.",
+						"example": [
+							[
+								"Oracle",
+								4
+							],
+							[
+								"Anchor",
+								4
+							],
+							[
+								"Mermaid",
+								5
+							]
+						]
+					},
+					"discardPile": {
+						"items": {
+							"$ref": "#/components/schemas/Card"
+						},
+						"type": "array",
+						"description": "[Debug purposes] Discard pile initial contents of cards. When omitted default will be generated.",
+						"example": [
+							[
+								"Mermaid",
+								2
+							],
+							[
+								"Hook",
+								2
+							]
+						]
+					},
+					"randomSeed": {
+						"type": "string",
+						"description": "[Debug purposes] NOTIMPLEMENTED: Seed value for pseudorandom generator used for randomization of starting player, card drawing",
+						"example": "20221105HelloWorld"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"MatchEventType": {
+				"type": "string",
+				"enum": [
+					"MatchStarted",
+					"TurnStarted",
+					"Draw",
+					"CardPlayedEffect",
+					"ResponseToEffect",
+					"CardPlacedToPlayArea",
+					"CardRemovedFromBank",
+					"TurnEnded",
+					"MatchEnded"
+				],
+				"nullable": false
+			},
+			"IStateDeltaStack": {
+				"properties": {
+					"added": {
+						"items": {
+							"$ref": "#/components/schemas/Card"
+						},
+						"type": "array"
+					},
+					"removed": {
+						"items": {
+							"$ref": "#/components/schemas/Card"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IStateDelta": {
+				"properties": {
+					"drawPile": {
+						"$ref": "#/components/schemas/IStateDeltaStack"
+					},
+					"discardPile": {
+						"$ref": "#/components/schemas/IStateDeltaStack"
+					},
+					"banks": {
+						"items": {
+							"$ref": "#/components/schemas/IStateDeltaStack"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Partial_Pick_MatchEvent.ActionResponseReturnedProps__": {
+				"properties": {
+					"eventType": {
+						"$ref": "#/components/schemas/MatchEventType"
+					},
+					"drawCard": {
+						"$ref": "#/components/schemas/Card"
+					},
+					"cardPlayedEffect": {
+						"$ref": "#/components/schemas/CardEffect"
+					},
+					"cardPlacedToPlayAreaCard": {
+						"$ref": "#/components/schemas/Card"
+					},
+					"cardRemovedFromBankCard": {
+						"$ref": "#/components/schemas/Card"
+					},
+					"cardRemovedFromBankIndex": {
+						"$ref": "#/components/schemas/integer"
+					},
+					"turnEndedDelta": {
+						"$ref": "#/components/schemas/IStateDelta"
+					},
+					"matchEndedScores": {
+						"items": {
+							"$ref": "#/components/schemas/integer"
+						},
+						"type": "array"
+					},
+					"matchEndedWinner": {
+						"$ref": "#/components/schemas/PlayerId"
+					},
+					"responseToEffectType": {
+						"$ref": "#/components/schemas/CardEffectType"
+					},
+					"responseToEffectCard": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Card"
+							}
+						],
+						"nullable": true
+					},
+					"turnStartedDelta": {
+						"$ref": "#/components/schemas/IStateDelta"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
+			},
+			"ActionResponseItem": {
+				"$ref": "#/components/schemas/Partial_Pick_MatchEvent.ActionResponseReturnedProps__"
+			},
+			"ActionResponse": {
+				"items": {
+					"$ref": "#/components/schemas/ActionResponseItem"
+				},
+				"type": "array"
+			},
+			"MatchActionType": {
+				"type": "string",
+				"enum": [
+					"Draw",
+					"ResponseToEffect",
+					"EndTurn"
+				],
+				"nullable": false
+			},
+			"CardEffectResponse": {
+				"properties": {
+					"effectType": {
+						"$ref": "#/components/schemas/CardEffectType"
+					},
+					"card": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Card"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IUserAction": {
+				"properties": {
+					"etype": {
+						"$ref": "#/components/schemas/MatchActionType"
+					},
+					"effect": {
+						"$ref": "#/components/schemas/CardEffectResponse"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UserAction": {
+				"$ref": "#/components/schemas/IUserAction"
+			},
+			"Pick_Player.PlayerResponseReturnedProps_": {
+				"properties": {
+					"_id": {
+						"$ref": "#/components/schemas/PlayerId"
+					},
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"_id",
+					"name"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"PlayerResponse": {
+				"$ref": "#/components/schemas/Pick_Player.PlayerResponseReturnedProps_"
+			}
+		},
+		"securitySchemes": {
+			"basic": {
+				"scheme": "basic",
+				"type": "http"
+			}
+		}
+	},
+	"info": {
+		"title": "SPC22 Arena",
+		"version": "1.0.0",
+		"description": "SPC 22 Arena desciption",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/api/hello": {
+			"get": {
+				"operationId": "GetMessage",
+				"responses": {
+					"200": {
+						"description": "message",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"message"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"description": "Hello world ping message",
+				"summary": "Hello world ping message",
+				"tags": [
+					"Diagnostic"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/api/matches": {
+			"get": {
+				"operationId": "GetMatches",
+				"responses": {
+					"200": {
+						"description": "matches",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/MatchResponse"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves the details of all Matches.\r\nPlayers will receive own matches only",
+				"summary": "Retrieves all Matches",
+				"tags": [
+					"Game"
+				],
+				"security": [
+					{
+						"basic": [
+							"game.admin"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"description": "optional filter parameter in the form of ISO date or 'today'",
+						"in": "query",
+						"name": "at",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"example": "today"
+					},
+					{
+						"description": "optional filter matches where player is active at",
+						"in": "query",
+						"name": "active",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"example": 1
+					},
+					{
+						"description": "optional waits with timeout for any resulting match - useful for polling when the user receives invite for a new match to avoid polling",
+						"in": "query",
+						"name": "wait",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"example": 1
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateMatch",
+				"responses": {
+					"200": {
+						"description": "The newly created Match id",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"id": {
+											"$ref": "#/components/schemas/ObjectIdString"
+										}
+									},
+									"required": [
+										"id"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Missing players from input parameters."
+					},
+					"403": {
+						"description": "Use your user twice to start a practice match."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				},
+				"description": "Creates a new Match using the supplied parameters, leave empty for a default 'practice' Match.",
+				"summary": "Creates a new Match",
+				"tags": [
+					"Game"
+				],
+				"security": [
+					{
+						"basic": [
+							"game.player",
+							"game.admin"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"description": "Match creation parameters including players, drawpile, discardpile and randomseed",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MatchCreationParams",
+								"description": "Match creation parameters including players, drawpile, discardpile and randomseed"
+							},
+							"examples": {
+								"Example 1": {
+									"value": {}
+								},
+								"Example 2": {
+									"value": {
+										"drawPile": [
+											[
+												"Oracle",
+												4
+											],
+											[
+												"Anchor",
+												4
+											],
+											[
+												"Mermaid",
+												5
+											]
+										],
+										"discardPile": [
+											[
+												"Mermaid",
+												2
+											],
+											[
+												"Hook",
+												2
+											]
+										]
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/matches/{id}": {
+			"get": {
+				"operationId": "GetMatch",
+				"responses": {
+					"200": {
+						"description": "Match details, with al details when requesting a 'practice' Match",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MatchResponse"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Match is visible to participating players only."
+					},
+					"404": {
+						"description": "Match does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				},
+				"description": "Retrieves the details of an existing match.\r\nSupply the unique match ID and receive corresponding match details.",
+				"summary": "Retrieves a Match details",
+				"tags": [
+					"Game"
+				],
+				"security": [
+					{
+						"basic": [
+							"game.player",
+							"game.admin"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"description": "The requested Match Id",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/ObjectIdString"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "ExecuteActionForMatch",
+				"responses": {
+					"200": {
+						"description": "List of Response events executed in response for the Action",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ActionResponse"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Match action is possible for the current player in an ongoing Match."
+					},
+					"404": {
+						"description": "Match does not exist."
+					},
+					"500": {
+						"description": "Internal Server Error."
+					}
+				},
+				"description": "Execute an Action for an existing Match.\r\nSupply the unique match ID and add Action details",
+				"summary": "Execute an Action for a Match",
+				"tags": [
+					"Game"
+				],
+				"security": [
+					{
+						"basic": [
+							"game.player"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/ObjectIdString"
+						}
+					},
+					{
+						"description": "optional waits with timeout executing the action - useful for waiting for other user to finish its action to avoid polling",
+						"in": "query",
+						"name": "wait",
+						"required": false,
+						"schema": {
+							"type": "string"
+						},
+						"example": 1
+					}
+				],
+				"requestBody": {
+					"description": "Match action execution parameters",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserAction",
+								"description": "Match action execution parameters"
+							},
+							"examples": {
+								"Example 1": {
+									"value": {
+										"etype": "Draw"
+									}
+								},
+								"Example 2": {
+									"value": {
+										"etype": "EndTurn"
+									}
+								},
+								"Example 3": {
+									"value": {
+										"etype": "ResponseToEffect",
+										"effect": {
+											"effectType": "Oracle",
+											"card": [
+												"Mermaid",
+												5
+											]
+										}
+									}
+								},
+								"Example 4": {
+									"value": {
+										"etype": "ResponseToEffect",
+										"effect": {
+											"effectType": "Oracle",
+											"card": null
+										}
+									}
+								},
+								"Example 5": {
+									"value": {
+										"etype": "ResponseToEffect",
+										"effect": {
+											"effectType": "Hook",
+											"card": [
+												"Mermaid",
+												5
+											]
+										}
+									}
+								},
+								"Example 6": {
+									"value": {
+										"etype": "ResponseToEffect",
+										"effect": {
+											"effectType": "Cannon",
+											"card": [
+												"Mermaid",
+												5
+											]
+										}
+									}
+								},
+								"Example 7": {
+									"value": {
+										"etype": "ResponseToEffect",
+										"effect": {
+											"effectType": "Sword",
+											"card": [
+												"Mermaid",
+												5
+											]
+										}
+									}
+								},
+								"Example 8": {
+									"value": {
+										"etype": "ResponseToEffect",
+										"effect": {
+											"effectType": "Map",
+											"card": [
+												"Mermaid",
+												5
+											]
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/players": {
+			"get": {
+				"operationId": "GetPlayers",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/PlayerResponse"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieves the details of all Players.\r\nPlayers can retrieve only own information and details",
+				"summary": "Retrieves Player information",
+				"tags": [
+					"Players"
+				],
+				"security": [
+					{
+						"basic": [
+							"player.admin"
+						]
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/players/{id}": {
+			"get": {
+				"operationId": "GetPlayer",
+				"responses": {
+					"200": {
+						"description": "Player details",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PlayerResponse"
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "Not allowed to query other users."
+					},
+					"404": {
+						"description": "Player record not found."
+					}
+				},
+				"description": "Retrieves the details of an existing Player.\r\nSupply the unique Player ID and receive corresponding Player details.\r\nPlayers can retrieve only own information and details",
+				"summary": "Retrieves a Player details",
+				"tags": [
+					"Players"
+				],
+				"security": [
+					{
+						"basic": [
+							"player.admin"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"description": "The requested Player Id",
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/ObjectIdString"
+						}
+					}
+				]
+			}
+		},
+		"/api/whoami": {
+			"get": {
+				"operationId": "GetAuthenticatedUser",
+				"responses": {
+					"200": {
+						"description": "The id of the authenticated User.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"user": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"user"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"description": "Returns information on authenticated User",
+				"summary": "Returns authenticated User",
+				"tags": [
+					"Diagnostic"
+				],
+				"security": [
+					{
+						"basic": [
+							"player.player"
+						]
+					}
+				],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
