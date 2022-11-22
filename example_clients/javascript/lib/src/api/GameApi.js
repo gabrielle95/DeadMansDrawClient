@@ -14,6 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import ActionErrorResponse from '../model/ActionErrorResponse';
+import BoolLikeString from '../model/BoolLikeString';
 import DeleteMatchRequest from '../model/DeleteMatchRequest';
 import ErrorResponse from '../model/ErrorResponse';
 import IUserAction from '../model/IUserAction';
@@ -90,8 +91,8 @@ export default class GameApi {
 
 
     /**
-     * Forceful central deletion of a Match e.g. when timeout
-     * Forceful deletion of a match by Admin, e.g. when timeout
+     * Forceful central deletion of a Match on a timeout
+     * Forceful deletion of a match by Admin, on a timeout
      * @param {String} id game id
      * @param {module:model/DeleteMatchRequest} deleteMatchRequest 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
@@ -122,15 +123,15 @@ export default class GameApi {
       let accepts = ['application/json'];
       let returnType = null;
       return this.apiClient.callApi(
-        '/api/matches/{id}', 'DELETE',
+        '/api/matches/{id}/terminate', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Forceful central deletion of a Match e.g. when timeout
-     * Forceful deletion of a match by Admin, e.g. when timeout
+     * Forceful central deletion of a Match on a timeout
+     * Forceful deletion of a match by Admin, on a timeout
      * @param {String} id game id
      * @param {module:model/DeleteMatchRequest} deleteMatchRequest 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}
@@ -149,7 +150,7 @@ export default class GameApi {
      * @param {String} id 
      * @param {module:model/IUserAction} iUserAction Match action execution parameters
      * @param {Object} opts Optional parameters
-     * @param {String} opts.wait optional waits with timeout executing the action - useful for waiting for other user to finish its action to avoid polling
+     * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout executing the action - useful for waiting for other user to finish its action to avoid polling
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/PartialPickMatchEventActionResponseReturnedProps>} and HTTP response
      */
     executeActionForMatchWithHttpInfo(id, iUserAction, opts) {
@@ -192,7 +193,7 @@ export default class GameApi {
      * @param {String} id 
      * @param {module:model/IUserAction} iUserAction Match action execution parameters
      * @param {Object} opts Optional parameters
-     * @param {String} opts.wait optional waits with timeout executing the action - useful for waiting for other user to finish its action to avoid polling
+     * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout executing the action - useful for waiting for other user to finish its action to avoid polling
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/PartialPickMatchEventActionResponseReturnedProps>}
      */
     executeActionForMatch(id, iUserAction, opts) {
@@ -207,9 +208,13 @@ export default class GameApi {
      * Retrieves a Match details
      * Retrieves the details of an existing match.  Supply the unique match ID and receive corresponding match details.
      * @param {String} id The requested Match Id
+     * @param {Object} opts Optional parameters
+     * @param {module:model/BoolLikeString} opts.waitactive optionally waits with timeout until user becomes active
+     * @param {module:model/BoolLikeString} opts.showevents optionally add events associated with the match
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/MatchResponse} and HTTP response
      */
-    getMatchWithHttpInfo(id) {
+    getMatchWithHttpInfo(id, opts) {
+      opts = opts || {};
       let postBody = null;
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
@@ -220,6 +225,8 @@ export default class GameApi {
         'id': id
       };
       let queryParams = {
+        'waitactive': opts['waitactive'],
+        'showevents': opts['showevents']
       };
       let headerParams = {
       };
@@ -241,10 +248,13 @@ export default class GameApi {
      * Retrieves a Match details
      * Retrieves the details of an existing match.  Supply the unique match ID and receive corresponding match details.
      * @param {String} id The requested Match Id
+     * @param {Object} opts Optional parameters
+     * @param {module:model/BoolLikeString} opts.waitactive optionally waits with timeout until user becomes active
+     * @param {module:model/BoolLikeString} opts.showevents optionally add events associated with the match
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/MatchResponse}
      */
-    getMatch(id) {
-      return this.getMatchWithHttpInfo(id)
+    getMatch(id, opts) {
+      return this.getMatchWithHttpInfo(id, opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -256,9 +266,9 @@ export default class GameApi {
      * Retrieves the details of all Matches.  Players will receive own matches only
      * @param {Object} opts Optional parameters
      * @param {String} opts.at optional filter parameter in the form of ISO date or 'today'
-     * @param {String} opts.active optional filter matches where player is active at
+     * @param {module:model/BoolLikeString} opts.active optional filter matches where player is active at
      * @param {String} opts.tags optional filter matches with matching tag/comma separated list of tags
-     * @param {String} opts.wait optional waits with timeout for any resulting match - useful for polling when the user receives invite for a new match to avoid polling
+     * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout for any resulting match - useful for polling when the user receives invite for a new match to avoid polling
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/MatchResponse>} and HTTP response
      */
     getMatchesWithHttpInfo(opts) {
@@ -294,9 +304,9 @@ export default class GameApi {
      * Retrieves the details of all Matches.  Players will receive own matches only
      * @param {Object} opts Optional parameters
      * @param {String} opts.at optional filter parameter in the form of ISO date or 'today'
-     * @param {String} opts.active optional filter matches where player is active at
+     * @param {module:model/BoolLikeString} opts.active optional filter matches where player is active at
      * @param {String} opts.tags optional filter matches with matching tag/comma separated list of tags
-     * @param {String} opts.wait optional waits with timeout for any resulting match - useful for polling when the user receives invite for a new match to avoid polling
+     * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout for any resulting match - useful for polling when the user receives invite for a new match to avoid polling
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/MatchResponse>}
      */
     getMatches(opts) {

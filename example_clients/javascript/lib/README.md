@@ -129,7 +129,7 @@ Class | Method | HTTP request | Description
 *Slhpc23Arena.DiagnosticApi* | [**getAuthenticatedUser**](docs/DiagnosticApi.md#getAuthenticatedUser) | **GET** /api/whoami | Returns authenticated User
 *Slhpc23Arena.DiagnosticApi* | [**getMessage**](docs/DiagnosticApi.md#getMessage) | **GET** /api/hello | Hello world ping message
 *Slhpc23Arena.GameApi* | [**createMatch**](docs/GameApi.md#createMatch) | **POST** /api/matches | Creates a new Match
-*Slhpc23Arena.GameApi* | [**deleteMatch**](docs/GameApi.md#deleteMatch) | **DELETE** /api/matches/{id} | Forceful central deletion of a Match e.g. when timeout
+*Slhpc23Arena.GameApi* | [**deleteMatch**](docs/GameApi.md#deleteMatch) | **DELETE** /api/matches/{id}/terminate | Forceful central deletion of a Match on a timeout
 *Slhpc23Arena.GameApi* | [**executeActionForMatch**](docs/GameApi.md#executeActionForMatch) | **POST** /api/matches/{id} | Execute an Action for a Match
 *Slhpc23Arena.GameApi* | [**getMatch**](docs/GameApi.md#getMatch) | **GET** /api/matches/{id} | Retrieves a Match details
 *Slhpc23Arena.GameApi* | [**getMatches**](docs/GameApi.md#getMatches) | **GET** /api/matches | Retrieves all Matches
@@ -141,6 +141,7 @@ Class | Method | HTTP request | Description
 
  - [Slhpc23Arena.ActionErrorResponse](docs/ActionErrorResponse.md)
  - [Slhpc23Arena.AutoPickOptions](docs/AutoPickOptions.md)
+ - [Slhpc23Arena.BoolLikeString](docs/BoolLikeString.md)
  - [Slhpc23Arena.Card](docs/Card.md)
  - [Slhpc23Arena.CardEffect](docs/CardEffect.md)
  - [Slhpc23Arena.CardEffectResponse](docs/CardEffectResponse.md)
@@ -151,6 +152,11 @@ Class | Method | HTTP request | Description
  - [Slhpc23Arena.DrawCardPile](docs/DrawCardPile.md)
  - [Slhpc23Arena.ErrorResponse](docs/ErrorResponse.md)
  - [Slhpc23Arena.HelloWorldResponse](docs/HelloWorldResponse.md)
+ - [Slhpc23Arena.IMatchCore](docs/IMatchCore.md)
+ - [Slhpc23Arena.IMatchEventParameters](docs/IMatchEventParameters.md)
+ - [Slhpc23Arena.IMatchEventParametersResponseToEffectCard](docs/IMatchEventParametersResponseToEffectCard.md)
+ - [Slhpc23Arena.IMoveAt](docs/IMoveAt.md)
+ - [Slhpc23Arena.IMoveSequence](docs/IMoveSequence.md)
  - [Slhpc23Arena.IStateDelta](docs/IStateDelta.md)
  - [Slhpc23Arena.IStateDeltaStack](docs/IStateDeltaStack.md)
  - [Slhpc23Arena.IUserAction](docs/IUserAction.md)
@@ -159,10 +165,9 @@ Class | Method | HTTP request | Description
  - [Slhpc23Arena.MatchCreationParams](docs/MatchCreationParams.md)
  - [Slhpc23Arena.MatchEventType](docs/MatchEventType.md)
  - [Slhpc23Arena.MatchResponse](docs/MatchResponse.md)
- - [Slhpc23Arena.MatchResponseReturned2](docs/MatchResponseReturned2.md)
+ - [Slhpc23Arena.MatchResponseAllOf](docs/MatchResponseAllOf.md)
+ - [Slhpc23Arena.MatchResponseMovevent](docs/MatchResponseMovevent.md)
  - [Slhpc23Arena.PartialPickMatchEventActionResponseReturnedProps](docs/PartialPickMatchEventActionResponseReturnedProps.md)
- - [Slhpc23Arena.PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard](docs/PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard.md)
- - [Slhpc23Arena.PickMatchMatchResponseReturnedProps](docs/PickMatchMatchResponseReturnedProps.md)
  - [Slhpc23Arena.PickPlayerExcludeKeyofPlayerPasswordhash](docs/PickPlayerExcludeKeyofPlayerPasswordhash.md)
  - [Slhpc23Arena.State](docs/State.md)
  - [Slhpc23Arena.WhoAmiIResponse](docs/WhoAmiIResponse.md)

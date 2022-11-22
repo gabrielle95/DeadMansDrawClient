@@ -15,6 +15,7 @@
 import ApiClient from './ApiClient';
 import ActionErrorResponse from './model/ActionErrorResponse';
 import AutoPickOptions from './model/AutoPickOptions';
+import BoolLikeString from './model/BoolLikeString';
 import Card from './model/Card';
 import CardEffect from './model/CardEffect';
 import CardEffectResponse from './model/CardEffectResponse';
@@ -25,6 +26,11 @@ import DeleteMatchRequest from './model/DeleteMatchRequest';
 import DrawCardPile from './model/DrawCardPile';
 import ErrorResponse from './model/ErrorResponse';
 import HelloWorldResponse from './model/HelloWorldResponse';
+import IMatchCore from './model/IMatchCore';
+import IMatchEventParameters from './model/IMatchEventParameters';
+import IMatchEventParametersResponseToEffectCard from './model/IMatchEventParametersResponseToEffectCard';
+import IMoveAt from './model/IMoveAt';
+import IMoveSequence from './model/IMoveSequence';
 import IStateDelta from './model/IStateDelta';
 import IStateDeltaStack from './model/IStateDeltaStack';
 import IUserAction from './model/IUserAction';
@@ -33,10 +39,9 @@ import MatchCreateResponse from './model/MatchCreateResponse';
 import MatchCreationParams from './model/MatchCreationParams';
 import MatchEventType from './model/MatchEventType';
 import MatchResponse from './model/MatchResponse';
-import MatchResponseReturned2 from './model/MatchResponseReturned2';
+import MatchResponseAllOf from './model/MatchResponseAllOf';
+import MatchResponseMovevent from './model/MatchResponseMovevent';
 import PartialPickMatchEventActionResponseReturnedProps from './model/PartialPickMatchEventActionResponseReturnedProps';
-import PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard from './model/PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard';
-import PickMatchMatchResponseReturnedProps from './model/PickMatchMatchResponseReturnedProps';
 import PickPlayerExcludeKeyofPlayerPasswordhash from './model/PickPlayerExcludeKeyofPlayerPasswordhash';
 import State from './model/State';
 import WhoAmiIResponse from './model/WhoAmiIResponse';
@@ -94,6 +99,12 @@ export {
      * @property {module:model/AutoPickOptions}
      */
     AutoPickOptions,
+
+    /**
+     * The BoolLikeString model constructor.
+     * @property {module:model/BoolLikeString}
+     */
+    BoolLikeString,
 
     /**
      * The Card model constructor.
@@ -156,6 +167,36 @@ export {
     HelloWorldResponse,
 
     /**
+     * The IMatchCore model constructor.
+     * @property {module:model/IMatchCore}
+     */
+    IMatchCore,
+
+    /**
+     * The IMatchEventParameters model constructor.
+     * @property {module:model/IMatchEventParameters}
+     */
+    IMatchEventParameters,
+
+    /**
+     * The IMatchEventParametersResponseToEffectCard model constructor.
+     * @property {module:model/IMatchEventParametersResponseToEffectCard}
+     */
+    IMatchEventParametersResponseToEffectCard,
+
+    /**
+     * The IMoveAt model constructor.
+     * @property {module:model/IMoveAt}
+     */
+    IMoveAt,
+
+    /**
+     * The IMoveSequence model constructor.
+     * @property {module:model/IMoveSequence}
+     */
+    IMoveSequence,
+
+    /**
      * The IStateDelta model constructor.
      * @property {module:model/IStateDelta}
      */
@@ -204,28 +245,22 @@ export {
     MatchResponse,
 
     /**
-     * The MatchResponseReturned2 model constructor.
-     * @property {module:model/MatchResponseReturned2}
+     * The MatchResponseAllOf model constructor.
+     * @property {module:model/MatchResponseAllOf}
      */
-    MatchResponseReturned2,
+    MatchResponseAllOf,
+
+    /**
+     * The MatchResponseMovevent model constructor.
+     * @property {module:model/MatchResponseMovevent}
+     */
+    MatchResponseMovevent,
 
     /**
      * The PartialPickMatchEventActionResponseReturnedProps model constructor.
      * @property {module:model/PartialPickMatchEventActionResponseReturnedProps}
      */
     PartialPickMatchEventActionResponseReturnedProps,
-
-    /**
-     * The PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard model constructor.
-     * @property {module:model/PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard}
-     */
-    PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard,
-
-    /**
-     * The PickMatchMatchResponseReturnedProps model constructor.
-     * @property {module:model/PickMatchMatchResponseReturnedProps}
-     */
-    PickMatchMatchResponseReturnedProps,
 
     /**
      * The PickPlayerExcludeKeyofPlayerPasswordhash model constructor.

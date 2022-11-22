@@ -15,7 +15,7 @@ console.log(`Using server: ${defaultClient.basePath}`);
 
 // Configure HTTP basic authorization: basic
 const basic = defaultClient.authentications["basic"];
-basic.username = params.userid || "636438380ef778617e0e5be5";
+basic.username = params.userid || "636438380ef778617e0e5be6";
 basic.password = "testpass";
 
 console.log(`Playing as user: ${basic.username}.\n`);
@@ -104,8 +104,8 @@ async function play_a_match(match) {
     //await pressAnyKey().then(); //'Press any key to continue...'
     //-- TURN: Draw a few cards
     while (isMatchRunning) {
-      useraction = { etype: "Draw" };
-      opts = { wait: "1", autopick: "all" };
+      useraction = { etype: "Draw", autopick: "all" };
+      opts = { wait: "1" };
       //opts = { autopick: "all" };
       try {
         console.info("Drawing a new card");
@@ -143,7 +143,7 @@ async function play_a_match(match) {
         //-- based on a random factor we might initiate ending the turn
         if (Math.random() * 10 < 3) {
           console.info("Ending turn...");
-          enduseraction = { etype: "EndTurn" };
+          enduseraction = { etype: "EndTurn", autopick: "all" };
           lastmove = await gameapi
             .executeActionForMatch(matchid, enduseraction, opts)
             .then((result) => {

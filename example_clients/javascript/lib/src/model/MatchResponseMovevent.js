@@ -15,24 +15,33 @@ import ApiClient from '../ApiClient';
 import Card from './Card';
 import CardEffect from './CardEffect';
 import CardEffectType from './CardEffectType';
+import IMatchEventParameters from './IMatchEventParameters';
 import IMatchEventParametersResponseToEffectCard from './IMatchEventParametersResponseToEffectCard';
+import IMoveAt from './IMoveAt';
+import IMoveSequence from './IMoveSequence';
 import IStateDelta from './IStateDelta';
-import MatchEventType from './MatchEventType';
 
 /**
- * The PartialPickMatchEventActionResponseReturnedProps model module.
- * @module model/PartialPickMatchEventActionResponseReturnedProps
+ * The MatchResponseMovevent model module.
+ * @module model/MatchResponseMovevent
  * @version 1.0.0
  */
-class PartialPickMatchEventActionResponseReturnedProps {
+class MatchResponseMovevent {
     /**
-     * Constructs a new <code>PartialPickMatchEventActionResponseReturnedProps</code>.
-     * Make all properties in T optional
-     * @alias module:model/PartialPickMatchEventActionResponseReturnedProps
+     * Constructs a new <code>MatchResponseMovevent</code>.
+     * Match Response Event plus Move mixin  A flattened structure to describe all events associated with the moves
+     * @alias module:model/MatchResponseMovevent
+     * @implements module:model/IMoveAt
+     * @implements module:model/IMoveSequence
+     * @implements module:model/IMatchEventParameters
+     * @param at {Date} 
+     * @param sequenceId {Number} 
+     * @param turnId {Number} 
+     * @param sequenceInTurnId {Number} 
      */
-    constructor() { 
-        
-        PartialPickMatchEventActionResponseReturnedProps.initialize(this);
+    constructor(at, sequenceId, turnId, sequenceInTurnId) { 
+        IMoveAt.initialize(this, at);IMoveSequence.initialize(this, sequenceId, turnId, sequenceInTurnId);IMatchEventParameters.initialize(this);
+        MatchResponseMovevent.initialize(this, at, sequenceId, turnId, sequenceInTurnId);
     }
 
     /**
@@ -40,22 +49,38 @@ class PartialPickMatchEventActionResponseReturnedProps {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, at, sequenceId, turnId, sequenceInTurnId) { 
+        obj['at'] = at;
+        obj['sequenceId'] = sequenceId;
+        obj['turnId'] = turnId;
+        obj['sequenceInTurnId'] = sequenceInTurnId;
     }
 
     /**
-     * Constructs a <code>PartialPickMatchEventActionResponseReturnedProps</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>MatchResponseMovevent</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/PartialPickMatchEventActionResponseReturnedProps} obj Optional instance to populate.
-     * @return {module:model/PartialPickMatchEventActionResponseReturnedProps} The populated <code>PartialPickMatchEventActionResponseReturnedProps</code> instance.
+     * @param {module:model/MatchResponseMovevent} obj Optional instance to populate.
+     * @return {module:model/MatchResponseMovevent} The populated <code>MatchResponseMovevent</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new PartialPickMatchEventActionResponseReturnedProps();
+            obj = obj || new MatchResponseMovevent();
+            IMoveAt.constructFromObject(data, obj);
+            IMoveSequence.constructFromObject(data, obj);
+            IMatchEventParameters.constructFromObject(data, obj);
 
-            if (data.hasOwnProperty('eventType')) {
-                obj['eventType'] = MatchEventType.constructFromObject(data['eventType']);
+            if (data.hasOwnProperty('at')) {
+                obj['at'] = ApiClient.convertToType(data['at'], 'Date');
+            }
+            if (data.hasOwnProperty('sequenceId')) {
+                obj['sequenceId'] = ApiClient.convertToType(data['sequenceId'], 'Number');
+            }
+            if (data.hasOwnProperty('turnId')) {
+                obj['turnId'] = ApiClient.convertToType(data['turnId'], 'Number');
+            }
+            if (data.hasOwnProperty('sequenceInTurnId')) {
+                obj['sequenceInTurnId'] = ApiClient.convertToType(data['sequenceInTurnId'], 'Number');
             }
             if (data.hasOwnProperty('matchStartedSeed')) {
                 obj['matchStartedSeed'] = ApiClient.convertToType(data['matchStartedSeed'], 'String');
@@ -77,6 +102,9 @@ class PartialPickMatchEventActionResponseReturnedProps {
             }
             if (data.hasOwnProperty('turnEndedDelta')) {
                 obj['turnEndedDelta'] = IStateDelta.constructFromObject(data['turnEndedDelta']);
+            }
+            if (data.hasOwnProperty('turnEndedIsSuccessful')) {
+                obj['turnEndedIsSuccessful'] = ApiClient.convertToType(data['turnEndedIsSuccessful'], 'Boolean');
             }
             if (data.hasOwnProperty('matchEndedScores')) {
                 obj['matchEndedScores'] = ApiClient.convertToType(data['matchEndedScores'], ['Number']);
@@ -104,11 +132,17 @@ class PartialPickMatchEventActionResponseReturnedProps {
     }
 
     /**
-     * Validates the JSON data with respect to <code>PartialPickMatchEventActionResponseReturnedProps</code>.
+     * Validates the JSON data with respect to <code>MatchResponseMovevent</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>PartialPickMatchEventActionResponseReturnedProps</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>MatchResponseMovevent</code>.
      */
     static validateJSON(data) {
+        // check to make sure all required properties are present in the JSON string
+        for (const property of MatchResponseMovevent.RequiredProperties) {
+            if (!data[property]) {
+                throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
+            }
+        }
         // ensure the json data is a string
         if (data['matchStartedSeed'] && !(typeof data['matchStartedSeed'] === 'string' || data['matchStartedSeed'] instanceof String)) {
             throw new Error("Expected the field `matchStartedSeed` to be a primitive type in the JSON string but got " + data['matchStartedSeed']);
@@ -160,87 +194,186 @@ class PartialPickMatchEventActionResponseReturnedProps {
 
 }
 
-
+MatchResponseMovevent.RequiredProperties = ["at", "sequenceId", "turnId", "sequenceInTurnId"];
 
 /**
- * @member {module:model/MatchEventType} eventType
+ * @member {Date} at
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['eventType'] = undefined;
+MatchResponseMovevent.prototype['at'] = undefined;
+
+/**
+ * @member {Number} sequenceId
+ */
+MatchResponseMovevent.prototype['sequenceId'] = undefined;
+
+/**
+ * @member {Number} turnId
+ */
+MatchResponseMovevent.prototype['turnId'] = undefined;
+
+/**
+ * @member {Number} sequenceInTurnId
+ */
+MatchResponseMovevent.prototype['sequenceInTurnId'] = undefined;
 
 /**
  * @member {String} matchStartedSeed
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchStartedSeed'] = undefined;
+MatchResponseMovevent.prototype['matchStartedSeed'] = undefined;
 
 /**
  * @member {module:model/Card} drawCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['drawCard'] = undefined;
+MatchResponseMovevent.prototype['drawCard'] = undefined;
 
 /**
  * @member {module:model/CardEffect} cardPlayedEffect
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardPlayedEffect'] = undefined;
+MatchResponseMovevent.prototype['cardPlayedEffect'] = undefined;
 
 /**
  * @member {module:model/Card} cardPlacedToPlayAreaCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardPlacedToPlayAreaCard'] = undefined;
+MatchResponseMovevent.prototype['cardPlacedToPlayAreaCard'] = undefined;
 
 /**
  * @member {module:model/Card} cardRemovedFromBankCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardRemovedFromBankCard'] = undefined;
+MatchResponseMovevent.prototype['cardRemovedFromBankCard'] = undefined;
 
 /**
  * @member {Number} cardRemovedFromBankIndex
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardRemovedFromBankIndex'] = undefined;
+MatchResponseMovevent.prototype['cardRemovedFromBankIndex'] = undefined;
 
 /**
  * @member {module:model/IStateDelta} turnEndedDelta
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['turnEndedDelta'] = undefined;
+MatchResponseMovevent.prototype['turnEndedDelta'] = undefined;
+
+/**
+ * @member {Boolean} turnEndedIsSuccessful
+ */
+MatchResponseMovevent.prototype['turnEndedIsSuccessful'] = undefined;
 
 /**
  * @member {Array.<Number>} matchEndedScores
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedScores'] = undefined;
+MatchResponseMovevent.prototype['matchEndedScores'] = undefined;
 
 /**
  * @member {Number} matchEndedWinnerIdx
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedWinnerIdx'] = undefined;
+MatchResponseMovevent.prototype['matchEndedWinnerIdx'] = undefined;
 
 /**
  * @member {String} matchEndedComment
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedComment'] = undefined;
+MatchResponseMovevent.prototype['matchEndedComment'] = undefined;
 
 /**
  * @member {Boolean} matchEndedTerminated
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedTerminated'] = undefined;
+MatchResponseMovevent.prototype['matchEndedTerminated'] = undefined;
 
 /**
  * @member {module:model/CardEffectType} responseToEffectType
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['responseToEffectType'] = undefined;
+MatchResponseMovevent.prototype['responseToEffectType'] = undefined;
 
 /**
  * @member {module:model/IMatchEventParametersResponseToEffectCard} responseToEffectCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['responseToEffectCard'] = undefined;
+MatchResponseMovevent.prototype['responseToEffectCard'] = undefined;
 
 /**
  * @member {module:model/IStateDelta} turnStartedDelta
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['turnStartedDelta'] = undefined;
+MatchResponseMovevent.prototype['turnStartedDelta'] = undefined;
+
+
+// Implement IMoveAt interface:
+/**
+ * @member {Date} at
+ */
+IMoveAt.prototype['at'] = undefined;
+// Implement IMoveSequence interface:
+/**
+ * @member {Number} sequenceId
+ */
+IMoveSequence.prototype['sequenceId'] = undefined;
+/**
+ * @member {Number} turnId
+ */
+IMoveSequence.prototype['turnId'] = undefined;
+/**
+ * @member {Number} sequenceInTurnId
+ */
+IMoveSequence.prototype['sequenceInTurnId'] = undefined;
+// Implement IMatchEventParameters interface:
+/**
+ * @member {String} matchStartedSeed
+ */
+IMatchEventParameters.prototype['matchStartedSeed'] = undefined;
+/**
+ * @member {module:model/Card} drawCard
+ */
+IMatchEventParameters.prototype['drawCard'] = undefined;
+/**
+ * @member {module:model/CardEffect} cardPlayedEffect
+ */
+IMatchEventParameters.prototype['cardPlayedEffect'] = undefined;
+/**
+ * @member {module:model/Card} cardPlacedToPlayAreaCard
+ */
+IMatchEventParameters.prototype['cardPlacedToPlayAreaCard'] = undefined;
+/**
+ * @member {module:model/Card} cardRemovedFromBankCard
+ */
+IMatchEventParameters.prototype['cardRemovedFromBankCard'] = undefined;
+/**
+ * @member {Number} cardRemovedFromBankIndex
+ */
+IMatchEventParameters.prototype['cardRemovedFromBankIndex'] = undefined;
+/**
+ * @member {module:model/IStateDelta} turnEndedDelta
+ */
+IMatchEventParameters.prototype['turnEndedDelta'] = undefined;
+/**
+ * @member {Boolean} turnEndedIsSuccessful
+ */
+IMatchEventParameters.prototype['turnEndedIsSuccessful'] = undefined;
+/**
+ * @member {Array.<Number>} matchEndedScores
+ */
+IMatchEventParameters.prototype['matchEndedScores'] = undefined;
+/**
+ * @member {Number} matchEndedWinnerIdx
+ */
+IMatchEventParameters.prototype['matchEndedWinnerIdx'] = undefined;
+/**
+ * @member {String} matchEndedComment
+ */
+IMatchEventParameters.prototype['matchEndedComment'] = undefined;
+/**
+ * @member {Boolean} matchEndedTerminated
+ */
+IMatchEventParameters.prototype['matchEndedTerminated'] = undefined;
+/**
+ * @member {module:model/CardEffectType} responseToEffectType
+ */
+IMatchEventParameters.prototype['responseToEffectType'] = undefined;
+/**
+ * @member {module:model/IMatchEventParametersResponseToEffectCard} responseToEffectCard
+ */
+IMatchEventParameters.prototype['responseToEffectCard'] = undefined;
+/**
+ * @member {module:model/IStateDelta} turnStartedDelta
+ */
+IMatchEventParameters.prototype['turnStartedDelta'] = undefined;
 
 
 
 
-
-
-export default PartialPickMatchEventActionResponseReturnedProps;
+export default MatchResponseMovevent;
 

@@ -12,6 +12,7 @@ src/api/PlayersApi.js
 src/index.js
 src/model/ActionErrorResponse.js
 src/model/AutoPickOptions.js
+src/model/BoolLikeString.js
 src/model/Card.js
 src/model/CardEffect.js
 src/model/CardEffectResponse.js
@@ -22,6 +23,11 @@ src/model/DeleteMatchRequest.js
 src/model/DrawCardPile.js
 src/model/ErrorResponse.js
 src/model/HelloWorldResponse.js
+src/model/IMatchCore.js
+src/model/IMatchEventParameters.js
+src/model/IMatchEventParametersResponseToEffectCard.js
+src/model/IMoveAt.js
+src/model/IMoveSequence.js
 src/model/IStateDelta.js
 src/model/IStateDeltaStack.js
 src/model/IUserAction.js
@@ -30,10 +36,9 @@ src/model/MatchCreateResponse.js
 src/model/MatchCreationParams.js
 src/model/MatchEventType.js
 src/model/MatchResponse.js
-src/model/MatchResponseReturned2.js
+src/model/MatchResponseAllOf.js
+src/model/MatchResponseMovevent.js
 src/model/PartialPickMatchEventActionResponseReturnedProps.js
-src/model/PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard.js
-src/model/PickMatchMatchResponseReturnedProps.js
 src/model/PickPlayerExcludeKeyofPlayerPasswordhash.js
 src/model/State.js
 src/model/WhoAmiIResponse.js

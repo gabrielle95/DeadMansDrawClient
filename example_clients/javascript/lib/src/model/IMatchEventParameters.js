@@ -17,22 +17,20 @@ import CardEffect from './CardEffect';
 import CardEffectType from './CardEffectType';
 import IMatchEventParametersResponseToEffectCard from './IMatchEventParametersResponseToEffectCard';
 import IStateDelta from './IStateDelta';
-import MatchEventType from './MatchEventType';
 
 /**
- * The PartialPickMatchEventActionResponseReturnedProps model module.
- * @module model/PartialPickMatchEventActionResponseReturnedProps
+ * The IMatchEventParameters model module.
+ * @module model/IMatchEventParameters
  * @version 1.0.0
  */
-class PartialPickMatchEventActionResponseReturnedProps {
+class IMatchEventParameters {
     /**
-     * Constructs a new <code>PartialPickMatchEventActionResponseReturnedProps</code>.
-     * Make all properties in T optional
-     * @alias module:model/PartialPickMatchEventActionResponseReturnedProps
+     * Constructs a new <code>IMatchEventParameters</code>.
+     * @alias module:model/IMatchEventParameters
      */
     constructor() { 
         
-        PartialPickMatchEventActionResponseReturnedProps.initialize(this);
+        IMatchEventParameters.initialize(this);
     }
 
     /**
@@ -44,19 +42,16 @@ class PartialPickMatchEventActionResponseReturnedProps {
     }
 
     /**
-     * Constructs a <code>PartialPickMatchEventActionResponseReturnedProps</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>IMatchEventParameters</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/PartialPickMatchEventActionResponseReturnedProps} obj Optional instance to populate.
-     * @return {module:model/PartialPickMatchEventActionResponseReturnedProps} The populated <code>PartialPickMatchEventActionResponseReturnedProps</code> instance.
+     * @param {module:model/IMatchEventParameters} obj Optional instance to populate.
+     * @return {module:model/IMatchEventParameters} The populated <code>IMatchEventParameters</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new PartialPickMatchEventActionResponseReturnedProps();
+            obj = obj || new IMatchEventParameters();
 
-            if (data.hasOwnProperty('eventType')) {
-                obj['eventType'] = MatchEventType.constructFromObject(data['eventType']);
-            }
             if (data.hasOwnProperty('matchStartedSeed')) {
                 obj['matchStartedSeed'] = ApiClient.convertToType(data['matchStartedSeed'], 'String');
             }
@@ -77,6 +72,9 @@ class PartialPickMatchEventActionResponseReturnedProps {
             }
             if (data.hasOwnProperty('turnEndedDelta')) {
                 obj['turnEndedDelta'] = IStateDelta.constructFromObject(data['turnEndedDelta']);
+            }
+            if (data.hasOwnProperty('turnEndedIsSuccessful')) {
+                obj['turnEndedIsSuccessful'] = ApiClient.convertToType(data['turnEndedIsSuccessful'], 'Boolean');
             }
             if (data.hasOwnProperty('matchEndedScores')) {
                 obj['matchEndedScores'] = ApiClient.convertToType(data['matchEndedScores'], ['Number']);
@@ -104,9 +102,9 @@ class PartialPickMatchEventActionResponseReturnedProps {
     }
 
     /**
-     * Validates the JSON data with respect to <code>PartialPickMatchEventActionResponseReturnedProps</code>.
+     * Validates the JSON data with respect to <code>IMatchEventParameters</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>PartialPickMatchEventActionResponseReturnedProps</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>IMatchEventParameters</code>.
      */
     static validateJSON(data) {
         // ensure the json data is a string
@@ -163,84 +161,84 @@ class PartialPickMatchEventActionResponseReturnedProps {
 
 
 /**
- * @member {module:model/MatchEventType} eventType
- */
-PartialPickMatchEventActionResponseReturnedProps.prototype['eventType'] = undefined;
-
-/**
  * @member {String} matchStartedSeed
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchStartedSeed'] = undefined;
+IMatchEventParameters.prototype['matchStartedSeed'] = undefined;
 
 /**
  * @member {module:model/Card} drawCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['drawCard'] = undefined;
+IMatchEventParameters.prototype['drawCard'] = undefined;
 
 /**
  * @member {module:model/CardEffect} cardPlayedEffect
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardPlayedEffect'] = undefined;
+IMatchEventParameters.prototype['cardPlayedEffect'] = undefined;
 
 /**
  * @member {module:model/Card} cardPlacedToPlayAreaCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardPlacedToPlayAreaCard'] = undefined;
+IMatchEventParameters.prototype['cardPlacedToPlayAreaCard'] = undefined;
 
 /**
  * @member {module:model/Card} cardRemovedFromBankCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardRemovedFromBankCard'] = undefined;
+IMatchEventParameters.prototype['cardRemovedFromBankCard'] = undefined;
 
 /**
  * @member {Number} cardRemovedFromBankIndex
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardRemovedFromBankIndex'] = undefined;
+IMatchEventParameters.prototype['cardRemovedFromBankIndex'] = undefined;
 
 /**
  * @member {module:model/IStateDelta} turnEndedDelta
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['turnEndedDelta'] = undefined;
+IMatchEventParameters.prototype['turnEndedDelta'] = undefined;
+
+/**
+ * @member {Boolean} turnEndedIsSuccessful
+ */
+IMatchEventParameters.prototype['turnEndedIsSuccessful'] = undefined;
 
 /**
  * @member {Array.<Number>} matchEndedScores
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedScores'] = undefined;
+IMatchEventParameters.prototype['matchEndedScores'] = undefined;
 
 /**
  * @member {Number} matchEndedWinnerIdx
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedWinnerIdx'] = undefined;
+IMatchEventParameters.prototype['matchEndedWinnerIdx'] = undefined;
 
 /**
  * @member {String} matchEndedComment
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedComment'] = undefined;
+IMatchEventParameters.prototype['matchEndedComment'] = undefined;
 
 /**
  * @member {Boolean} matchEndedTerminated
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedTerminated'] = undefined;
+IMatchEventParameters.prototype['matchEndedTerminated'] = undefined;
 
 /**
  * @member {module:model/CardEffectType} responseToEffectType
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['responseToEffectType'] = undefined;
+IMatchEventParameters.prototype['responseToEffectType'] = undefined;
 
 /**
  * @member {module:model/IMatchEventParametersResponseToEffectCard} responseToEffectCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['responseToEffectCard'] = undefined;
+IMatchEventParameters.prototype['responseToEffectCard'] = undefined;
 
 /**
  * @member {module:model/IStateDelta} turnStartedDelta
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['turnStartedDelta'] = undefined;
+IMatchEventParameters.prototype['turnStartedDelta'] = undefined;
 
 
 
 
 
 
-export default PartialPickMatchEventActionResponseReturnedProps;
+export default IMatchEventParameters;
 

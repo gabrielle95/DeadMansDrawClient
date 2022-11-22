@@ -13,26 +13,26 @@
 
 import ApiClient from '../ApiClient';
 import MatchCreationParams from './MatchCreationParams';
+import State from './State';
 
 /**
- * The PickMatchMatchResponseReturnedProps model module.
- * @module model/PickMatchMatchResponseReturnedProps
+ * The IMatchCore model module.
+ * @module model/IMatchCore
  * @version 1.0.0
  */
-class PickMatchMatchResponseReturnedProps {
+class IMatchCore {
     /**
-     * Constructs a new <code>PickMatchMatchResponseReturnedProps</code>.
-     * From T, pick a set of properties whose keys are in the union K
-     * @alias module:model/PickMatchMatchResponseReturnedProps
+     * Constructs a new <code>IMatchCore</code>.
+     * @alias module:model/IMatchCore
      * @param id {String} A class representation of the BSON ObjectId type.
      * @param players {Array.<String>} 
      * @param startedAt {Date} 
-     * @param moveCount {Number} 
      * @param lastMoveAt {Date} 
+     * @param moveCount {Number} 
      */
-    constructor(id, players, startedAt, moveCount, lastMoveAt) { 
+    constructor(id, players, startedAt, lastMoveAt, moveCount) { 
         
-        PickMatchMatchResponseReturnedProps.initialize(this, id, players, startedAt, moveCount, lastMoveAt);
+        IMatchCore.initialize(this, id, players, startedAt, lastMoveAt, moveCount);
     }
 
     /**
@@ -40,24 +40,24 @@ class PickMatchMatchResponseReturnedProps {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, id, players, startedAt, moveCount, lastMoveAt) { 
+    static initialize(obj, id, players, startedAt, lastMoveAt, moveCount) { 
         obj['_id'] = id;
         obj['players'] = players;
         obj['startedAt'] = startedAt;
-        obj['moveCount'] = moveCount;
         obj['lastMoveAt'] = lastMoveAt;
+        obj['moveCount'] = moveCount;
     }
 
     /**
-     * Constructs a <code>PickMatchMatchResponseReturnedProps</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>IMatchCore</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/PickMatchMatchResponseReturnedProps} obj Optional instance to populate.
-     * @return {module:model/PickMatchMatchResponseReturnedProps} The populated <code>PickMatchMatchResponseReturnedProps</code> instance.
+     * @param {module:model/IMatchCore} obj Optional instance to populate.
+     * @return {module:model/IMatchCore} The populated <code>IMatchCore</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new PickMatchMatchResponseReturnedProps();
+            obj = obj || new IMatchCore();
 
             if (data.hasOwnProperty('_id')) {
                 obj['_id'] = ApiClient.convertToType(data['_id'], 'String');
@@ -68,15 +68,6 @@ class PickMatchMatchResponseReturnedProps {
             if (data.hasOwnProperty('startedAt')) {
                 obj['startedAt'] = ApiClient.convertToType(data['startedAt'], 'Date');
             }
-            if (data.hasOwnProperty('moveCount')) {
-                obj['moveCount'] = ApiClient.convertToType(data['moveCount'], 'Number');
-            }
-            if (data.hasOwnProperty('turnCount')) {
-                obj['turnCount'] = ApiClient.convertToType(data['turnCount'], 'Number');
-            }
-            if (data.hasOwnProperty('moveCountInTurn')) {
-                obj['moveCountInTurn'] = ApiClient.convertToType(data['moveCountInTurn'], 'Number');
-            }
             if (data.hasOwnProperty('lastMoveAt')) {
                 obj['lastMoveAt'] = ApiClient.convertToType(data['lastMoveAt'], 'Date');
             }
@@ -86,18 +77,33 @@ class PickMatchMatchResponseReturnedProps {
             if (data.hasOwnProperty('creationParams')) {
                 obj['creationParams'] = MatchCreationParams.constructFromObject(data['creationParams']);
             }
+            if (data.hasOwnProperty('moveCount')) {
+                obj['moveCount'] = ApiClient.convertToType(data['moveCount'], 'Number');
+            }
+            if (data.hasOwnProperty('turnCount')) {
+                obj['turnCount'] = ApiClient.convertToType(data['turnCount'], 'Number');
+            }
+            if (data.hasOwnProperty('moveCountInTurn')) {
+                obj['moveCountInTurn'] = ApiClient.convertToType(data['moveCountInTurn'], 'Number');
+            }
+            if (data.hasOwnProperty('state')) {
+                obj['state'] = State.constructFromObject(data['state']);
+            }
+            if (data.hasOwnProperty('currentPlayerId')) {
+                obj['currentPlayerId'] = ApiClient.convertToType(data['currentPlayerId'], 'String');
+            }
         }
         return obj;
     }
 
     /**
-     * Validates the JSON data with respect to <code>PickMatchMatchResponseReturnedProps</code>.
+     * Validates the JSON data with respect to <code>IMatchCore</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>PickMatchMatchResponseReturnedProps</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>IMatchCore</code>.
      */
     static validateJSON(data) {
         // check to make sure all required properties are present in the JSON string
-        for (const property of PickMatchMatchResponseReturnedProps.RequiredProperties) {
+        for (const property of IMatchCore.RequiredProperties) {
             if (!data[property]) {
                 throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
             }
@@ -110,10 +116,6 @@ class PickMatchMatchResponseReturnedProps {
         if (!Array.isArray(data['players'])) {
             throw new Error("Expected the field `players` to be an array in the JSON data but got " + data['players']);
         }
-        // validate the optional field `moveCountInTurn`
-        if (data['moveCountInTurn']) { // data not null
-          Number.validateJSON(data['moveCountInTurn']);
-        }
         // validate the optional field `createdByPlayerId`
         if (data['createdByPlayerId']) { // data not null
           String.validateJSON(data['createdByPlayerId']);
@@ -122,6 +124,18 @@ class PickMatchMatchResponseReturnedProps {
         if (data['creationParams']) { // data not null
           MatchCreationParams.validateJSON(data['creationParams']);
         }
+        // validate the optional field `moveCountInTurn`
+        if (data['moveCountInTurn']) { // data not null
+          Number.validateJSON(data['moveCountInTurn']);
+        }
+        // validate the optional field `state`
+        if (data['state']) { // data not null
+          State.validateJSON(data['state']);
+        }
+        // validate the optional field `currentPlayerId`
+        if (data['currentPlayerId']) { // data not null
+          String.validateJSON(data['currentPlayerId']);
+        }
 
         return true;
     }
@@ -129,58 +143,68 @@ class PickMatchMatchResponseReturnedProps {
 
 }
 
-PickMatchMatchResponseReturnedProps.RequiredProperties = ["_id", "players", "startedAt", "moveCount", "lastMoveAt"];
+IMatchCore.RequiredProperties = ["_id", "players", "startedAt", "lastMoveAt", "moveCount"];
 
 /**
  * A class representation of the BSON ObjectId type.
  * @member {String} _id
  */
-PickMatchMatchResponseReturnedProps.prototype['_id'] = undefined;
+IMatchCore.prototype['_id'] = undefined;
 
 /**
  * @member {Array.<String>} players
  */
-PickMatchMatchResponseReturnedProps.prototype['players'] = undefined;
+IMatchCore.prototype['players'] = undefined;
 
 /**
  * @member {Date} startedAt
  */
-PickMatchMatchResponseReturnedProps.prototype['startedAt'] = undefined;
-
-/**
- * @member {Number} moveCount
- */
-PickMatchMatchResponseReturnedProps.prototype['moveCount'] = undefined;
-
-/**
- * @member {Number} turnCount
- */
-PickMatchMatchResponseReturnedProps.prototype['turnCount'] = undefined;
-
-/**
- * @member {Number} moveCountInTurn
- */
-PickMatchMatchResponseReturnedProps.prototype['moveCountInTurn'] = undefined;
+IMatchCore.prototype['startedAt'] = undefined;
 
 /**
  * @member {Date} lastMoveAt
  */
-PickMatchMatchResponseReturnedProps.prototype['lastMoveAt'] = undefined;
+IMatchCore.prototype['lastMoveAt'] = undefined;
 
 /**
  * @member {String} createdByPlayerId
  */
-PickMatchMatchResponseReturnedProps.prototype['createdByPlayerId'] = undefined;
+IMatchCore.prototype['createdByPlayerId'] = undefined;
 
 /**
  * @member {module:model/MatchCreationParams} creationParams
  */
-PickMatchMatchResponseReturnedProps.prototype['creationParams'] = undefined;
+IMatchCore.prototype['creationParams'] = undefined;
+
+/**
+ * @member {Number} moveCount
+ */
+IMatchCore.prototype['moveCount'] = undefined;
+
+/**
+ * @member {Number} turnCount
+ */
+IMatchCore.prototype['turnCount'] = undefined;
+
+/**
+ * @member {Number} moveCountInTurn
+ */
+IMatchCore.prototype['moveCountInTurn'] = undefined;
+
+/**
+ * @member {module:model/State} state
+ */
+IMatchCore.prototype['state'] = undefined;
+
+/**
+ * @member {String} currentPlayerId
+ */
+IMatchCore.prototype['currentPlayerId'] = undefined;
 
 
 
 
 
 
-export default PickMatchMatchResponseReturnedProps;
+export default IMatchCore;
 

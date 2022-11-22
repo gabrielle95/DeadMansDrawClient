@@ -17,19 +17,19 @@ import CardSuit from './CardSuit';
 import CardValue from './CardValue';
 
 /**
- * The PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard model module.
- * @module model/PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard
+ * The IMatchEventParametersResponseToEffectCard model module.
+ * @module model/IMatchEventParametersResponseToEffectCard
  * @version 1.0.0
  */
-class PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard {
+class IMatchEventParametersResponseToEffectCard {
     /**
-     * Constructs a new <code>PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard</code>.
-     * @alias module:model/PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard
+     * Constructs a new <code>IMatchEventParametersResponseToEffectCard</code>.
+     * @alias module:model/IMatchEventParametersResponseToEffectCard
      * @implements module:model/Card
      */
     constructor() { 
         Card.initialize(this);
-        PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard.initialize(this);
+        IMatchEventParametersResponseToEffectCard.initialize(this);
     }
 
     /**
@@ -41,15 +41,15 @@ class PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard {
     }
 
     /**
-     * Constructs a <code>PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>IMatchEventParametersResponseToEffectCard</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard} obj Optional instance to populate.
-     * @return {module:model/PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard} The populated <code>PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard</code> instance.
+     * @param {module:model/IMatchEventParametersResponseToEffectCard} obj Optional instance to populate.
+     * @return {module:model/IMatchEventParametersResponseToEffectCard} The populated <code>IMatchEventParametersResponseToEffectCard</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard();
+            obj = obj || new IMatchEventParametersResponseToEffectCard();
             Card.constructFromObject(data, obj);
 
             if (data.hasOwnProperty('suit')) {
@@ -63,9 +63,9 @@ class PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard {
     }
 
     /**
-     * Validates the JSON data with respect to <code>PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard</code>.
+     * Validates the JSON data with respect to <code>IMatchEventParametersResponseToEffectCard</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>IMatchEventParametersResponseToEffectCard</code>.
      */
     static validateJSON(data) {
 
@@ -80,12 +80,12 @@ class PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard {
 /**
  * @member {module:model/CardSuit} suit
  */
-PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard.prototype['suit'] = undefined;
+IMatchEventParametersResponseToEffectCard.prototype['suit'] = undefined;
 
 /**
  * @member {module:model/CardValue} value
  */
-PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard.prototype['value'] = undefined;
+IMatchEventParametersResponseToEffectCard.prototype['value'] = undefined;
 
 
 // Implement Card interface:
@@ -101,5 +101,5 @@ Card.prototype['value'] = undefined;
 
 
 
-export default PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard;
+export default IMatchEventParametersResponseToEffectCard;
 

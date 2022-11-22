@@ -13,7 +13,7 @@
 
 import ApiClient from '../ApiClient';
 import CardEffectType from './CardEffectType';
-import PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard from './PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard';
+import IMatchEventParametersResponseToEffectCard from './IMatchEventParametersResponseToEffectCard';
 
 /**
  * The CardEffectResponse model module.
@@ -53,7 +53,7 @@ class CardEffectResponse {
                 obj['effectType'] = CardEffectType.constructFromObject(data['effectType']);
             }
             if (data.hasOwnProperty('card')) {
-                obj['card'] = PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard.constructFromObject(data['card']);
+                obj['card'] = IMatchEventParametersResponseToEffectCard.constructFromObject(data['card']);
             }
         }
         return obj;
@@ -67,7 +67,7 @@ class CardEffectResponse {
     static validateJSON(data) {
         // validate the optional field `card`
         if (data['card']) { // data not null
-          PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard.validateJSON(data['card']);
+          IMatchEventParametersResponseToEffectCard.validateJSON(data['card']);
         }
 
         return true;
@@ -84,7 +84,7 @@ class CardEffectResponse {
 CardEffectResponse.prototype['effectType'] = undefined;
 
 /**
- * @member {module:model/PartialPickMatchEventActionResponseReturnedPropsResponseToEffectCard} card
+ * @member {module:model/IMatchEventParametersResponseToEffectCard} card
  */
 CardEffectResponse.prototype['card'] = undefined;
 
