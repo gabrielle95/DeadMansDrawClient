@@ -7,7 +7,8 @@
   "dependencies": {
     "press-any-key": "^0.1.1",
     "slhpc23_arena": "file:lib",
-    "spc22_arena": "file:lib"
+    "spc22_arena": "file:lib",
+    "yargs": "^17.6.2"
   },
   "scripts": {
     "npmlink": "npm link ./lib",

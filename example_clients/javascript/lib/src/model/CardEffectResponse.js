@@ -1,6 +1,6 @@
 /**
  * SLHPC23 Arena
- * **SAP Labs Hungary Programming Competition 2023 Arena server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
+ * **SAP Labs CEE Hub Programming Competition 2023 Arean server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: DL SLHPC23 <DL_637A3F6466D808029A65636A@global.corp.sap>
@@ -13,7 +13,7 @@
 
 import ApiClient from '../ApiClient';
 import CardEffectType from './CardEffectType';
-import IMatchEventParametersResponseToEffectCard from './IMatchEventParametersResponseToEffectCard';
+import MatchEventDTOResponseToEffectCard from './MatchEventDTOResponseToEffectCard';
 
 /**
  * The CardEffectResponse model module.
@@ -53,7 +53,7 @@ class CardEffectResponse {
                 obj['effectType'] = CardEffectType.constructFromObject(data['effectType']);
             }
             if (data.hasOwnProperty('card')) {
-                obj['card'] = IMatchEventParametersResponseToEffectCard.constructFromObject(data['card']);
+                obj['card'] = MatchEventDTOResponseToEffectCard.constructFromObject(data['card']);
             }
         }
         return obj;
@@ -67,7 +67,7 @@ class CardEffectResponse {
     static validateJSON(data) {
         // validate the optional field `card`
         if (data['card']) { // data not null
-          IMatchEventParametersResponseToEffectCard.validateJSON(data['card']);
+          MatchEventDTOResponseToEffectCard.validateJSON(data['card']);
         }
 
         return true;
@@ -84,7 +84,7 @@ class CardEffectResponse {
 CardEffectResponse.prototype['effectType'] = undefined;
 
 /**
- * @member {module:model/IMatchEventParametersResponseToEffectCard} card
+ * @member {module:model/MatchEventDTOResponseToEffectCard} card
  */
 CardEffectResponse.prototype['card'] = undefined;
 

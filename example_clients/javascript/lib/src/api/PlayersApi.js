@@ -1,6 +1,6 @@
 /**
  * SLHPC23 Arena
- * **SAP Labs Hungary Programming Competition 2023 Arena server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
+ * **SAP Labs CEE Hub Programming Competition 2023 Arean server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: DL SLHPC23 <DL_637A3F6466D808029A65636A@global.corp.sap>
@@ -14,7 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
-import PickPlayerExcludeKeyofPlayerPasswordhash from '../model/PickPlayerExcludeKeyofPlayerPasswordhash';
+import PlayerDTO from '../model/PlayerDTO';
 
 /**
 * Players service.
@@ -40,7 +40,7 @@ export default class PlayersApi {
      * Retrieves a Player details
      * Retrieves the details of an existing Player.  Supply the unique Player ID and receive corresponding Player details.  Players can retrieve only own information and details
      * @param {String} id The requested Player Id
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/PickPlayerExcludeKeyofPlayerPasswordhash} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/PlayerDTO} and HTTP response
      */
     getPlayerWithHttpInfo(id) {
       let postBody = null;
@@ -62,7 +62,7 @@ export default class PlayersApi {
       let authNames = ['basic'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = PickPlayerExcludeKeyofPlayerPasswordhash;
+      let returnType = PlayerDTO;
       return this.apiClient.callApi(
         '/api/players/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -74,7 +74,7 @@ export default class PlayersApi {
      * Retrieves a Player details
      * Retrieves the details of an existing Player.  Supply the unique Player ID and receive corresponding Player details.  Players can retrieve only own information and details
      * @param {String} id The requested Player Id
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/PickPlayerExcludeKeyofPlayerPasswordhash}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/PlayerDTO}
      */
     getPlayer(id) {
       return this.getPlayerWithHttpInfo(id)
@@ -87,7 +87,7 @@ export default class PlayersApi {
     /**
      * Retrieves Player information
      * Retrieves the details of all Players.  Players can retrieve only own information and details
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/PickPlayerExcludeKeyofPlayerPasswordhash>} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/PlayerDTO>} and HTTP response
      */
     getPlayersWithHttpInfo() {
       let postBody = null;
@@ -104,7 +104,7 @@ export default class PlayersApi {
       let authNames = ['basic'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = [PickPlayerExcludeKeyofPlayerPasswordhash];
+      let returnType = [PlayerDTO];
       return this.apiClient.callApi(
         '/api/players', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -115,7 +115,7 @@ export default class PlayersApi {
     /**
      * Retrieves Player information
      * Retrieves the details of all Players.  Players can retrieve only own information and details
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/PickPlayerExcludeKeyofPlayerPasswordhash>}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/PlayerDTO>}
      */
     getPlayers() {
       return this.getPlayersWithHttpInfo()

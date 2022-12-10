@@ -1,11 +1,33 @@
 var Spc22Arena = require("spc22_arena");
 const pressAnyKey = require("press-any-key");
+const params = require('yargs')
+  .option('u', {
+    alias: 'username',
+    demandOption: false,
+    type: 'string',
+    default: "636438380ef778617e0e5be5"
+  })
+  .option('p', {
+    alias: 'password',
+    demandOption: false,
+    type: 'string',
+    default: "testpass"
+  })
+  .option('m', {
+    alias: 'matchid',
+    demandOption: false,
+    type: 'string'
+  })
+  .option('wait', {
+    alias: 'wait',
+    demandOption: false,
+    type: 'boolean'
+  })
+  .help()
+  .argv
+//(process.argv.slice(2)).parse()
+//TODO: display help
 
-let params = {};
-myArgs = process.argv.slice(2);
-//-- userid, matchid
-params.userid = myArgs[0];
-params.matchid = myArgs[1];
 console.log("input params: ", params);
 
 const defaultClient = Spc22Arena.ApiClient.instance;
@@ -15,8 +37,11 @@ console.log(`Using server: ${defaultClient.basePath}`);
 
 // Configure HTTP basic authorization: basic
 const basic = defaultClient.authentications["basic"];
-basic.username = params.userid || "636438380ef778617e0e5be6";
-basic.password = "testpass";
+basic.username = params.username;
+basic.password = params.password;
+// const digest = defaultClient.authentications["digest"];
+// digest.username = params.userid || "636438380ef778617e0e5be5";
+// digest.password = "testpass";
 
 console.log(`Playing as user: ${basic.username}.\n`);
 
@@ -78,7 +103,11 @@ async function wait_for_active_match() {
 }
 
 function move_has_event(move, targetEventType) {
-  return move?.find((item) => item?.eventType == targetEventType);
+  try {
+    return move?.find((item) => item?.eventType == targetEventType);
+  } catch {
+    console.log(move);
+  }
 }
 
 async function play_a_match(match) {
@@ -101,13 +130,13 @@ async function play_a_match(match) {
     console.info(
       `\n=== TURN #${++turncount} ==================================`
     );
-    //await pressAnyKey().then(); //'Press any key to continue...'
     //-- TURN: Draw a few cards
     while (isMatchRunning) {
-      useraction = { etype: "Draw", autopick: "all" };
+      useraction = { etype: "Draw", autopick: true };
       opts = { wait: "1" };
       //opts = { autopick: "all" };
       try {
+        if (params.wait) await pressAnyKey().then(); //'Press any key to continue...'
         console.info("Drawing a new card");
 
         doRetryDrawMove = true;
@@ -143,7 +172,7 @@ async function play_a_match(match) {
         //-- based on a random factor we might initiate ending the turn
         if (Math.random() * 10 < 3) {
           console.info("Ending turn...");
-          enduseraction = { etype: "EndTurn", autopick: "all" };
+          enduseraction = { etype: "EndTurn", autopick: true };
           lastmove = await gameapi
             .executeActionForMatch(matchid, enduseraction, opts)
             .then((result) => {
@@ -171,7 +200,7 @@ async function play_a_match(match) {
     const endstatus =
       typeof ri_matchend.matchEndedWinnerIdx !== "number"
         ? "TIE"
-        : match.players[ri_matchend.matchEndedWinnerIdx]?.toString() ===
+        : match.playerids[ri_matchend.matchEndedWinnerIdx]?.toString() ===
           basic.username
         ? "WON"
         : "LOST";

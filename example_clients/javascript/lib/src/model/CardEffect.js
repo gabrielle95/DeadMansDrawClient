@@ -1,6 +1,6 @@
 /**
  * SLHPC23 Arena
- * **SAP Labs Hungary Programming Competition 2023 Arena server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
+ * **SAP Labs CEE Hub Programming Competition 2023 Arean server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: DL SLHPC23 <DL_637A3F6466D808029A65636A@global.corp.sap>
@@ -25,10 +25,11 @@ class CardEffect {
      * Constructs a new <code>CardEffect</code>.
      * Card effect associated with a special card
      * @alias module:model/CardEffect
+     * @param effectType {module:model/CardEffectType} 
      */
-    constructor() { 
+    constructor(effectType) { 
         
-        CardEffect.initialize(this);
+        CardEffect.initialize(this, effectType);
     }
 
     /**
@@ -36,7 +37,8 @@ class CardEffect {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, effectType) { 
+        obj['effectType'] = effectType;
     }
 
     /**
@@ -53,11 +55,11 @@ class CardEffect {
             if (data.hasOwnProperty('effectType')) {
                 obj['effectType'] = CardEffectType.constructFromObject(data['effectType']);
             }
-            if (data.hasOwnProperty('card')) {
-                obj['card'] = Card.constructFromObject(data['card']);
-            }
             if (data.hasOwnProperty('cards')) {
                 obj['cards'] = ApiClient.convertToType(data['cards'], [Card]);
+            }
+            if (data.hasOwnProperty('krakenCount')) {
+                obj['krakenCount'] = ApiClient.convertToType(data['krakenCount'], 'Number');
             }
         }
         return obj;
@@ -69,9 +71,11 @@ class CardEffect {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>CardEffect</code>.
      */
     static validateJSON(data) {
-        // validate the optional field `card`
-        if (data['card']) { // data not null
-          Card.validateJSON(data['card']);
+        // check to make sure all required properties are present in the JSON string
+        for (const property of CardEffect.RequiredProperties) {
+            if (!data[property]) {
+                throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
+            }
         }
         if (data['cards']) { // data not null
             // ensure the json data is an array
@@ -90,7 +94,7 @@ class CardEffect {
 
 }
 
-
+CardEffect.RequiredProperties = ["effectType"];
 
 /**
  * @member {module:model/CardEffectType} effectType
@@ -98,14 +102,14 @@ class CardEffect {
 CardEffect.prototype['effectType'] = undefined;
 
 /**
- * @member {module:model/Card} card
- */
-CardEffect.prototype['card'] = undefined;
-
-/**
  * @member {Array.<module:model/Card>} cards
  */
 CardEffect.prototype['cards'] = undefined;
+
+/**
+ * @member {Number} krakenCount
+ */
+CardEffect.prototype['krakenCount'] = undefined;
 
 
 

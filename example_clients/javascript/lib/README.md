@@ -1,7 +1,7 @@
 # slhpc23_arena
 
 Slhpc23Arena - JavaScript client for slhpc23_arena
-**SAP Labs Hungary Programming Competition 2023 Arena server**.
+**SAP Labs CEE Hub Programming Competition 2023 Arean server**.
 
 You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).  
 For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.  
@@ -140,7 +140,6 @@ Class | Method | HTTP request | Description
 ## Documentation for Models
 
  - [Slhpc23Arena.ActionErrorResponse](docs/ActionErrorResponse.md)
- - [Slhpc23Arena.AutoPickOptions](docs/AutoPickOptions.md)
  - [Slhpc23Arena.BoolLikeString](docs/BoolLikeString.md)
  - [Slhpc23Arena.Card](docs/Card.md)
  - [Slhpc23Arena.CardEffect](docs/CardEffect.md)
@@ -149,26 +148,20 @@ Class | Method | HTTP request | Description
  - [Slhpc23Arena.CardSuit](docs/CardSuit.md)
  - [Slhpc23Arena.CardValue](docs/CardValue.md)
  - [Slhpc23Arena.DeleteMatchRequest](docs/DeleteMatchRequest.md)
- - [Slhpc23Arena.DrawCardPile](docs/DrawCardPile.md)
  - [Slhpc23Arena.ErrorResponse](docs/ErrorResponse.md)
  - [Slhpc23Arena.HelloWorldResponse](docs/HelloWorldResponse.md)
- - [Slhpc23Arena.IMatchCore](docs/IMatchCore.md)
- - [Slhpc23Arena.IMatchEventParameters](docs/IMatchEventParameters.md)
- - [Slhpc23Arena.IMatchEventParametersResponseToEffectCard](docs/IMatchEventParametersResponseToEffectCard.md)
- - [Slhpc23Arena.IMoveAt](docs/IMoveAt.md)
- - [Slhpc23Arena.IMoveSequence](docs/IMoveSequence.md)
  - [Slhpc23Arena.IStateDelta](docs/IStateDelta.md)
  - [Slhpc23Arena.IStateDeltaStack](docs/IStateDeltaStack.md)
  - [Slhpc23Arena.IUserAction](docs/IUserAction.md)
  - [Slhpc23Arena.MatchActionType](docs/MatchActionType.md)
  - [Slhpc23Arena.MatchCreateResponse](docs/MatchCreateResponse.md)
  - [Slhpc23Arena.MatchCreationParams](docs/MatchCreationParams.md)
+ - [Slhpc23Arena.MatchDTO](docs/MatchDTO.md)
+ - [Slhpc23Arena.MatchEventDTO](docs/MatchEventDTO.md)
+ - [Slhpc23Arena.MatchEventDTOResponseToEffectCard](docs/MatchEventDTOResponseToEffectCard.md)
  - [Slhpc23Arena.MatchEventType](docs/MatchEventType.md)
- - [Slhpc23Arena.MatchResponse](docs/MatchResponse.md)
- - [Slhpc23Arena.MatchResponseAllOf](docs/MatchResponseAllOf.md)
- - [Slhpc23Arena.MatchResponseMovevent](docs/MatchResponseMovevent.md)
- - [Slhpc23Arena.PartialPickMatchEventActionResponseReturnedProps](docs/PartialPickMatchEventActionResponseReturnedProps.md)
- - [Slhpc23Arena.PickPlayerExcludeKeyofPlayerPasswordhash](docs/PickPlayerExcludeKeyofPlayerPasswordhash.md)
+ - [Slhpc23Arena.MoveDTO](docs/MoveDTO.md)
+ - [Slhpc23Arena.PlayerDTO](docs/PlayerDTO.md)
  - [Slhpc23Arena.State](docs/State.md)
  - [Slhpc23Arena.WhoAmiIResponse](docs/WhoAmiIResponse.md)
 
@@ -180,4 +173,9 @@ Class | Method | HTTP request | Description
 ### basic
 
 - **Type**: HTTP basic authentication
+
+
+
+### digest
+
 

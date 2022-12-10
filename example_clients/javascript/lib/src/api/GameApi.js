@@ -1,6 +1,6 @@
 /**
  * SLHPC23 Arena
- * **SAP Labs Hungary Programming Competition 2023 Arena server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
+ * **SAP Labs CEE Hub Programming Competition 2023 Arean server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: DL SLHPC23 <DL_637A3F6466D808029A65636A@global.corp.sap>
@@ -20,8 +20,8 @@ import ErrorResponse from '../model/ErrorResponse';
 import IUserAction from '../model/IUserAction';
 import MatchCreateResponse from '../model/MatchCreateResponse';
 import MatchCreationParams from '../model/MatchCreationParams';
-import MatchResponse from '../model/MatchResponse';
-import PartialPickMatchEventActionResponseReturnedProps from '../model/PartialPickMatchEventActionResponseReturnedProps';
+import MatchDTO from '../model/MatchDTO';
+import MatchEventDTO from '../model/MatchEventDTO';
 
 /**
 * Game service.
@@ -151,7 +151,7 @@ export default class GameApi {
      * @param {module:model/IUserAction} iUserAction Match action execution parameters
      * @param {Object} opts Optional parameters
      * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout executing the action - useful for waiting for other user to finish its action to avoid polling
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/PartialPickMatchEventActionResponseReturnedProps>} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/MatchEventDTO>} and HTTP response
      */
     executeActionForMatchWithHttpInfo(id, iUserAction, opts) {
       opts = opts || {};
@@ -179,7 +179,7 @@ export default class GameApi {
       let authNames = ['basic'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = [PartialPickMatchEventActionResponseReturnedProps];
+      let returnType = [MatchEventDTO];
       return this.apiClient.callApi(
         '/api/matches/{id}', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -194,7 +194,7 @@ export default class GameApi {
      * @param {module:model/IUserAction} iUserAction Match action execution parameters
      * @param {Object} opts Optional parameters
      * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout executing the action - useful for waiting for other user to finish its action to avoid polling
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/PartialPickMatchEventActionResponseReturnedProps>}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/MatchEventDTO>}
      */
     executeActionForMatch(id, iUserAction, opts) {
       return this.executeActionForMatchWithHttpInfo(id, iUserAction, opts)
@@ -211,7 +211,7 @@ export default class GameApi {
      * @param {Object} opts Optional parameters
      * @param {module:model/BoolLikeString} opts.waitactive optionally waits with timeout until user becomes active
      * @param {module:model/BoolLikeString} opts.showevents optionally add events associated with the match
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/MatchResponse} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/MatchDTO} and HTTP response
      */
     getMatchWithHttpInfo(id, opts) {
       opts = opts || {};
@@ -236,7 +236,7 @@ export default class GameApi {
       let authNames = ['basic'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = MatchResponse;
+      let returnType = MatchDTO;
       return this.apiClient.callApi(
         '/api/matches/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -251,7 +251,7 @@ export default class GameApi {
      * @param {Object} opts Optional parameters
      * @param {module:model/BoolLikeString} opts.waitactive optionally waits with timeout until user becomes active
      * @param {module:model/BoolLikeString} opts.showevents optionally add events associated with the match
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/MatchResponse}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/MatchDTO}
      */
     getMatch(id, opts) {
       return this.getMatchWithHttpInfo(id, opts)
@@ -269,7 +269,7 @@ export default class GameApi {
      * @param {module:model/BoolLikeString} opts.active optional filter matches where player is active at
      * @param {String} opts.tags optional filter matches with matching tag/comma separated list of tags
      * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout for any resulting match - useful for polling when the user receives invite for a new match to avoid polling
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/MatchResponse>} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/MatchDTO>} and HTTP response
      */
     getMatchesWithHttpInfo(opts) {
       opts = opts || {};
@@ -291,7 +291,7 @@ export default class GameApi {
       let authNames = ['basic'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = [MatchResponse];
+      let returnType = [MatchDTO];
       return this.apiClient.callApi(
         '/api/matches', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -307,7 +307,7 @@ export default class GameApi {
      * @param {module:model/BoolLikeString} opts.active optional filter matches where player is active at
      * @param {String} opts.tags optional filter matches with matching tag/comma separated list of tags
      * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout for any resulting match - useful for polling when the user receives invite for a new match to avoid polling
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/MatchResponse>}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/MatchDTO>}
      */
     getMatches(opts) {
       return this.getMatchesWithHttpInfo(opts)

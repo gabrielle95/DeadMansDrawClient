@@ -1,6 +1,6 @@
 /**
  * SLHPC23 Arena
- * **SAP Labs Hungary Programming Competition 2023 Arena server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
+ * **SAP Labs CEE Hub Programming Competition 2023 Arean server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: DL SLHPC23 <DL_637A3F6466D808029A65636A@global.corp.sap>
@@ -14,7 +14,6 @@
 import ApiClient from '../ApiClient';
 import Card from './Card';
 import CardEffect from './CardEffect';
-import DrawCardPile from './DrawCardPile';
 
 /**
  * The State model module.
@@ -59,7 +58,7 @@ class State {
                 obj['banks'] = ApiClient.convertToType(data['banks'], [Object]);
             }
             if (data.hasOwnProperty('drawPile')) {
-                obj['drawPile'] = DrawCardPile.constructFromObject(data['drawPile']);
+                obj['drawPile'] = ApiClient.convertToType(data['drawPile'], [Card]);
             }
             if (data.hasOwnProperty('discardPile')) {
                 obj['discardPile'] = ApiClient.convertToType(data['discardPile'], [Card]);
@@ -72,9 +71,6 @@ class State {
             }
             if (data.hasOwnProperty('pendingEffect')) {
                 obj['pendingEffect'] = CardEffect.constructFromObject(data['pendingEffect']);
-            }
-            if (data.hasOwnProperty('pendingKrakenCards')) {
-                obj['pendingKrakenCards'] = ApiClient.convertToType(data['pendingKrakenCards'], 'Number');
             }
             if (data.hasOwnProperty('winnerIdx')) {
                 obj['winnerIdx'] = ApiClient.convertToType(data['winnerIdx'], 'Number');
@@ -99,9 +95,15 @@ class State {
         if (!Array.isArray(data['banks'])) {
             throw new Error("Expected the field `banks` to be an array in the JSON data but got " + data['banks']);
         }
-        // validate the optional field `drawPile`
         if (data['drawPile']) { // data not null
-          DrawCardPile.validateJSON(data['drawPile']);
+            // ensure the json data is an array
+            if (!Array.isArray(data['drawPile'])) {
+                throw new Error("Expected the field `drawPile` to be an array in the JSON data but got " + data['drawPile']);
+            }
+            // validate the optional field `drawPile` (array)
+            for (const item of data['drawPile']) {
+                Card.validateJsonObject(item);
+            };
         }
         if (data['discardPile']) { // data not null
             // ensure the json data is an array
@@ -142,7 +144,8 @@ State.RequiredProperties = ["banks", "playArea"];
 State.prototype['banks'] = undefined;
 
 /**
- * @member {module:model/DrawCardPile} drawPile
+ * Draw card pile - contains all remining cards
+ * @member {Array.<module:model/Card>} drawPile
  */
 State.prototype['drawPile'] = undefined;
 
@@ -167,11 +170,6 @@ State.prototype['currentPlayerIndex'] = undefined;
  * @member {module:model/CardEffect} pendingEffect
  */
 State.prototype['pendingEffect'] = undefined;
-
-/**
- * @member {Number} pendingKrakenCards
- */
-State.prototype['pendingKrakenCards'] = undefined;
 
 /**
  * @member {Number} winnerIdx

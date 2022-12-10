@@ -1,6 +1,6 @@
 /**
  * SLHPC23 Arena
- * **SAP Labs Hungary Programming Competition 2023 Arena server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
+ * **SAP Labs CEE Hub Programming Competition 2023 Arean server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: DL SLHPC23 <DL_637A3F6466D808029A65636A@global.corp.sap>
@@ -17,19 +17,19 @@ import CardSuit from './CardSuit';
 import CardValue from './CardValue';
 
 /**
- * The IMatchEventParametersResponseToEffectCard model module.
- * @module model/IMatchEventParametersResponseToEffectCard
+ * The MatchEventDTOResponseToEffectCard model module.
+ * @module model/MatchEventDTOResponseToEffectCard
  * @version 1.0.0
  */
-class IMatchEventParametersResponseToEffectCard {
+class MatchEventDTOResponseToEffectCard {
     /**
-     * Constructs a new <code>IMatchEventParametersResponseToEffectCard</code>.
-     * @alias module:model/IMatchEventParametersResponseToEffectCard
+     * Constructs a new <code>MatchEventDTOResponseToEffectCard</code>.
+     * @alias module:model/MatchEventDTOResponseToEffectCard
      * @implements module:model/Card
      */
     constructor() { 
         Card.initialize(this);
-        IMatchEventParametersResponseToEffectCard.initialize(this);
+        MatchEventDTOResponseToEffectCard.initialize(this);
     }
 
     /**
@@ -41,15 +41,15 @@ class IMatchEventParametersResponseToEffectCard {
     }
 
     /**
-     * Constructs a <code>IMatchEventParametersResponseToEffectCard</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>MatchEventDTOResponseToEffectCard</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/IMatchEventParametersResponseToEffectCard} obj Optional instance to populate.
-     * @return {module:model/IMatchEventParametersResponseToEffectCard} The populated <code>IMatchEventParametersResponseToEffectCard</code> instance.
+     * @param {module:model/MatchEventDTOResponseToEffectCard} obj Optional instance to populate.
+     * @return {module:model/MatchEventDTOResponseToEffectCard} The populated <code>MatchEventDTOResponseToEffectCard</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new IMatchEventParametersResponseToEffectCard();
+            obj = obj || new MatchEventDTOResponseToEffectCard();
             Card.constructFromObject(data, obj);
 
             if (data.hasOwnProperty('suit')) {
@@ -63,9 +63,9 @@ class IMatchEventParametersResponseToEffectCard {
     }
 
     /**
-     * Validates the JSON data with respect to <code>IMatchEventParametersResponseToEffectCard</code>.
+     * Validates the JSON data with respect to <code>MatchEventDTOResponseToEffectCard</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>IMatchEventParametersResponseToEffectCard</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>MatchEventDTOResponseToEffectCard</code>.
      */
     static validateJSON(data) {
 
@@ -80,12 +80,12 @@ class IMatchEventParametersResponseToEffectCard {
 /**
  * @member {module:model/CardSuit} suit
  */
-IMatchEventParametersResponseToEffectCard.prototype['suit'] = undefined;
+MatchEventDTOResponseToEffectCard.prototype['suit'] = undefined;
 
 /**
  * @member {module:model/CardValue} value
  */
-IMatchEventParametersResponseToEffectCard.prototype['value'] = undefined;
+MatchEventDTOResponseToEffectCard.prototype['value'] = undefined;
 
 
 // Implement Card interface:
@@ -101,5 +101,5 @@ Card.prototype['value'] = undefined;
 
 
 
-export default IMatchEventParametersResponseToEffectCard;
+export default MatchEventDTOResponseToEffectCard;
 

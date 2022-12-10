@@ -1,6 +1,6 @@
 /**
  * SLHPC23 Arena
- * **SAP Labs Hungary Programming Competition 2023 Arena server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
+ * **SAP Labs CEE Hub Programming Competition 2023 Arean server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: DL SLHPC23 <DL_637A3F6466D808029A65636A@global.corp.sap>
@@ -49,8 +49,8 @@ class MatchCreationParams {
         if (data) {
             obj = obj || new MatchCreationParams();
 
-            if (data.hasOwnProperty('players')) {
-                obj['players'] = ApiClient.convertToType(data['players'], ['String']);
+            if (data.hasOwnProperty('playerids')) {
+                obj['playerids'] = ApiClient.convertToType(data['playerids'], ['String']);
             }
             if (data.hasOwnProperty('tags')) {
                 obj['tags'] = ApiClient.convertToType(data['tags'], ['String']);
@@ -78,8 +78,8 @@ class MatchCreationParams {
      */
     static validateJSON(data) {
         // ensure the json data is an array
-        if (!Array.isArray(data['players'])) {
-            throw new Error("Expected the field `players` to be an array in the JSON data but got " + data['players']);
+        if (!Array.isArray(data['playerids'])) {
+            throw new Error("Expected the field `playerids` to be an array in the JSON data but got " + data['playerids']);
         }
         // ensure the json data is an array
         if (!Array.isArray(data['tags'])) {
@@ -124,9 +124,9 @@ class MatchCreationParams {
 
 /**
  * List of players. Omit to request a 'practice' match.
- * @member {Array.<String>} players
+ * @member {Array.<String>} playerids
  */
-MatchCreationParams.prototype['players'] = undefined;
+MatchCreationParams.prototype['playerids'] = undefined;
 
 /**
  * Tags to add to match for later filtering

@@ -1,6 +1,6 @@
 /**
  * SLHPC23 Arena
- * **SAP Labs Hungary Programming Competition 2023 Arena server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
+ * **SAP Labs CEE Hub Programming Competition 2023 Arean server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: DL SLHPC23 <DL_637A3F6466D808029A65636A@global.corp.sap>
@@ -15,24 +15,25 @@ import ApiClient from '../ApiClient';
 import Card from './Card';
 import CardEffect from './CardEffect';
 import CardEffectType from './CardEffectType';
-import IMatchEventParametersResponseToEffectCard from './IMatchEventParametersResponseToEffectCard';
 import IStateDelta from './IStateDelta';
+import MatchEventDTOResponseToEffectCard from './MatchEventDTOResponseToEffectCard';
 import MatchEventType from './MatchEventType';
 
 /**
- * The PartialPickMatchEventActionResponseReturnedProps model module.
- * @module model/PartialPickMatchEventActionResponseReturnedProps
+ * The MatchEventDTO model module.
+ * @module model/MatchEventDTO
  * @version 1.0.0
  */
-class PartialPickMatchEventActionResponseReturnedProps {
+class MatchEventDTO {
     /**
-     * Constructs a new <code>PartialPickMatchEventActionResponseReturnedProps</code>.
-     * Make all properties in T optional
-     * @alias module:model/PartialPickMatchEventActionResponseReturnedProps
+     * Constructs a new <code>MatchEventDTO</code>.
+     * Match Response Event DTO
+     * @alias module:model/MatchEventDTO
+     * @param playerIndex {Number} 
      */
-    constructor() { 
+    constructor(playerIndex) { 
         
-        PartialPickMatchEventActionResponseReturnedProps.initialize(this);
+        MatchEventDTO.initialize(this, playerIndex);
     }
 
     /**
@@ -40,19 +41,20 @@ class PartialPickMatchEventActionResponseReturnedProps {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, playerIndex) { 
+        obj['playerIndex'] = playerIndex;
     }
 
     /**
-     * Constructs a <code>PartialPickMatchEventActionResponseReturnedProps</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>MatchEventDTO</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/PartialPickMatchEventActionResponseReturnedProps} obj Optional instance to populate.
-     * @return {module:model/PartialPickMatchEventActionResponseReturnedProps} The populated <code>PartialPickMatchEventActionResponseReturnedProps</code> instance.
+     * @param {module:model/MatchEventDTO} obj Optional instance to populate.
+     * @return {module:model/MatchEventDTO} The populated <code>MatchEventDTO</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new PartialPickMatchEventActionResponseReturnedProps();
+            obj = obj || new MatchEventDTO();
 
             if (data.hasOwnProperty('eventType')) {
                 obj['eventType'] = MatchEventType.constructFromObject(data['eventType']);
@@ -75,6 +77,12 @@ class PartialPickMatchEventActionResponseReturnedProps {
             if (data.hasOwnProperty('cardRemovedFromBankIndex')) {
                 obj['cardRemovedFromBankIndex'] = ApiClient.convertToType(data['cardRemovedFromBankIndex'], 'Number');
             }
+            if (data.hasOwnProperty('turnEndedIsSuccessful')) {
+                obj['turnEndedIsSuccessful'] = ApiClient.convertToType(data['turnEndedIsSuccessful'], 'Boolean');
+            }
+            if (data.hasOwnProperty('turnEndedBonusCards')) {
+                obj['turnEndedBonusCards'] = ApiClient.convertToType(data['turnEndedBonusCards'], [Card]);
+            }
             if (data.hasOwnProperty('turnEndedDelta')) {
                 obj['turnEndedDelta'] = IStateDelta.constructFromObject(data['turnEndedDelta']);
             }
@@ -94,21 +102,30 @@ class PartialPickMatchEventActionResponseReturnedProps {
                 obj['responseToEffectType'] = CardEffectType.constructFromObject(data['responseToEffectType']);
             }
             if (data.hasOwnProperty('responseToEffectCard')) {
-                obj['responseToEffectCard'] = IMatchEventParametersResponseToEffectCard.constructFromObject(data['responseToEffectCard']);
+                obj['responseToEffectCard'] = MatchEventDTOResponseToEffectCard.constructFromObject(data['responseToEffectCard']);
             }
             if (data.hasOwnProperty('turnStartedDelta')) {
                 obj['turnStartedDelta'] = IStateDelta.constructFromObject(data['turnStartedDelta']);
+            }
+            if (data.hasOwnProperty('playerIndex')) {
+                obj['playerIndex'] = ApiClient.convertToType(data['playerIndex'], 'Number');
             }
         }
         return obj;
     }
 
     /**
-     * Validates the JSON data with respect to <code>PartialPickMatchEventActionResponseReturnedProps</code>.
+     * Validates the JSON data with respect to <code>MatchEventDTO</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>PartialPickMatchEventActionResponseReturnedProps</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>MatchEventDTO</code>.
      */
     static validateJSON(data) {
+        // check to make sure all required properties are present in the JSON string
+        for (const property of MatchEventDTO.RequiredProperties) {
+            if (!data[property]) {
+                throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
+            }
+        }
         // ensure the json data is a string
         if (data['matchStartedSeed'] && !(typeof data['matchStartedSeed'] === 'string' || data['matchStartedSeed'] instanceof String)) {
             throw new Error("Expected the field `matchStartedSeed` to be a primitive type in the JSON string but got " + data['matchStartedSeed']);
@@ -129,6 +146,16 @@ class PartialPickMatchEventActionResponseReturnedProps {
         if (data['cardRemovedFromBankCard']) { // data not null
           Card.validateJSON(data['cardRemovedFromBankCard']);
         }
+        if (data['turnEndedBonusCards']) { // data not null
+            // ensure the json data is an array
+            if (!Array.isArray(data['turnEndedBonusCards'])) {
+                throw new Error("Expected the field `turnEndedBonusCards` to be an array in the JSON data but got " + data['turnEndedBonusCards']);
+            }
+            // validate the optional field `turnEndedBonusCards` (array)
+            for (const item of data['turnEndedBonusCards']) {
+                Card.validateJsonObject(item);
+            };
+        }
         // validate the optional field `turnEndedDelta`
         if (data['turnEndedDelta']) { // data not null
           IStateDelta.validateJSON(data['turnEndedDelta']);
@@ -147,7 +174,7 @@ class PartialPickMatchEventActionResponseReturnedProps {
         }
         // validate the optional field `responseToEffectCard`
         if (data['responseToEffectCard']) { // data not null
-          IMatchEventParametersResponseToEffectCard.validateJSON(data['responseToEffectCard']);
+          MatchEventDTOResponseToEffectCard.validateJSON(data['responseToEffectCard']);
         }
         // validate the optional field `turnStartedDelta`
         if (data['turnStartedDelta']) { // data not null
@@ -160,87 +187,102 @@ class PartialPickMatchEventActionResponseReturnedProps {
 
 }
 
-
+MatchEventDTO.RequiredProperties = ["playerIndex"];
 
 /**
  * @member {module:model/MatchEventType} eventType
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['eventType'] = undefined;
+MatchEventDTO.prototype['eventType'] = undefined;
 
 /**
  * @member {String} matchStartedSeed
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchStartedSeed'] = undefined;
+MatchEventDTO.prototype['matchStartedSeed'] = undefined;
 
 /**
  * @member {module:model/Card} drawCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['drawCard'] = undefined;
+MatchEventDTO.prototype['drawCard'] = undefined;
 
 /**
  * @member {module:model/CardEffect} cardPlayedEffect
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardPlayedEffect'] = undefined;
+MatchEventDTO.prototype['cardPlayedEffect'] = undefined;
 
 /**
  * @member {module:model/Card} cardPlacedToPlayAreaCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardPlacedToPlayAreaCard'] = undefined;
+MatchEventDTO.prototype['cardPlacedToPlayAreaCard'] = undefined;
 
 /**
  * @member {module:model/Card} cardRemovedFromBankCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardRemovedFromBankCard'] = undefined;
+MatchEventDTO.prototype['cardRemovedFromBankCard'] = undefined;
 
 /**
  * @member {Number} cardRemovedFromBankIndex
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['cardRemovedFromBankIndex'] = undefined;
+MatchEventDTO.prototype['cardRemovedFromBankIndex'] = undefined;
+
+/**
+ * @member {Boolean} turnEndedIsSuccessful
+ */
+MatchEventDTO.prototype['turnEndedIsSuccessful'] = undefined;
+
+/**
+ * @member {Array.<module:model/Card>} turnEndedBonusCards
+ */
+MatchEventDTO.prototype['turnEndedBonusCards'] = undefined;
 
 /**
  * @member {module:model/IStateDelta} turnEndedDelta
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['turnEndedDelta'] = undefined;
+MatchEventDTO.prototype['turnEndedDelta'] = undefined;
 
 /**
  * @member {Array.<Number>} matchEndedScores
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedScores'] = undefined;
+MatchEventDTO.prototype['matchEndedScores'] = undefined;
 
 /**
  * @member {Number} matchEndedWinnerIdx
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedWinnerIdx'] = undefined;
+MatchEventDTO.prototype['matchEndedWinnerIdx'] = undefined;
 
 /**
  * @member {String} matchEndedComment
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedComment'] = undefined;
+MatchEventDTO.prototype['matchEndedComment'] = undefined;
 
 /**
  * @member {Boolean} matchEndedTerminated
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['matchEndedTerminated'] = undefined;
+MatchEventDTO.prototype['matchEndedTerminated'] = undefined;
 
 /**
  * @member {module:model/CardEffectType} responseToEffectType
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['responseToEffectType'] = undefined;
+MatchEventDTO.prototype['responseToEffectType'] = undefined;
 
 /**
- * @member {module:model/IMatchEventParametersResponseToEffectCard} responseToEffectCard
+ * @member {module:model/MatchEventDTOResponseToEffectCard} responseToEffectCard
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['responseToEffectCard'] = undefined;
+MatchEventDTO.prototype['responseToEffectCard'] = undefined;
 
 /**
  * @member {module:model/IStateDelta} turnStartedDelta
  */
-PartialPickMatchEventActionResponseReturnedProps.prototype['turnStartedDelta'] = undefined;
+MatchEventDTO.prototype['turnStartedDelta'] = undefined;
+
+/**
+ * @member {Number} playerIndex
+ */
+MatchEventDTO.prototype['playerIndex'] = undefined;
 
 
 
 
 
 
-export default PartialPickMatchEventActionResponseReturnedProps;
+export default MatchEventDTO;
 

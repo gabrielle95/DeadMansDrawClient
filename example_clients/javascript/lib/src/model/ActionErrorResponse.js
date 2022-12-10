@@ -1,6 +1,6 @@
 /**
  * SLHPC23 Arena
- * **SAP Labs Hungary Programming Competition 2023 Arena server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
+ * **SAP Labs CEE Hub Programming Competition 2023 Arean server**.  You can find more information about the game and the competititon rules at [github/SLH_SPC_2022](https://github.com/afarago/SLH_SPC_2022).   For a test run, you can use the crash test dummy user `000000000000000000000000/dummypass`.   *Note: All the APIs expect and return application/json*.
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: DL SLHPC23 <DL_637A3F6466D808029A65636A@global.corp.sap>
@@ -12,7 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
-import PartialPickMatchEventActionResponseReturnedProps from './PartialPickMatchEventActionResponseReturnedProps';
+import MatchEventDTO from './MatchEventDTO';
 
 /**
  * The ActionErrorResponse model module.
@@ -51,7 +51,7 @@ class ActionErrorResponse {
             obj = obj || new ActionErrorResponse();
 
             if (data.hasOwnProperty('events')) {
-                obj['events'] = ApiClient.convertToType(data['events'], [PartialPickMatchEventActionResponseReturnedProps]);
+                obj['events'] = ApiClient.convertToType(data['events'], [MatchEventDTO]);
             }
             if (data.hasOwnProperty('error')) {
                 obj['error'] = ApiClient.convertToType(data['error'], 'String');
@@ -79,7 +79,7 @@ class ActionErrorResponse {
             }
             // validate the optional field `events` (array)
             for (const item of data['events']) {
-                PartialPickMatchEventActionResponseReturnedProps.validateJsonObject(item);
+                MatchEventDTO.validateJsonObject(item);
             };
         }
         // ensure the json data is a string
@@ -96,7 +96,7 @@ class ActionErrorResponse {
 ActionErrorResponse.RequiredProperties = ["error"];
 
 /**
- * @member {Array.<module:model/PartialPickMatchEventActionResponseReturnedProps>} events
+ * @member {Array.<module:model/MatchEventDTO>} events
  */
 ActionErrorResponse.prototype['events'] = undefined;
 

@@ -14,21 +14,20 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The WhoAmiIResponse model module.
- * @module model/WhoAmiIResponse
+ * The PlayerDTO model module.
+ * @module model/PlayerDTO
  * @version 1.0.0
  */
-class WhoAmiIResponse {
+class PlayerDTO {
     /**
-     * Constructs a new <code>WhoAmiIResponse</code>.
-     * @alias module:model/WhoAmiIResponse
-     * @param ip {String} 
+     * Constructs a new <code>PlayerDTO</code>.
+     * @alias module:model/PlayerDTO
+     * @param id {String} Stringified Object Id.
      * @param name {String} 
-     * @param username {String} 
      */
-    constructor(ip, name, username) { 
+    constructor(id, name) { 
         
-        WhoAmiIResponse.initialize(this, ip, name, username);
+        PlayerDTO.initialize(this, id, name);
     }
 
     /**
@@ -36,59 +35,58 @@ class WhoAmiIResponse {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, ip, name, username) { 
-        obj['ip'] = ip;
+    static initialize(obj, id, name) { 
+        obj['_id'] = id;
         obj['name'] = name;
-        obj['username'] = username;
     }
 
     /**
-     * Constructs a <code>WhoAmiIResponse</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>PlayerDTO</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/WhoAmiIResponse} obj Optional instance to populate.
-     * @return {module:model/WhoAmiIResponse} The populated <code>WhoAmiIResponse</code> instance.
+     * @param {module:model/PlayerDTO} obj Optional instance to populate.
+     * @return {module:model/PlayerDTO} The populated <code>PlayerDTO</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new WhoAmiIResponse();
+            obj = obj || new PlayerDTO();
 
-            if (data.hasOwnProperty('ip')) {
-                obj['ip'] = ApiClient.convertToType(data['ip'], 'String');
+            if (data.hasOwnProperty('_id')) {
+                obj['_id'] = ApiClient.convertToType(data['_id'], 'String');
             }
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
-            if (data.hasOwnProperty('username')) {
-                obj['username'] = ApiClient.convertToType(data['username'], 'String');
+            if (data.hasOwnProperty('email')) {
+                obj['email'] = ApiClient.convertToType(data['email'], 'String');
             }
         }
         return obj;
     }
 
     /**
-     * Validates the JSON data with respect to <code>WhoAmiIResponse</code>.
+     * Validates the JSON data with respect to <code>PlayerDTO</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>WhoAmiIResponse</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>PlayerDTO</code>.
      */
     static validateJSON(data) {
         // check to make sure all required properties are present in the JSON string
-        for (const property of WhoAmiIResponse.RequiredProperties) {
+        for (const property of PlayerDTO.RequiredProperties) {
             if (!data[property]) {
                 throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
             }
         }
         // ensure the json data is a string
-        if (data['ip'] && !(typeof data['ip'] === 'string' || data['ip'] instanceof String)) {
-            throw new Error("Expected the field `ip` to be a primitive type in the JSON string but got " + data['ip']);
+        if (data['_id'] && !(typeof data['_id'] === 'string' || data['_id'] instanceof String)) {
+            throw new Error("Expected the field `_id` to be a primitive type in the JSON string but got " + data['_id']);
         }
         // ensure the json data is a string
         if (data['name'] && !(typeof data['name'] === 'string' || data['name'] instanceof String)) {
             throw new Error("Expected the field `name` to be a primitive type in the JSON string but got " + data['name']);
         }
         // ensure the json data is a string
-        if (data['username'] && !(typeof data['username'] === 'string' || data['username'] instanceof String)) {
-            throw new Error("Expected the field `username` to be a primitive type in the JSON string but got " + data['username']);
+        if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
+            throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
         }
 
         return true;
@@ -97,27 +95,28 @@ class WhoAmiIResponse {
 
 }
 
-WhoAmiIResponse.RequiredProperties = ["ip", "name", "username"];
+PlayerDTO.RequiredProperties = ["_id", "name"];
 
 /**
- * @member {String} ip
+ * Stringified Object Id.
+ * @member {String} _id
  */
-WhoAmiIResponse.prototype['ip'] = undefined;
+PlayerDTO.prototype['_id'] = undefined;
 
 /**
  * @member {String} name
  */
-WhoAmiIResponse.prototype['name'] = undefined;
+PlayerDTO.prototype['name'] = undefined;
 
 /**
- * @member {String} username
+ * @member {String} email
  */
-WhoAmiIResponse.prototype['username'] = undefined;
+PlayerDTO.prototype['email'] = undefined;
 
 
 
 
 
 
-export default WhoAmiIResponse;
+export default PlayerDTO;
 
