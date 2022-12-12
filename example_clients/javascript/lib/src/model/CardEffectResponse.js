@@ -13,7 +13,7 @@
 
 import ApiClient from '../ApiClient';
 import CardEffectType from './CardEffectType';
-import MatchEventDTOResponseToEffectCard from './MatchEventDTOResponseToEffectCard';
+import CardOrNull from './CardOrNull';
 
 /**
  * The CardEffectResponse model module.
@@ -24,10 +24,11 @@ class CardEffectResponse {
     /**
      * Constructs a new <code>CardEffectResponse</code>.
      * @alias module:model/CardEffectResponse
+     * @param effectType {module:model/CardEffectType} 
      */
-    constructor() { 
+    constructor(effectType) { 
         
-        CardEffectResponse.initialize(this);
+        CardEffectResponse.initialize(this, effectType);
     }
 
     /**
@@ -35,7 +36,8 @@ class CardEffectResponse {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, effectType) { 
+        obj['effectType'] = effectType;
     }
 
     /**
@@ -53,7 +55,7 @@ class CardEffectResponse {
                 obj['effectType'] = CardEffectType.constructFromObject(data['effectType']);
             }
             if (data.hasOwnProperty('card')) {
-                obj['card'] = MatchEventDTOResponseToEffectCard.constructFromObject(data['card']);
+                obj['card'] = CardOrNull.constructFromObject(data['card']);
             }
         }
         return obj;
@@ -65,9 +67,15 @@ class CardEffectResponse {
      * @return {boolean} to indicate whether the JSON data is valid with respect to <code>CardEffectResponse</code>.
      */
     static validateJSON(data) {
+        // check to make sure all required properties are present in the JSON string
+        for (const property of CardEffectResponse.RequiredProperties) {
+            if (!data[property]) {
+                throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
+            }
+        }
         // validate the optional field `card`
         if (data['card']) { // data not null
-          MatchEventDTOResponseToEffectCard.validateJSON(data['card']);
+          CardOrNull.validateJSON(data['card']);
         }
 
         return true;
@@ -76,7 +84,7 @@ class CardEffectResponse {
 
 }
 
-
+CardEffectResponse.RequiredProperties = ["effectType"];
 
 /**
  * @member {module:model/CardEffectType} effectType
@@ -84,7 +92,7 @@ class CardEffectResponse {
 CardEffectResponse.prototype['effectType'] = undefined;
 
 /**
- * @member {module:model/MatchEventDTOResponseToEffectCard} card
+ * @member {module:model/CardOrNull} card
  */
 CardEffectResponse.prototype['card'] = undefined;
 

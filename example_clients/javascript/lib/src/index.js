@@ -19,6 +19,7 @@ import Card from './model/Card';
 import CardEffect from './model/CardEffect';
 import CardEffectResponse from './model/CardEffectResponse';
 import CardEffectType from './model/CardEffectType';
+import CardOrNull from './model/CardOrNull';
 import CardSuit from './model/CardSuit';
 import CardValue from './model/CardValue';
 import DeleteMatchRequest from './model/DeleteMatchRequest';
@@ -32,7 +33,6 @@ import MatchCreateResponse from './model/MatchCreateResponse';
 import MatchCreationParams from './model/MatchCreationParams';
 import MatchDTO from './model/MatchDTO';
 import MatchEventDTO from './model/MatchEventDTO';
-import MatchEventDTOResponseToEffectCard from './model/MatchEventDTOResponseToEffectCard';
 import MatchEventType from './model/MatchEventType';
 import MoveDTO from './model/MoveDTO';
 import PlayerDTO from './model/PlayerDTO';
@@ -118,6 +118,12 @@ export {
     CardEffectType,
 
     /**
+     * The CardOrNull model constructor.
+     * @property {module:model/CardOrNull}
+     */
+    CardOrNull,
+
+    /**
      * The CardSuit model constructor.
      * @property {module:model/CardSuit}
      */
@@ -194,12 +200,6 @@ export {
      * @property {module:model/MatchEventDTO}
      */
     MatchEventDTO,
-
-    /**
-     * The MatchEventDTOResponseToEffectCard model constructor.
-     * @property {module:model/MatchEventDTOResponseToEffectCard}
-     */
-    MatchEventDTOResponseToEffectCard,
 
     /**
      * The MatchEventType model constructor.

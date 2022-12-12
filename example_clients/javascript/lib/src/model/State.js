@@ -27,10 +27,11 @@ class State {
      * @alias module:model/State
      * @param banks {Array.<Object.<String, Array.<Object>>>} 
      * @param playArea {Array.<module:model/Card>} Play area - object to represent the play area
+     * @param currentPlayerIndex {Number} 
      */
-    constructor(banks, playArea) { 
+    constructor(banks, playArea, currentPlayerIndex) { 
         
-        State.initialize(this, banks, playArea);
+        State.initialize(this, banks, playArea, currentPlayerIndex);
     }
 
     /**
@@ -38,9 +39,10 @@ class State {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, banks, playArea) { 
+    static initialize(obj, banks, playArea, currentPlayerIndex) { 
         obj['banks'] = banks;
         obj['playArea'] = playArea;
+        obj['currentPlayerIndex'] = currentPlayerIndex;
     }
 
     /**
@@ -125,9 +127,17 @@ class State {
                 Card.validateJsonObject(item);
             };
         }
+        // validate the optional field `currentPlayerIndex`
+        if (data['currentPlayerIndex']) { // data not null
+          Number.validateJSON(data['currentPlayerIndex']);
+        }
         // validate the optional field `pendingEffect`
         if (data['pendingEffect']) { // data not null
           CardEffect.validateJSON(data['pendingEffect']);
+        }
+        // validate the optional field `winnerIdx`
+        if (data['winnerIdx']) { // data not null
+          Number.validateJSON(data['winnerIdx']);
         }
 
         return true;
@@ -136,7 +146,7 @@ class State {
 
 }
 
-State.RequiredProperties = ["banks", "playArea"];
+State.RequiredProperties = ["banks", "playArea", "currentPlayerIndex"];
 
 /**
  * @member {Array.<Object.<String, Array.<Object>>>} banks

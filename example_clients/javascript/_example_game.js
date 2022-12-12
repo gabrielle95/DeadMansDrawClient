@@ -19,7 +19,7 @@ const params = require('yargs')
     type: 'string'
   })
   .option('wait', {
-    alias: 'wait',
+    alias: 'w',
     demandOption: false,
     type: 'boolean'
   })
@@ -83,7 +83,7 @@ async function get_match_by_id(matchid) {
 
 async function wait_for_active_match() {
   var gameapi = new Spc22Arena.GameApi();
-  var opts = { at: "today", active: "1", wait: "1" };
+  var opts = { at: "today", waitactive: "1" };
 
   let matches = null;
   console.log(

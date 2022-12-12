@@ -12,8 +12,8 @@
  */
 
 import ApiClient from '../ApiClient';
-import Card from './Card';
 import CardEffectType from './CardEffectType';
+import CardOrNull from './CardOrNull';
 
 /**
  * The CardEffect model module.
@@ -56,7 +56,7 @@ class CardEffect {
                 obj['effectType'] = CardEffectType.constructFromObject(data['effectType']);
             }
             if (data.hasOwnProperty('cards')) {
-                obj['cards'] = ApiClient.convertToType(data['cards'], [Card]);
+                obj['cards'] = ApiClient.convertToType(data['cards'], [CardOrNull]);
             }
             if (data.hasOwnProperty('krakenCount')) {
                 obj['krakenCount'] = ApiClient.convertToType(data['krakenCount'], 'Number');
@@ -84,7 +84,7 @@ class CardEffect {
             }
             // validate the optional field `cards` (array)
             for (const item of data['cards']) {
-                Card.validateJsonObject(item);
+                CardOrNull.validateJsonObject(item);
             };
         }
 
@@ -102,7 +102,7 @@ CardEffect.RequiredProperties = ["effectType"];
 CardEffect.prototype['effectType'] = undefined;
 
 /**
- * @member {Array.<module:model/Card>} cards
+ * @member {Array.<module:model/CardOrNull>} cards
  */
 CardEffect.prototype['cards'] = undefined;
 

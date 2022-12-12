@@ -8,30 +8,30 @@
     ".NETCoreApp,Version=v6.0": {
       "ConsoleApp1/1.0.0": {
         "dependencies": {
-          "Microsoft.Extensions.ApiDescription.Client": "3.0.0",
-          "NSwag.ApiDescription.Client": "13.0.5",
-          "Newtonsoft.Json": "13.0.1"
+          "Microsoft.Extensions.ApiDescription.Client": "7.0.0",
+          "NSwag.ApiDescription.Client": "13.18.0",
+          "Newtonsoft.Json": "13.0.2"
         },
         "runtime": {
           "ConsoleApp1.dll": {}
         }
       },
-      "Microsoft.Extensions.ApiDescription.Client/3.0.0": {},
-      "Newtonsoft.Json/13.0.1": {
+      "Microsoft.Extensions.ApiDescription.Client/7.0.0": {},
+      "Newtonsoft.Json/13.0.2": {
         "runtime": {
-          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
             "assemblyVersion": "13.0.0.0",
-            "fileVersion": "13.0.1.25517"
+            "fileVersion": "13.0.2.27524"
           }
         }
       },
-      "NSwag.ApiDescription.Client/13.0.5": {
+      "NSwag.ApiDescription.Client/13.18.0": {
         "dependencies": {
-          "Microsoft.Extensions.ApiDescription.Client": "3.0.0",
-          "NSwag.MSBuild": "13.0.5"
+          "Microsoft.Extensions.ApiDescription.Client": "7.0.0",
+          "NSwag.MSBuild": "13.18.0"
         }
       },
-      "NSwag.MSBuild/13.0.5": {}
+      "NSwag.MSBuild/13.18.0": {}
     }
   },
   "libraries": {
@@ -40,33 +40,33 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Microsoft.Extensions.ApiDescription.Client/3.0.0": {
+    "Microsoft.Extensions.ApiDescription.Client/7.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-EpGGEoBelJtt4IN32O02D+Lb4DjSFB1GUoItLa8GDzM4x/cqpCAKn5tRb6Fn7U3/rGlWjfLMGXW/t9zvYmPQtA==",
-      "path": "microsoft.extensions.apidescription.client/3.0.0",
-      "hashPath": "microsoft.extensions.apidescription.client.3.0.0.nupkg.sha512"
+      "sha512": "sha512-bKAg3m+Opv5uK3kAsO5blRcbBdxpJar+hPawKh5a4m1g2bLBt0B6iM7jSjTfKzfr/sEGn5u6xyTvgJEIgws5MQ==",
+      "path": "microsoft.extensions.apidescription.client/7.0.0",
+      "hashPath": "microsoft.extensions.apidescription.client.7.0.0.nupkg.sha512"
     },
-    "Newtonsoft.Json/13.0.1": {
+    "Newtonsoft.Json/13.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
-      "path": "newtonsoft.json/13.0.1",
-      "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
+      "sha512": "sha512-R2pZ3B0UjeyHShm9vG+Tu0EBb2lC8b0dFzV9gVn50ofHXh9Smjk6kTn7A/FdAsC8B5cKib1OnGYOXxRBz5XQDg==",
+      "path": "newtonsoft.json/13.0.2",
+      "hashPath": "newtonsoft.json.13.0.2.nupkg.sha512"
     },
-    "NSwag.ApiDescription.Client/13.0.5": {
+    "NSwag.ApiDescription.Client/13.18.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Zu5uTfiKtJiuzXHtgCmForzIkd2WvrFhcrg6yTiTRKPYo3az/Pl4JF+F5NmZtZ+3gIIrsf5fabJbbZ8L5BymIg==",
-      "path": "nswag.apidescription.client/13.0.5",
-      "hashPath": "nswag.apidescription.client.13.0.5.nupkg.sha512"
+      "sha512": "sha512-GfWjisevVk9bWCImI9/DXb2dgzq3ONckPPfZEEcA7lk83V9A8PCWcNR5XaEB9fn5zujA2SghKLiwVmFucaIU/Q==",
+      "path": "nswag.apidescription.client/13.18.0",
+      "hashPath": "nswag.apidescription.client.13.18.0.nupkg.sha512"
     },
-    "NSwag.MSBuild/13.0.5": {
+    "NSwag.MSBuild/13.18.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-CjLWwC2p+HRGxmSAJY9xtOMMO9YczTtIiGVEPckrklXjc3dJ7OAT/caKHjE+9fYx1an+9qeDao2qxmMpCkGTXQ==",
-      "path": "nswag.msbuild/13.0.5",
-      "hashPath": "nswag.msbuild.13.0.5.nupkg.sha512"
+      "sha512": "sha512-V15Ud0PX5KKAAEqy4ugL1CYY/LOGfPu6b2FWP4Ms/MSEWOTlWL2Ii4H/vsmxTJFaVVUE2y0TkmsVH9lsqvDAog==",
+      "path": "nswag.msbuild/13.18.0",
+      "hashPath": "nswag.msbuild.13.18.0.nupkg.sha512"
     }
   }
 }

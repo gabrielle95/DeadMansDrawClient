@@ -15,8 +15,8 @@ import ApiClient from '../ApiClient';
 import Card from './Card';
 import CardEffect from './CardEffect';
 import CardEffectType from './CardEffectType';
+import CardOrNull from './CardOrNull';
 import IStateDelta from './IStateDelta';
-import MatchEventDTOResponseToEffectCard from './MatchEventDTOResponseToEffectCard';
 import MatchEventType from './MatchEventType';
 
 /**
@@ -102,7 +102,7 @@ class MatchEventDTO {
                 obj['responseToEffectType'] = CardEffectType.constructFromObject(data['responseToEffectType']);
             }
             if (data.hasOwnProperty('responseToEffectCard')) {
-                obj['responseToEffectCard'] = MatchEventDTOResponseToEffectCard.constructFromObject(data['responseToEffectCard']);
+                obj['responseToEffectCard'] = CardOrNull.constructFromObject(data['responseToEffectCard']);
             }
             if (data.hasOwnProperty('turnStartedDelta')) {
                 obj['turnStartedDelta'] = IStateDelta.constructFromObject(data['turnStartedDelta']);
@@ -174,11 +174,15 @@ class MatchEventDTO {
         }
         // validate the optional field `responseToEffectCard`
         if (data['responseToEffectCard']) { // data not null
-          MatchEventDTOResponseToEffectCard.validateJSON(data['responseToEffectCard']);
+          CardOrNull.validateJSON(data['responseToEffectCard']);
         }
         // validate the optional field `turnStartedDelta`
         if (data['turnStartedDelta']) { // data not null
           IStateDelta.validateJSON(data['turnStartedDelta']);
+        }
+        // validate the optional field `playerIndex`
+        if (data['playerIndex']) { // data not null
+          Number.validateJSON(data['playerIndex']);
         }
 
         return true;
@@ -265,7 +269,7 @@ MatchEventDTO.prototype['matchEndedTerminated'] = undefined;
 MatchEventDTO.prototype['responseToEffectType'] = undefined;
 
 /**
- * @member {module:model/MatchEventDTOResponseToEffectCard} responseToEffectCard
+ * @member {module:model/CardOrNull} responseToEffectCard
  */
 MatchEventDTO.prototype['responseToEffectCard'] = undefined;
 

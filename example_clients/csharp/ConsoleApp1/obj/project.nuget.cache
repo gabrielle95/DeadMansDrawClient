@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "D0756Ue6JQcUVwZIsBOlXDt9HrBO3OkDN7Hi3d/onW2W9vKRiTA8sCS0Cq6zopwxpq4mQ6D6hJ9EIUg0H6IvmA==",
+  "dgSpecHash": "vYGnAMxzZHbhDmyr1N/NPl9ox5hJoD/4eIIOGzisJZV0o+dvQP3HuMZJnR1GX3tcSV5Po5vToa6utswLXamFsQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\I066492\\source\\repos\\ConsoleApp1\\ConsoleApp1\\ConsoleApp1.csproj",
+  "projectFilePath": "C:\\Users\\I066492\\OneDrive - SAP SE\\Documents\\user_afarago\\1_Project\\SPC22\\SLH_SPC_2023_public\\example_clients\\csharp\\ConsoleApp1\\ConsoleApp1.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\I066492\\.nuget\\packages\\microsoft.extensions.apidescription.client\\3.0.0\\microsoft.extensions.apidescription.client.3.0.0.nupkg.sha512",
-    "C:\\Users\\I066492\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
-    "C:\\Users\\I066492\\.nuget\\packages\\nswag.apidescription.client\\13.0.5\\nswag.apidescription.client.13.0.5.nupkg.sha512",
-    "C:\\Users\\I066492\\.nuget\\packages\\nswag.msbuild\\13.0.5\\nswag.msbuild.13.0.5.nupkg.sha512"
+    "C:\\Users\\I066492\\.nuget\\packages\\microsoft.extensions.apidescription.client\\7.0.0\\microsoft.extensions.apidescription.client.7.0.0.nupkg.sha512",
+    "C:\\Users\\I066492\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512",
+    "C:\\Users\\I066492\\.nuget\\packages\\nswag.apidescription.client\\13.18.0\\nswag.apidescription.client.13.18.0.nupkg.sha512",
+    "C:\\Users\\I066492\\.nuget\\packages\\nswag.msbuild\\13.18.0\\nswag.msbuild.13.18.0.nupkg.sha512"
   ],
   "logs": []
 }

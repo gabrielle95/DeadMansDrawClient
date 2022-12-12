@@ -31,14 +31,15 @@ class MatchDTO {
      * @param startedAt {Date} 
      * @param lastMoveAt {Date} 
      * @param moveCount {Number} 
-     * @param playernames {Array.<String>} 
-     * @param moves {Array.<module:model/MoveDTO>} 
+     * @param turnCount {Number} 
+     * @param moveCountInTurn {Number} 
+     * @param currentPlayerIndex {Number} 
      * @param drawPileSize {Number} 
      * @param discardPileSize {Number} 
      */
-    constructor(id, playerids, startedAt, lastMoveAt, moveCount, playernames, moves, drawPileSize, discardPileSize) { 
+    constructor(id, playerids, startedAt, lastMoveAt, moveCount, turnCount, moveCountInTurn, currentPlayerIndex, drawPileSize, discardPileSize) { 
         
-        MatchDTO.initialize(this, id, playerids, startedAt, lastMoveAt, moveCount, playernames, moves, drawPileSize, discardPileSize);
+        MatchDTO.initialize(this, id, playerids, startedAt, lastMoveAt, moveCount, turnCount, moveCountInTurn, currentPlayerIndex, drawPileSize, discardPileSize);
     }
 
     /**
@@ -46,14 +47,15 @@ class MatchDTO {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, id, playerids, startedAt, lastMoveAt, moveCount, playernames, moves, drawPileSize, discardPileSize) { 
+    static initialize(obj, id, playerids, startedAt, lastMoveAt, moveCount, turnCount, moveCountInTurn, currentPlayerIndex, drawPileSize, discardPileSize) { 
         obj['_id'] = id;
         obj['playerids'] = playerids;
         obj['startedAt'] = startedAt;
         obj['lastMoveAt'] = lastMoveAt;
         obj['moveCount'] = moveCount;
-        obj['playernames'] = playernames;
-        obj['moves'] = moves;
+        obj['turnCount'] = turnCount;
+        obj['moveCountInTurn'] = moveCountInTurn;
+        obj['currentPlayerIndex'] = currentPlayerIndex;
         obj['drawPileSize'] = drawPileSize;
         obj['discardPileSize'] = discardPileSize;
     }
@@ -104,9 +106,6 @@ class MatchDTO {
             }
             if (data.hasOwnProperty('currentPlayerIndex')) {
                 obj['currentPlayerIndex'] = ApiClient.convertToType(data['currentPlayerIndex'], 'Number');
-            }
-            if (data.hasOwnProperty('currentPlayerId')) {
-                obj['currentPlayerId'] = ApiClient.convertToType(data['currentPlayerId'], 'String');
             }
             if (data.hasOwnProperty('playernames')) {
                 obj['playernames'] = ApiClient.convertToType(data['playernames'], ['String']);
@@ -171,10 +170,6 @@ class MatchDTO {
         if (data['currentPlayerIndex']) { // data not null
           Number.validateJSON(data['currentPlayerIndex']);
         }
-        // validate the optional field `currentPlayerId`
-        if (data['currentPlayerId']) { // data not null
-          String.validateJSON(data['currentPlayerId']);
-        }
         // ensure the json data is an array
         if (!Array.isArray(data['playernames'])) {
             throw new Error("Expected the field `playernames` to be an array in the JSON data but got " + data['playernames']);
@@ -189,6 +184,10 @@ class MatchDTO {
                 MoveDTO.validateJsonObject(item);
             };
         }
+        // validate the optional field `activePlayerIndex`
+        if (data['activePlayerIndex']) { // data not null
+          Number.validateJSON(data['activePlayerIndex']);
+        }
 
         return true;
     }
@@ -196,7 +195,7 @@ class MatchDTO {
 
 }
 
-MatchDTO.RequiredProperties = ["_id", "playerids", "startedAt", "lastMoveAt", "moveCount", "playernames", "moves", "drawPileSize", "discardPileSize"];
+MatchDTO.RequiredProperties = ["_id", "playerids", "startedAt", "lastMoveAt", "moveCount", "turnCount", "moveCountInTurn", "currentPlayerIndex", "drawPileSize", "discardPileSize"];
 
 /**
  * A class representation of the BSON ObjectId type.
@@ -258,11 +257,6 @@ MatchDTO.prototype['stateAtTurnStart'] = undefined;
  * @member {Number} currentPlayerIndex
  */
 MatchDTO.prototype['currentPlayerIndex'] = undefined;
-
-/**
- * @member {String} currentPlayerId
- */
-MatchDTO.prototype['currentPlayerId'] = undefined;
 
 /**
  * @member {Array.<String>} playernames

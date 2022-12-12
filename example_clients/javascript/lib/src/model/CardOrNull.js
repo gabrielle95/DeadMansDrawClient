@@ -17,19 +17,19 @@ import CardSuit from './CardSuit';
 import CardValue from './CardValue';
 
 /**
- * The MatchEventDTOResponseToEffectCard model module.
- * @module model/MatchEventDTOResponseToEffectCard
+ * The CardOrNull model module.
+ * @module model/CardOrNull
  * @version 1.0.0
  */
-class MatchEventDTOResponseToEffectCard {
+class CardOrNull {
     /**
-     * Constructs a new <code>MatchEventDTOResponseToEffectCard</code>.
-     * @alias module:model/MatchEventDTOResponseToEffectCard
+     * Constructs a new <code>CardOrNull</code>.
+     * @alias module:model/CardOrNull
      * @implements module:model/Card
      */
     constructor() { 
         Card.initialize(this);
-        MatchEventDTOResponseToEffectCard.initialize(this);
+        CardOrNull.initialize(this);
     }
 
     /**
@@ -41,15 +41,15 @@ class MatchEventDTOResponseToEffectCard {
     }
 
     /**
-     * Constructs a <code>MatchEventDTOResponseToEffectCard</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>CardOrNull</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/MatchEventDTOResponseToEffectCard} obj Optional instance to populate.
-     * @return {module:model/MatchEventDTOResponseToEffectCard} The populated <code>MatchEventDTOResponseToEffectCard</code> instance.
+     * @param {module:model/CardOrNull} obj Optional instance to populate.
+     * @return {module:model/CardOrNull} The populated <code>CardOrNull</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new MatchEventDTOResponseToEffectCard();
+            obj = obj || new CardOrNull();
             Card.constructFromObject(data, obj);
 
             if (data.hasOwnProperty('suit')) {
@@ -63,9 +63,9 @@ class MatchEventDTOResponseToEffectCard {
     }
 
     /**
-     * Validates the JSON data with respect to <code>MatchEventDTOResponseToEffectCard</code>.
+     * Validates the JSON data with respect to <code>CardOrNull</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>MatchEventDTOResponseToEffectCard</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>CardOrNull</code>.
      */
     static validateJSON(data) {
 
@@ -80,12 +80,12 @@ class MatchEventDTOResponseToEffectCard {
 /**
  * @member {module:model/CardSuit} suit
  */
-MatchEventDTOResponseToEffectCard.prototype['suit'] = undefined;
+CardOrNull.prototype['suit'] = undefined;
 
 /**
  * @member {module:model/CardValue} value
  */
-MatchEventDTOResponseToEffectCard.prototype['value'] = undefined;
+CardOrNull.prototype['value'] = undefined;
 
 
 // Implement Card interface:
@@ -101,5 +101,5 @@ Card.prototype['value'] = undefined;
 
 
 
-export default MatchEventDTOResponseToEffectCard;
+export default CardOrNull;
 

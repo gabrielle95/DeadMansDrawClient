@@ -1,5 +1,6 @@
 .babelrc
 .gitignore
+.openapi-generator-ignore
 .travis.yml
 README.md
 git_push.sh
@@ -16,6 +17,7 @@ src/model/Card.js
 src/model/CardEffect.js
 src/model/CardEffectResponse.js
 src/model/CardEffectType.js
+src/model/CardOrNull.js
 src/model/CardSuit.js
 src/model/CardValue.js
 src/model/DeleteMatchRequest.js
@@ -29,7 +31,6 @@ src/model/MatchCreateResponse.js
 src/model/MatchCreationParams.js
 src/model/MatchDTO.js
 src/model/MatchEventDTO.js
-src/model/MatchEventDTOResponseToEffectCard.js
 src/model/MatchEventType.js
 src/model/MoveDTO.js
 src/model/PlayerDTO.js
