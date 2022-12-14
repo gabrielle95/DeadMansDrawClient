@@ -34,7 +34,7 @@ A Match is a game between two players. Can be created by the Organizers between 
 ### 1. Waiting for a valid Match
 1. Team listens to the [/matches?active=true&wait=true&tags=GAMETAG](https://slhpc2023.appspot.com/api/matches?active=true&wait=true&tags=GAMETAG) endpoint.
 2. Arena server returns any matches - if found
-3. In absence - it will wait and keep the connection for a longer period (e.g. 30 seconds), and then returns with an empty array ```[]```
+3. In absence - it will use "HTTP Long Polling" to wait and keep the connection for a longer period (e.g. 30 seconds), and then returns with an empty array ```[]```
 4. Teams are advised to retry the polling to get informed on new match announced
 5. As match is started API endpoint returns with a list of matching Match Ids so user gets notified about a match start.
    * (Organizers will start a limited / one (tbd) active matches at a time for each team, so no teams should deal with (huge amount of) simultaneous matches.)
@@ -44,7 +44,7 @@ A Match is a game between two players. Can be created by the Organizers between 
    ```
    GET /api/matches/{matchid}?waitactive=true
    ```
-   * Similary to the waiting for a match step, the arena server keeps the connection open to a longer period (e.g. 30 sec) and returns with a ```409 - Authenticated user is not the current player``` code if the player is not the active. Players should retry this wait step.
+   * Similary to the waiting for a match step, the arena server keeps the connection open to a longer period "HTTP Long Polling" (e.g. 30 sec) and returns with a ```409 - Authenticated user is not the current player``` code if the player is not the active. Players should retry this wait step.
    * If the match ended by the last action of the other player arena server returns ```410 - No action possible on finished matches.``` with the list of closing events, so scores and winner can is known also by this player.
 2. Player issues a `Draw` action via the API and waits for result via
    ``` 
