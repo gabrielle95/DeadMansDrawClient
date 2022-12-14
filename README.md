@@ -193,13 +193,18 @@ There are 9 type of cards, all of them having 6 identical cards (54 in total). A
 
 ## Game End
 
-The game ends when there are no more cards to draw. The player having the highest number of cards in his/her treasure chest wins the game
+The game ends when there are no more cards to draw. The player having the highest sum of the topmost cards in his/her treasure chest wins the game.
 
 ## FAQ and small details
-* **Kraken** must draw two if drawpile allows
-  * ignores Oracle effect if drawn first, as you will need draw a second card anyways: Kraken->Oracle[X]->X
-  * if first card successfully triggers effect (Hook, Map, Sword), no forced second draw is triggered
-  * if card effect for first Kraken-pulled-card cannot be fulfilled, thus is nullified, the second card needs to be drawn (e.g. Kraken->Map(empty discard)->[draw second], Kraken->Hook(with empty bank)->[draw second], Kraken->Sword(with empty or all existing suit stacks)->[draw second] ))
-* **Sword** effect cannot pick enemy Suit from which own Player already has someting in its Bank, yet not taking anything on the PlayArea in account
-* **Chest & Key** draws from the DiscardPile randomly, bad luck if there are no or not enough cards for you in the pile
-* _DiscardPile_ is initially filled with the smallest of each suit
+* How Kraken card behaves with any subsequent effects?
+  * Kraken must draw two cards - if drawpile allows
+  * Kraken practically ignores the first card's Oracle effect, as you will need draw a second card anyhow
+  * if first card successfully triggers effect (Hook, Map, Sword) that places a second card to the playarea, no forced second draw is triggered
+  * if card effect for first Kraken-pulled-card cannot be fulfilled, thus is nullified, the second card needs to be drawn (e.g. Kraken->Map(empty discardpile)->[draw second], Kraken->Hook(with empty bank)->[draw second], Kraken->Sword(with empty or all existing suit stacks)->[draw second] ))
+  * as stated in the rules, you must perform Kraken if you can, even if it busts your turn.
+* Sword effect is not allmighty
+   * Sword effect cannot pick enemy Suit from which own Player already has someting in its Bank, yet not taking anything on the PlayArea in account
+* Bonus cards on short or empty drawpile
+   * Chest & Key draws from the DiscardPile randomly, bad luck if there are no or not enough cards for you in the pile
+* DiscardPile initial state
+   * _DiscardPile_ is initially filled with the smallest of each suit
