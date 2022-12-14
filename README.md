@@ -1,4 +1,4 @@
-SAP Labs Hungary Programming Competition 2023
+SAP Labs CEE Hub Programming Competition 2023
 ============
 
 # Competition objective
@@ -137,8 +137,9 @@ To ease comprehension teams can check relevant match results via a web browser, 
 The frontent is accessible via  [/matches](https://slhpc2023.appspot.com/matches). An example gameplay of a match including user turns and moves look like this.
 [![example gameplay](/doc/example_match_crop.png)](/doc/example_match.png)
 
-This is how the a gameplay looks like from the frontend perspective [![example gameplay video](/doc/example_match_crop.png)](/doc/example_match.mp4).
+This is how the a gameplay looks like from the frontend perspective.
 
+https://user-images.githubusercontent.com/4489389/207584900-05192ace-eb59-4732-b364-63e53b0eb988.mp4
 
 # API and timeout
 There is an extensive OpenAPI documentation under `/docs` path of the server.
@@ -154,7 +155,7 @@ Match request and Action execution endpoints works with a timeout with `wait=tru
 ## Authentication
 Digest or Basic authentication is used in the header with the username and passwordhash provided.
 
-_NOTE: For the scope of the programming competition this is sufficient, sorry for not adding APIKey or JWT authentication. Rationale: we wanted to keep and entry level learning curve._
+_NOTE: For the scope of the programming competition this is sufficient, sorry for not adding APIKey or JWT authentication. Rationale: we wanted to keep an entry level learning curve._
 
 ## Security, Fair play
 The Areana server is a development artifact not thourougly tested for security flaws or performance bottlenecks. There were tests performed withstanding 100+ parallel users every second easily, yet that was not the main focus of the current implementation.
