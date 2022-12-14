@@ -2,66 +2,100 @@ SAP Labs Hungary Programming Competition 2023
 ============
 
 # Competition objective
-Goal of each team is implement a client to ace the Dead-Man's-Draw card game using their language and tools of choice.
+Goal of each team is implement a client to ace the [Dead-Man's-Draw](https://boardgamegeek.com/boardgame/149155/dead-mans-draw) card game using their language and tools of choice.
 
-During the competition period there will be several practice tournaments, while the competition will close with a grand tournament where teams' solutions will compete and the most victorious teams will ace the SLH-PC-2023.
+During the competition period there will be several practice tournaments, while the competition will close with a grand tournament where teams' solutions will compete and the most victorious teams will ace the SLCEE-PC-2023.
 
 # Competition flow
 1. Teams register themselves to the organizers
-2. Organizers enter team with a generated passwordhash to the DB
+2. Organizers enter team with a generated passwordhash
    1. Organizers send Player id and passwordhash to the Team -  e.g `{id: '636438380ee778617e6e5be8', password: 'playerpass'}`
 3. Players implement test client using the specification and the example clients
    1. Organizers publish example clients to a public repo beforehands
    2. Players test themselves on practice Matches and develop a good strategy
-4. Organizers announce Practice Tournaments, where Players are challenged to compete creating appropriate Matches between the Players -- e.g. at the end of each day 3pm-4pm
+4. Organizers announce Practice Tournaments, where Players are challenged to compete. Organizers create appropriate Matches between the Players - e.g. around at the end of each day 3pm-4pm
    1. Teams are expectd to keep their solution up and running during the tournament and react to ongoing matches with their involvement with the logic below
-      1. (tbd) Players host their solution either on any internet enabled local machine - e.g. dev laptop or choose to publish their client in the cloud
+      Teams host their solution either on any internet enabled local machine - e.g. dev laptop or may choose to publish their client in the cloud
+      2. This is an awesome opportunity to test Kyma, or any hyperscaler
    2. Once all Matches are finished, Organizers announce ranking and winners
-   3. Teams are expected to react on matches within 30 seconds (tbd) time otherwise a central watchdog may terminate the match and announce the other player winner
+   3. Teams are expected to react on matches within a short amount of time (e.g. 30 seconds - tbd) time otherwise a central watchdog may terminate the match forcefully and announce the other team as winner.
 
 # Interfaces available
-Game is available through a public server .
-* REST API with OpenAPI available in [/api](https://spc22-test1.appspot.com/api), documented in [/docs](https://spc22-test1.appspot.com/docs)
-* Frontent UI available under [/matches](https://spc22-test1.appspot.com/matches) -- eye fancy, to enable easy comprehension, do not use it for your automated solution.  
-TODO: no filter/authorization enabled yet
+Game is available through a public server, the ___Arena___ as a collection of REST api's.
+* REST API with OpenAPI specification is available at [/api](https://slhpc2023.appspot.com/api), documented under [/docs](https://slhpc2023.appspot.com/docs) endpoint.
+* Frontent UI available under [/matches](https://slhpc2023.appspot.com/matches) -- eye fancy, to enable easy comprehension, do not use it for your automated solution, no uptime guarantee.
+
 # Match
-A Match is a game between two players. Can be created by the Organizers between any two Players or as a practice Match between a player and its second practice user.
+A Match is a game between two players. Can be created by the Organizers between any two Players or as a practice Match.
 
 ## Match Flow
-1. Player listens to the [/matches?active=1&wait=1&tags=GAMETAG](https://spc22-test1.appspot.com/api/matches?active=1&wait=1&tags=GAMETAG) endpoint.
-   1. Arena server returns any matches if found
-   2. In absence it the connection for ~30 seconds, and then returns with an empty array
-   3. Teams are advised to instantly retry the polling
-   4. (Match is started either by the Organizers or the Player itself)
-   5. API endpoint returns with a matchiung Match Ids so user gets notified about a match start.
-      1. Organizers will start one active match at a time for each team, so no teams should deal with simultaneous matches.
-2. Player issues `Draw` action via the API and waits for result via POST [/api/matches/{matchid}](https://spc22-test1.appspot.com/api/matches/{matchid})
+### 1. Waiting for a valid Match
+1. Team listens to the [/matches?active=true&wait=true&tags=GAMETAG](https://slhpc2023.appspot.com/api/matches?active=true&wait=true&tags=GAMETAG) endpoint.
+2. Arena server returns any matches - if found
+3. In absence - it will wait and keep the connection for a longer period (e.g. 30 seconds), and then returns with an empty array ```[]```
+4. Teams are advised to retry the polling to get informed on new match announced
+5. As match is started API endpoint returns with a list of matching Match Ids so user gets notified about a match start.
+   * (Organizers will start a limited / one (tbd) active matches at a time for each team, so no teams should deal with (huge amount of) simultaneous matches.)
+
+### 2. Playing the Match
+1. Player checks the state of the match and eventually waits for his/her turn via.
+   ```
+   GET /api/matches/{matchid}?waitactive=true
+   ```
+   * Similary to the waiting for a match step, the arena server keeps the connection open to a longer period (e.g. 30 sec) and returns with a ```409 - Authenticated user is not the current player``` code if the player is not the active. Players should retry this wait step.
+   * If the match ended by the last action of the other player arena server returns ```410 - No action possible on finished matches.``` with the list of closing events, so scores and winner can is known also by this player.
+2. Player issues a `Draw` action via the API and waits for result via
+   ``` 
+   POST /api/matches/{matchid}
+   { 
+      "etype": "Draw" 
+   }
+   ```
    1. Player receives information on events resulted by the action in the response
-   2. If it is the start of the turn for the player all changes ot the playarea delta is added as a first item
-   3. If the card triggers an effect that requires user response (e.g. `Map`) and the effect is not nullified the user is expected to call the action API with the appropriate response. with `ResponseToEffect`
-   4. As any action can bust the turn Players should check if the returned response contains a TurnEnded or even `MatchEnded` event or not. (Though Arena server will prevent any invalid actions, such as drawing a card when already the other player is on turn.)
-3. After a number of cards player issues `EndTurn` action via the API
-   1. Areana server returns the resulting list of state change events similarly to `Draw` including a turn ended aggregate state delta
-4. If busted or draw pile is exhaused turn ends automatically -- server adds TurnEnded event in response.
-5. If draw pile is exhaused match ends automatically and winner or tie is announced -- server adds `MatchEnded` event in response.
+   2. Upon turn start all changes of the playarea is delivered as a delta structure.
+   3. If the card triggers an effect that requires user response (e.g. `Map`) and the effect is not nullified the user is expected to call the action API with the appropriate response via `ResponseToEffect`
+   
+   ```
+   POST /api/matches/{matchid} - 
+   { "etype": "ResponseToEffect", 
+      "effect": {
+        "effectType": "Hook",
+        "card": {
+            "suit": "Kraken",
+            "value": 4
+        }
+      }
+    }
+    ```
+   4. As any action can bust the turn, Players should check if the returned response contains a `TurnEnded` or even `MatchEnded` event. (Though Arena server will prevent any invalid actions, such as drawing a card when already the other player is on turn.)
+3. After a number of cards player issues `EndTurn` action via 
+   ``` 
+   POST /api/matches/{matchid}
+   { 
+      "etype": "EndTurn" 
+   }
+   ```
+   * Arena server returns the resulting list of state change events similarly to `Draw` including a turn ended aggregate state delta
+4. If busted or draw pile is exhaused turn ends automatically -- server adds a `TurnEnded` event in response.
+5. If draw pile is exhaused match ends automatically and winner or a tie is announced -- server adds `MatchEnded` event in response.
 
 
 # Development journey
-Teams are not expected to ace the game at the first try, therefore a number of tools are at your disposal during the development journey to gradually excel with the result.
+Teams are not expected to ace the game at the first day, therefore a number of tools are at your disposal during the development journey to gradually excel with the result.
 
-* Teams can onboard on helloworld and then whoami endpoints
-* REST API is easer than you would think - use [web browser for testing](https://spc22-test1.appspot.com/api/hello), [curl](https://curl.se/), [PostMan](https://www.postman.com/) or even [Excel macros](https://learn.microsoft.com/en-us/office/dev/scripts/develop/external-calls), [Excel grid](https://www.conradakunga.com/blog/consuming-rest-json-apis-from-excel)
+* Teams can onboard on ```/api/helloworld``` and then ```/api/whoami``` endpoints
+* REST API is easer than you would think - use [web browser for testing](https://slhpc2023.appspot.com/api/hello), [curl](https://curl.se/), [PostMan](https://www.postman.com/) or even [Excel macros](https://learn.microsoft.com/en-us/office/dev/scripts/develop/external-calls), [Excel grid](https://www.conradakunga.com/blog/consuming-rest-json-apis-from-excel)
 * Teams receive a number of example clients te ease development in most popular languages
 * Teams can start and conduct any amount of Practice Matches to test game logic with the same user
-* Teams can start and conduct any amount of Practice Matches to test game logic between the two own users to test dialogue handling
+* Teams can start and conduct any amount of Practice Matches to test game logic between the own user + _dummy user_ to test dialogue handling
 * Teams can set initial state of the game to test out different situations in Practice Matches, and set randomization or even turn out randomization completely
-* Teams can recreate and replay any match in Practice Matches 
+* Teams can recreate and replay any match in Practice Matches
 * Teams can use the autopick mechanism to neglect any abligation for Card Effect responses
-* Teams can check relevant match results via a web browser, rednering all moves and match state
+* Teams can check relevant match results via a web browser, rendering all moves and match state
 
 ### Practice Match
 A practice Match is a Match that is created by the Player itself, and contains twice the PlayerId or the PlayerId and the DummyId so that it can act as both sides of the table.  
-For a practice Match extended amounts of information is delivered via the API for easier debugging.
+For a practice Match extended amounts of information is optionally delivered via the API for easier debugging.
 
 DummyPlayer is identified with `"000000000000000000000000":"dummypass"` accepting any match as an opponent.  
 Be aware that you need to play with the dummyuser as well if you start a match with it.  
@@ -75,24 +109,41 @@ Practice match can be started with specifying the random seed so that a previous
 
 Each game creation returns the random seed used or generated - check out `MatchCreateResponse`.
 
-Special random seed parameter is "norandom" when areana server picks first available choice - useful for knowing how initial player from players array or discard pile drawing on "map" will result.
+Special random seed parameter is `norandom` when areana server picks first available choice - useful for selection of initial player from players array or discard pile drawing on "Map" effect.
 
 ### Autopick
 If the card triggers an effect that requires user response (e.g. Map) and the effect is not nullified the user is expected to call the action API with the appropriate response. with `ResponseToEffect`.
 
 To ease the initial learning curve teams can use the autopick mechanism that provides an automatic answer for any card effects, though not the most strategically smart one - check out IUserAction.
+```
+{
+    "etype": "ResponseToEffect",
+    "autopick": "true"
+}
+
+{
+    "etype": "Draw",
+    "autopick": "true"
+}
+
+{
+    "etype": "EndTurn",
+    "autopick": "true"
+}
+```
 
 ### Web Frontend
 To ease comprehension teams can check relevant match results via a web browser, rendering all moves and match state.  
-The frontent is accessible via  [/matches](https://spc22-test1.appspot.com/matches). An example gameplay of a match including user turns and moves look like this.
-[![example gameplay](/doc/example_match_crop.png)](/doc/example_match.png)  
-*Draw and discard piles are displayed only for Practice Matches.*
+The frontent is accessible via  [/matches](https://slhpc2023.appspot.com/matches). An example gameplay of a match including user turns and moves look like this.
+[![example gameplay](/doc/example_match_crop.png)](/doc/example_match.png)
+
+This is how the a gameplay looks like from the frontend perspective [![example gameplay video](/doc/example_match_crop.png)](/doc/example_match.mp4).
 
 
 # API and timeout
-There is an extensive OpenAPI documentation under /docs path of the server.
-API works on JSON format.
-Match request and Action execution endpoints works with a timeout with `wait=1` parameter specified to avoid constant polling. As there is a timeout of cc 30 sec, eventually the request needs to be restarted.
+There is an extensive OpenAPI documentation under `/docs` path of the server.
+The REST API works on JSON format.
+Match request and Action execution endpoints works with a timeout with `wait=true` parameter specified to avoid constant polling. As there is a timeout of cc 30 sec, eventually the request needs to be restarted.
 
 ## High level API list
 * `GET /api/matches` - get matches
@@ -101,16 +152,19 @@ Match request and Action execution endpoints works with a timeout with `wait=1` 
 * `POST /api/matches/{id}` - execute action
 
 ## Authentication
-Basic authentication is used in the header with the username and passwordhash provided.
+Digest or Basic authentication is used in the header with the username and passwordhash provided.
+
+_NOTE: For the scope of the programming competition this is sufficient, sorry for not adding APIKey or JWT authentication. Rationale: we wanted to keep and entry level learning curve._
 
 ## Security, Fair play
-The Areana server is a development artifact not thourougly tested for security flaws or performance bottlenecks.
+The Areana server is a development artifact not thourougly tested for security flaws or performance bottlenecks. There were tests performed withstanding 100+ parallel users every second easily, yet that was not the main focus of the current implementation.
+
 To keep chances fair, we expect all teams to respect arena integrity, report and not exploit any flaws to and solely the organizers right away.
-To keep chances fair, we expect that each team polls server with the timeout frequency implemented (~30 sec) to avoid potential overload.
+To keep chances fair, we expect that each team polls server with the timeout frequency implemented (~30 sec) to avoid potential overload and denial of service.
 
 # Game rules
 
-The game is a popular [card game](/docs/rules/5b-dead-mans-draw-rulebook.pdf). 
+The game is a slightly simplified version of the popular [card game](/docs/rules/5b-dead-mans-draw-rulebook.pdf). 
 
 Two players play against each other, their goal is to collect the highest number of cards and secure them in their own treasure chest.
 
@@ -120,21 +174,21 @@ There are 9 type of cards, all of them having 6 identical cards (54 in total). A
 
 ## Card Suits
 
-![](/arena_server/src/public/img/suit_anchor.png) **Anchor** - the cards drawn before the anchor are placed into the treasure chest even if the round ends with a duplicate.
+![](/doc/suits/suit_anchor.png) **Anchor** - the cards drawn before the anchor are placed into the treasure chest even if the round ends with a duplicate.
 
-![](/arena_server/src/public/img/suit_cannon.png) **Cannon** - the player can choose a card from the other player's chest to discard (if the other player has at least one card in the chest).
+![](/doc/suits/suit_cannon.png) **Cannon** - the player can choose a card from the other player's chest to discard (if the other player has at least one card in the chest).
 
-![](/arena_server/src/public/img/suit_sword.png) **Sword** - the next card must be choosen from the opponent's chest (if there is any). If a player chooses a card that matches one already drawn before (e.g. because there is only one card in the chest), the turn ends just as a duplicate was drawn and the cards must be discarded (except those protected by the anchor).
+![](/doc/suits/suit_sword.png) **Sword** - the next card must be choosen from the opponent's chest (if there is any). If a player chooses a card that matches one already drawn before (e.g. because there is only one card in the chest), the turn ends just as a duplicate was drawn and the cards must be discarded (except those protected by the anchor).
 
-![](/arena_server/src/public/img/suit_hook.png) **Hook** - the player must choose a card from his/her own chest (if there is any) and move it back to the play field. The card must be treated as it was drawn, i.e. the action based on its type must be executed. If a player chooses a card that matches one already drawn before (e.g. because there is only one card in the chest), the turn ends just as a duplicate was drawn and the cards must be discarded (except those protected by the anchor).
+![](/doc/suits/suit_hook.png) **Hook** - the player must choose a card from his/her own chest (if there is any) and move it back to the play field. The card must be treated as it was drawn, i.e. the action based on its type must be executed. If a player chooses a card that matches one already drawn before (e.g. because there is only one card in the chest), the turn ends just as a duplicate was drawn and the cards must be discarded (except those protected by the anchor).
 
-![](/arena_server/src/public/img/suit_oracle.png) **Oracle** - player can look at the next card before deciding to stop the round or draw the card.
+![](/doc/suits/suit_oracle.png) **Oracle** - player can look at the next card before deciding to stop the round or draw the card.
 
-![](/arena_server/src/public/img/suit_map.png) **Map** - the player must choose the next card from three cards randomly selected from the discarded ones. One must be choosen even if it completes the turn by being a duplicate. If there is no three cards in the discarded set, then the player must choose from less options. If there is no discarded card, then the next card must be drawn the standard way.
+![](/doc/suits/suit_map.png) **Map** - the player must choose the next card from three cards randomly selected from the discarded ones. One must be choosen even if it completes the turn by being a duplicate. If there is no three cards in the discarded set, then the player must choose from less options. If there is no discarded card, then the next card must be drawn the standard way.
 
-![](/arena_server/src/public/img/suit_kraken.png) **Kraken** - the player has two draw two additional cards before stopping. If the first drawn card is a sword, map or hook, the next card counts towards the two regardless where it was drawn from.
+![](/doc/suits/suit_kraken.png) **Kraken** - the player has two draw two additional cards before stopping. If the first drawn card is a sword, map or hook, the next card counts towards the two regardless where it was drawn from.
 
-![](/arena_server/src/public/img/suit_chest.png) ![](/arena_server/src/public/img/suit_key.png) **Chest & Key** - these cards have no special ability, but when both of these cards are drawn in a round and the player decides to stop (i.e. the turn does not end by drawing a duplicate) the player can move twice as many card to his chest that he/she would normally do. The additional cards are selected randomly from the discarded pack. If there are less cards discarded than the number of cards drawn, then all the discarded cards are moved to the player's chest.
+![](/doc/suits/suit_chest.png) ![](/doc/suits/suit_key.png) **Chest & Key** - these cards have no special ability, but when both of these cards are drawn in a round and the player decides to stop (i.e. the turn does not end by drawing a duplicate) the player can move twice as many card to his chest that he/she would normally do. The additional cards are selected randomly from the discarded pack. If there are less cards discarded than the number of cards drawn, then all the discarded cards are moved to the player's chest.
 
 ## Game End
 
@@ -147,4 +201,4 @@ The game ends when there are no more cards to draw. The player having the highes
   * if card effect for first Kraken-pulled-card cannot be fulfilled, thus is nullified, the second card needs to be drawn (e.g. Kraken->Map(empty discard)->[draw second], Kraken->Hook(with empty bank)->[draw second], Kraken->Sword(with empty or all existing suit stacks)->[draw second] ))
 * **Sword** effect cannot pick enemy Suit from which own Player already has someting in its Bank, yet not taking anything on the PlayArea in account
 * **Chest & Key** draws from the DiscardPile randomly, bad luck if there are no or not enough cards for you in the pile
-* DiscardPile - initially filled with the smallest of each suit
+* _DiscardPile_ is initially filled with the smallest of each suit
