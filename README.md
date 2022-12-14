@@ -22,8 +22,10 @@ During the competition period there will be several practice tournaments, while 
 
 # Interfaces available
 Game is available through a public server, the ___Arena___ as a collection of REST api's.
-* REST API with OpenAPI specification is available at [/api](https://slhpc2023.appspot.com/api), documented under [/docs](https://slhpc2023.appspot.com/docs) endpoint.
-* Frontent UI available under [/matches](https://slhpc2023.appspot.com/matches) -- eye fancy, to enable easy comprehension, do not use it for your automated solution, no uptime guarantee.
+* [REST API](#rest-api-interface) with OpenAPI specification is available at [/api](https://slhpc2023.appspot.com/api), documented under [/docs](https://slhpc2023.appspot.com/docs) endpoint.
+* [Web Frontend](#web-frontend-interface) Frontent UI available under [/matches](https://slhpc2023.appspot.com/matches).  
+Eye fancy only, use this to enable easy comprehension, do not use it for your programmatic / automated / competition scene.  
+No uptime guarantee.
 
 # Match
 A Match is a game between two players. Can be created by the Organizers between any two Players or as a practice Match.
@@ -132,19 +134,13 @@ To ease the initial learning curve teams can use the autopick mechanism that pro
 }
 ```
 
-### Web Frontend
-To ease comprehension teams can check relevant match results via a web browser, rendering all moves and match state.  
-The frontent is accessible via  [/matches](https://slhpc2023.appspot.com/matches). An example gameplay of a match including user turns and moves look like this.
-[![example gameplay](/doc/example_match_crop.png)](/doc/example_match.png)
-
-This is how the a gameplay looks like from the frontend perspective.
-
-https://user-images.githubusercontent.com/4489389/207584900-05192ace-eb59-4732-b364-63e53b0eb988.mp4
-
-# API and timeout
+# REST API Interface
 There is an extensive OpenAPI documentation under `/docs` path of the server.
 The REST API works on JSON format.
+
 Match request and Action execution endpoints works with a timeout with `wait=true` parameter specified to avoid constant polling. As there is a timeout of cc 30 sec, eventually the request needs to be restarted.
+
+![image](https://user-images.githubusercontent.com/4489389/207619972-17cb5bf2-0d9c-4c66-8a22-8dac184429a4.png)
 
 ## High level API list
 * `GET /api/matches` - get matches
@@ -162,6 +158,15 @@ The Areana server is a development artifact not thourougly tested for security f
 
 To keep chances fair, we expect all teams to respect arena integrity, report and not exploit any flaws to and solely the organizers right away.
 To keep chances fair, we expect that each team polls server with the timeout frequency implemented (~30 sec) to avoid potential overload and denial of service.
+
+# Web Frontend Interface
+To ease comprehension teams can check relevant match results via a web browser, rendering all moves and match state.  
+The frontent is accessible via  [/matches](https://slhpc2023.appspot.com/matches). An example gameplay of a match including user turns and moves look like this.
+[![example gameplay](/doc/example_match_crop.png)](/doc/example_match.png)
+
+This is how the a gameplay looks like from the frontend perspective.
+
+https://user-images.githubusercontent.com/4489389/207584900-05192ace-eb59-4732-b364-63e53b0eb988.mp4
 
 # Game rules
 
