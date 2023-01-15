@@ -9,14 +9,15 @@ During the competition period there will be several practice tournaments, while 
 # Competition flow
 1. Teams register themselves to the organizers
 2. Organizers enter team with a generated passwordhash
-   1. Organizers send Player id and passwordhash to the Team -  e.g `{id: '636438380ee778617e6e5be8', password: 'playerpass'}`
+   1. Organizers send Player id and passwordhash to the Team  
+      e.g `{id: '636438380ee778617e6e5be8', password: 'playerpass'}`
 3. Players implement test client using the specification and the example clients
    1. Organizers publish example clients to a public repo beforehands
    2. Players test themselves on practice Matches and develop a good strategy
 4. Organizers announce Practice Tournaments, where Players are challenged to compete. Organizers create appropriate Matches between the Players - e.g. around at the end of each day 3pm-4pm
    1. Teams are expectd to keep their solution up and running during the tournament and react to ongoing matches with their involvement with the logic below
-      Teams host their solution either on any internet enabled local machine - e.g. dev laptop or may choose to publish their client in the cloud
-      2. This is an awesome opportunity to test Kyma, or any hyperscaler
+      Teams host their solution either on any internet enabled local machine - e.g. dev laptop or may choose to publish their client in the cloud  
+      _NOTE: This is an awesome opportunity to test Kyma, or any hyperscaler_
    2. Once all Matches are finished, Organizers announce ranking and winners
    3. Teams are expected to react on matches within a short amount of time (e.g. 30 seconds - tbd) time otherwise a central watchdog may terminate the match forcefully and announce the other team as winner.
 
@@ -24,7 +25,7 @@ During the competition period there will be several practice tournaments, while 
 Game is available through a public server, the ___Arena___ as a collection of REST api's.
 * [REST API](#rest-api-interface) with OpenAPI specification is available at [/api](https://slhpc2023.appspot.com/api), documented under [/docs](https://slhpc2023.appspot.com/docs) endpoint.
 * [Web Frontend](#web-frontend-interface) Frontent UI available under [/matches](https://slhpc2023.appspot.com/matches).  
-Eye fancy only, use this to enable easy comprehension, do not use it for your programmatic / automated / competition scene.  
+Eye fancy only, use this to enable easy comprehension for practice matches, do not use it for your programmatic / automated / competition scene.  
 No uptime guarantee.
 
 # Match
@@ -36,8 +37,8 @@ A Match is a game between two players. Can be created by the Organizers between 
 2. Arena server returns any matches - if found
 3. In absence - it will use "HTTP Long Polling" to wait and keep the connection for a longer period (e.g. 30 seconds), and then returns with an empty array ```[]```
 4. Teams are advised to retry the polling to get informed on new match announced
-5. As match is started API endpoint returns with a list of matching Match Ids so user gets notified about a match start.
-   * (Organizers will start a limited / one (tbd) active matches at a time for each team, so no teams should deal with (huge amount of) simultaneous matches.)
+5. As match is started API endpoint returns with a list of matching Match Ids so user gets notified about a match start.  
+   _NOTE: Organizers will start a one active match at a time for each team, so no teams should deal with simultaneous matches._
 
 ### 2. Playing the Match
 1. Player checks the state of the match and eventually waits for his/her turn via.
@@ -45,7 +46,7 @@ A Match is a game between two players. Can be created by the Organizers between 
    GET /api/matches/{matchid}?waitactive=true
    ```
    * Similary to the waiting for a match step, the arena server keeps the connection open to a longer period "HTTP Long Polling" (e.g. 30 sec) and returns with a ```409 - Authenticated user is not the current player``` code if the player is not the active. Players should retry this wait step.
-   * If the match ended by the last action of the other player arena server returns ```410 - No action possible on finished matches.``` with the list of closing events, so scores and winner can is known also by this player.
+   * If the match ended by the last action of the other player arena server returns ```410 - No action possible on finished matches``` with the list of closing events, so scores and winner can is known also by this player.
 2. Player issues a `Draw` action via the API and waits for result via
    ``` 
    POST /api/matches/{matchid}
@@ -77,16 +78,16 @@ A Match is a game between two players. Can be created by the Organizers between 
       "etype": "EndTurn" 
    }
    ```
-   * Arena server returns the resulting list of state change events similarly to `Draw` including a turn ended aggregate state delta
+   * Arena server returns the list of state change events similarly to `Draw` including a turn ended aggregate state delta
 4. If busted or draw pile is exhaused turn ends automatically -- server adds a `TurnEnded` event in response.
-5. If draw pile is exhaused match ends automatically and winner or a tie is announced -- server adds `MatchEnded` event in response.
+5. If draw pile is exhaused and all effects are responded to match ends automatically and winner or a tie is announced -- server adds `MatchEnded` event in response.
 
 
 # Development journey
 Teams are not expected to ace the game at the first day, therefore a number of tools are at your disposal during the development journey to gradually excel with the result.
 
 * Teams can onboard on ```/api/helloworld``` and then ```/api/whoami``` endpoints
-* REST API is easer than you would think - use [web browser for testing](https://slhpc2023.appspot.com/api/hello), [curl](https://curl.se/), [PostMan](https://www.postman.com/) or even [Excel macros](https://learn.microsoft.com/en-us/office/dev/scripts/develop/external-calls), [Excel grid](https://www.conradakunga.com/blog/consuming-rest-json-apis-from-excel)
+* REST API is easier than you would think - use [web browser for testing](https://slhpc2023.appspot.com/api/hello), [curl](https://curl.se/), [PostMan](https://www.postman.com/) or even [Excel macros](https://learn.microsoft.com/en-us/office/dev/scripts/develop/external-calls), [Excel grid](https://www.conradakunga.com/blog/consuming-rest-json-apis-from-excel), using e.g. [restapiexample](http://dummy.restapiexample.com).
 * Teams receive a number of example clients te ease development in most popular languages
 * Teams can start and conduct any amount of Practice Matches to test game logic with the same user
 * Teams can start and conduct any amount of Practice Matches to test game logic between the own user + _dummy user_ to test dialogue handling
@@ -99,7 +100,7 @@ Teams are not expected to ace the game at the first day, therefore a number of t
 A practice Match is a Match that is created by the Player itself, and contains twice the PlayerId or the PlayerId and the DummyId so that it can act as both sides of the table.  
 For a practice Match extended amounts of information is optionally delivered via the API for easier debugging.
 
-DummyPlayer is identified with `"000000000000000000000000":"dummypass"` accepting any match as an opponent.  
+DummyPlayer is identified with `"000000000000000000000000":"testpass"` accepting any match as an opponent.  
 Be aware that you need to play with the dummyuser as well if you start a match with it.  
 Be aware that dummyuser will receive many matches from other players as well - react only on matches you have started yourself, consider using a tag for such maches.
 
@@ -158,6 +159,9 @@ The Areana server is a development artifact not thourougly tested for security f
 
 To keep chances fair, we expect all teams to respect arena integrity, report and not exploit any flaws to and solely the organizers right away.
 To keep chances fair, we expect that each team polls server with the timeout frequency implemented (~30 sec) to avoid potential overload and denial of service.
+
+## Timing
+The organizers will start the tournament matches with a timeout setting, where any player is obligued to respond to the their turn within the given timeframe (e.g. 10 sec). This will keep a fair and clean tournament and ensures that all players have a chance to ace even if an opponent experiences technical difficulties.
 
 # Web Frontend Interface
 To ease comprehension teams can check relevant match results via a web browser, rendering all moves and match state.  
