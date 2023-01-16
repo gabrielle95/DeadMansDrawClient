@@ -100,7 +100,7 @@ Teams are not expected to ace the game at the first day, therefore a number of t
 A practice Match is a Match that is created by the Player itself, and contains twice the PlayerId or the PlayerId and the DummyId so that it can act as both sides of the table.  
 For a practice Match extended amounts of information is optionally delivered via the API for easier debugging.
 
-DummyPlayer is identified with `"000000000000000000000000":"testpass"` accepting any match as an opponent.  
+DummyPlayer is identified with `"000000000000000000000000":"dummypass"` accepting any match as an opponent.  
 Be aware that you need to play with the dummyuser as well if you start a match with it.  
 Be aware that dummyuser will receive many matches from other players as well - react only on matches you have started yourself, consider using a tag for such maches.
 
@@ -136,7 +136,7 @@ To ease the initial learning curve teams can use the autopick mechanism that pro
 ```
 
 # REST API Interface
-There is an extensive OpenAPI documentation under `/docs` path of the server.
+There is an extensive OpenAPI documentation under [/docs](https://slhpc2023.appspot.com/docs) path of the server.
 The REST API works on JSON format.
 
 Match request and Action execution endpoints works with a timeout with `wait=true` parameter specified to avoid constant polling. As there is a timeout of cc 30 sec, eventually the request needs to be restarted.
