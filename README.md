@@ -174,7 +174,7 @@ https://user-images.githubusercontent.com/4489389/207584900-05192ace-eb59-4732-b
 
 # Game rules
 
-The game is a slightly simplified version of the popular [card game](/docs/rules/5b-dead-mans-draw-rulebook.pdf). 
+The game is a slightly simplified version of the popular [card game](/doc/rules/5b-dead-mans-draw-rulebook.pdf). 
 
 Two players play against each other, their goal is to collect the highest number of cards and secure them in their own treasure chest.
 
