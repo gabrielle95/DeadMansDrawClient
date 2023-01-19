@@ -2,16 +2,16 @@ SAP Labs CEE Hub Programming Competition 2023
 ============
 
 # Competition objective
-Goal of each team is implement a client to ace the [Dead-Man's-Draw](https://boardgamegeek.com/boardgame/149155/dead-mans-draw) card game using their language and tools of choice.
+The goal of each team is to implement a client to ace the [Dead-Man's-Draw](https://boardgamegeek.com/boardgame/149155/dead-mans-draw) card game using their language and tools of choice.
 
-During the competition period there will be several practice tournaments, while the competition will close with a grand tournament where teams' solutions will compete and the most victorious teams will ace the SLCEE-PC-2023.
+During the competition period there will be several practice tournaments, while the competition will close with a grand tournament where teams' solutions will compete against each other and the most victorious teams will ace the SLCEE-PC-2023.
 
 # Competition flow
 1. Teams register themselves to the organizers
-2. Organizers enter team with a generated passwordhash
-   1. Organizers send Player id and passwordhash to the Team  
+2. Organizers enter the team with a generated passwordhash
+   1. Organizers send the Player id and the passwordhash to the Team  
       e.g `{id: '636438380ee778617e6e5be8', password: 'playerpass'}`
-3. Players implement test client using the specification and the example clients
+3. Players implement a test client using the specification and the example clients
    1. Organizers publish example clients to a public repo beforehands
    2. Players test themselves on practice Matches and develop a good strategy
 4. Organizers announce Practice Tournaments, where Players are challenged to compete. Organizers create appropriate Matches between the Players - e.g. around at the end of each day 3pm-4pm
@@ -36,8 +36,8 @@ A Match is a game between two players. Can be created by the Organizers between 
 1. Team listens to the [/matches?active=true&wait=true&tags=GAMETAG](https://slhpc2023.appspot.com/api/matches?active=true&wait=true&tags=GAMETAG) endpoint.
 2. Arena server returns any matches - if found
 3. In absence - it will use "HTTP Long Polling" to wait and keep the connection for a longer period (e.g. 30 seconds), and then returns with an empty array ```[]```
-4. Teams are advised to retry the polling to get informed on new match announced
-5. As match is started API endpoint returns with a list of matching Match Ids so user gets notified about a match start.  
+4. Teams are advised to retry the polling to get informed on any new match announced
+5. As a match is started the API endpoint returns with a list of matching Match Ids so user gets notified about a match start.  
    _NOTE: Organizers will start a one active match at a time for each team, so no teams should deal with simultaneous matches._
 
 ### 2. Playing the Match
