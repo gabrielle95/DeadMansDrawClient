@@ -134,6 +134,39 @@ To ease the initial learning curve teams can use the autopick mechanism that pro
     "autopick": "true"
 }
 ```
+## Creating your first match
+
+The next few steps describes the steps necessary to set up a test match and connect two clients to play against each other. The text refers to the java client, but it can be replaced with your favorite one.
+
+### Prerequisites
+
+* As a preparation please download the precompiled binary version of the java client "SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies.jar" from /example_clients/SPCJavaClient/taget.
+* Please make sure that SapMachine 17 or any other Java 17 compatible JDK or JRE is installed on your system. Check that entering java --version in a comand prompt reports a java version 17 or higher.
+* You also need a REST client to interactively create a match. We recommend Postman, but anything will do.
+
+### Creating a match
+Using Postman create a POST request to the endpoint https://slhpc2023.appspot.com/api/matches.
+In the body use the following text:
+{
+    "playerids": ["<Your user id>", "<dummy user id>"],
+    "tags": ["<Something unique>"]
+}
+The user id is the one we gave your team, the dummy user id is 000000000000000000000000.
+Set up basic authentication with your user id and password.
+Send the request.
+The response returned from the arena server should look like this:
+{
+    "id": "<match id>",
+    "randomSeed": "<random seed>"
+}
+
+Both <match id> and <random seed> are unique strings. We will not use the random seed in this guide, but the match id is essential, as it identifies the match that you want to connect your clients to.
+
+There are multiple ways to continue from here. Choose one that you like.
+
+a) running two separate instances of the java client; one for each player.
+b) running one instance, playing the role of both players
+c) waiting for a tag instead of connecting to the specific match
 
 # REST API Interface
 There is an extensive OpenAPI documentation under [/docs](https://slhpc2023.appspot.com/docs) path of the server.
