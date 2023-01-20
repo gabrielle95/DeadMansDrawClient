@@ -189,7 +189,7 @@ There are multiple ways to continue from here. Choose one that you like.
 ```
    java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies -w -l -t <your unique tag> -p 636438380ef778617e0e5b01 -pw testpass -s https://slhpc2023.appspot.com
 ```
-   Obviously, during a real competition you must not add the credentials of the dummy user as you want to run a single instance of the client.
+   Obviously, during a real competition you must not add the credentials of the dummy user as you want to run a single instance of the client on behalf of your own user.
 
 # REST API Interface
 There is an extensive OpenAPI documentation under [/docs](https://slhpc2023.appspot.com/docs) path of the server.
