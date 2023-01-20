@@ -145,7 +145,7 @@ The next few steps describes the steps necessary to set up a test match and conn
 * You also need a REST client to interactively create a match. We recommend Postman, but anything will do.
 
 ### Creating a match
-1. Using Postman create a POST request to the endpoint https://slhpc2023.appspot.com/api/matches.
+- Using Postman create a POST request to the endpoint https://slhpc2023.appspot.com/api/matches.
 In the body use the following text:  
   
 ``` 
@@ -155,10 +155,10 @@ In the body use the following text:
 }   
 ``` 
   
-   The user id is the one we gave your team, the dummy user id is 000000000000000000000000.  
+The user id is the one we gave your team, the dummy user id is 000000000000000000000000.  
 
-2. Set up basic authentication with your user id and password.  
-3. Send the request.  
+- Set up basic authentication with your user id and password.  
+- Send the request.  
    The response returned from the arena server should look like this:  
 ``` 
 {  
@@ -167,7 +167,7 @@ In the body use the following text:
 }  
 ``` 
 
-   Both <match id> and <random seed> are unique strings. We will not use the random seed in this guide, but the match id is essential, as it identifies the match that you want to connect your clients to.
+Both /<match id/> and /<random seed/> are unique strings. We will not use the random seed in this guide, but the match id is essential, as it identifies the match that you want to connect your clients to.
 
 There are multiple ways to continue from here. Choose one that you like.
 
