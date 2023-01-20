@@ -172,8 +172,24 @@ Both \<match id\> and \<random seed\> are unique strings. We will not use the ra
 There are multiple ways to continue from here. Choose one that you like.
 
 1) running two separate instances of the java client; one for each player.
-2) running one instance, playing the role of both players
-3) waiting for a tag instead of connecting to the specific match
+
+Run the following commands in separate terminal windows:  
+```
+java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
+```
+
+```
+java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies 
+```
+
+2) running one instance, playing the role of both players.  
+```
+java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
+```
+3) waiting for a tag instead of connecting to the specific match.
+```
+java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
+```
 
 # REST API Interface
 There is an extensive OpenAPI documentation under [/docs](https://slhpc2023.appspot.com/docs) path of the server.
