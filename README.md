@@ -149,10 +149,10 @@ The next few steps describes the steps necessary to set up a test match and conn
 In the body use the following text:  
   
 ``` 
-   {  
-      "playerids": ["\<Your user \id>", "\<dummy user id\>"],  
-      "tags": ["\<Something unique\>"]  
-   }   
+{  
+   "playerids": ["<Your user id>", "<dummy user id>"],  
+   "tags": ["<Something unique>"]  
+}   
 ``` 
   
    The user id is the one we gave your team, the dummy user id is 000000000000000000000000.  
@@ -161,10 +161,10 @@ In the body use the following text:
 3. Send the request.  
    The response returned from the arena server should look like this:  
 ``` 
-   {  
-      "id": "\<match id\>",  
-      "randomSeed": "\<random seed\>"  
-   }  
+{  
+   "id": "<match id>",  
+   "randomSeed": "<random seed>"  
+}  
 ``` 
 
    Both <match id> and <random seed> are unique strings. We will not use the random seed in this guide, but the match id is essential, as it identifies the match that you want to connect your clients to.
