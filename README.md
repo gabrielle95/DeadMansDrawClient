@@ -146,11 +146,12 @@ The next few steps describes the steps necessary to set up a test match and conn
 
 ### Creating a match
 Using Postman create a POST request to the endpoint https://slhpc2023.appspot.com/api/matches.
-In the body use the following text:
-{
-    "playerids": ["<Your user id>", "<dummy user id>"],
-    "tags": ["<Something unique>"]
-}
+In the body use the following text:  
+{  
+    "playerids": ["<Your user id>", "<dummy user id>"],  
+    "tags": ["<Something unique>"]  
+}  
+  
 The user id is the one we gave your team, the dummy user id is 000000000000000000000000.
 Set up basic authentication with your user id and password.
 Send the request.
