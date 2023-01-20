@@ -167,7 +167,7 @@ The user id is the one we gave your team, the dummy user id is 00000000000000000
 }  
 ``` 
 
-Both /<match id/> and /<random seed/> are unique strings. We will not use the random seed in this guide, but the match id is essential, as it identifies the match that you want to connect your clients to.
+Both \<match id\> and \<random seed\> are unique strings. We will not use the random seed in this guide, but the match id is essential, as it identifies the match that you want to connect your clients to.
 
 There are multiple ways to continue from here. Choose one that you like.
 
