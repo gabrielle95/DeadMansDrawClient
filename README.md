@@ -185,7 +185,7 @@ There are multiple ways to continue from here. Choose one that you like.
 ```
    java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies -g <match id> -p <user id> -pw <your password> -p2 000000000000000000000000 -pw2 dummypass -s https://slhpc2023.appspot.com
 ```
-3) waiting for a tag instead of connecting to the specific match. This is the recommended setup for competitions. We also add the -l parameter that forces the client to run in a loop, i.e. it will wait for a new match with the same tag after completing the previous one.
+3) waiting for a tag instead of connecting to the specific match. This is the recommended setup for competitions. We also add the -l parameter that forces the client to run in a loop, i.e. it will wait for a new match with the same tag after completing the previous one. The order in which you start the client and create the match is not important in this case, the connection will be established in both cases.
 ```
    java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies -w -l -t <your unique tag> -p 636438380ef778617e0e5b01 -pw testpass -s https://slhpc2023.appspot.com
 ```
