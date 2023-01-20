@@ -149,8 +149,8 @@ The next few steps describes the steps necessary to set up a test match and conn
    In the body use the following text:  
 ``` 
    {  
-      "playerids": ["<Your user id>", "<dummy user id>"],  
-      "tags": ["<Something unique>"]  
+      "playerids": ["<your user id>", "<dummy user id>"],  
+      "tags": ["<something unique>"]  
    }   
 ``` 
   
@@ -174,21 +174,22 @@ There are multiple ways to continue from here. Choose one that you like.
 
    Run the following commands in separate terminal windows:  
 ```
-   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
+   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies -g <match id> -p <user id> -pw <your password> -s https://slhpc2023.appspot.com
 ```
 
 ```
-   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies 
+   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies -g <match id> -p 000000000000000000000000 -pw dummypass -s https://slhpc2023.appspot.com
 ```
 
 2) running one instance, playing the role of both players.  
 ```
-   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
+   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies -g <match id> -p <user id> -pw <your password> -p2 000000000000000000000000 -pw2 dummypass -s https://slhpc2023.appspot.com
 ```
-3) waiting for a tag instead of connecting to the specific match.
+3) waiting for a tag instead of connecting to the specific match. This is the recommended setup for competitions. We also add the -l parameter that forces the client to run in a loop, i.e. it will wait for a new match with the same tag after completing the previous one.
 ```
-   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
+   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies -w -l -t <your unique tag> -p 636438380ef778617e0e5b01 -pw testpass -s https://slhpc2023.appspot.com
 ```
+   Obviously, during a real competition you must not add the credentials of the dummy user as you want to run a single instance of the client.
 
 # REST API Interface
 There is an extensive OpenAPI documentation under [/docs](https://slhpc2023.appspot.com/docs) path of the server.
