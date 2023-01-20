@@ -145,16 +145,17 @@ The next few steps describes the steps necessary to set up a test match and conn
 * You also need a REST client to interactively create a match. We recommend Postman, but anything will do.
 
 ### Creating a match
-Using Postman create a POST request to the endpoint https://slhpc2023.appspot.com/api/matches.
+1. Using Postman create a POST request to the endpoint https://slhpc2023.appspot.com/api/matches.
 In the body use the following text:  
-{  
-    "playerids": ["<Your user id>", "<dummy user id>"],  
-    "tags": ["<Something unique>"]  
-}  
+   {  
+      "playerids": ["\<Your user \id>", "\<dummy user id\>"],  
+      "tags": ["\<Something unique\>"]  
+   }  
   
-The user id is the one we gave your team, the dummy user id is 000000000000000000000000.
-Set up basic authentication with your user id and password.
-Send the request.
+The user id is the one we gave your team, the dummy user id is 000000000000000000000000.  
+
+2. Set up basic authentication with your user id and password.  
+3. Send the request.
 The response returned from the arena server should look like this:
    {
       "id": "\<match id\>",
@@ -165,9 +166,9 @@ Both <match id> and <random seed> are unique strings. We will not use the random
 
 There are multiple ways to continue from here. Choose one that you like.
 
-a) running two separate instances of the java client; one for each player.
-b) running one instance, playing the role of both players
-c) waiting for a tag instead of connecting to the specific match
+1) running two separate instances of the java client; one for each player.
+2) running one instance, playing the role of both players
+3) waiting for a tag instead of connecting to the specific match
 
 # REST API Interface
 There is an extensive OpenAPI documentation under [/docs](https://slhpc2023.appspot.com/docs) path of the server.
