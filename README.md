@@ -159,7 +159,7 @@ The user id is the one we gave your team, the dummy user id is 00000000000000000
 
 - Set up basic authentication with your user id and password.  
 - Send the request.  
-   The response returned from the arena server should look like this:  
+The response returned from the arena server should look like this:  
 ``` 
 {  
    "id": "<match id>",  
