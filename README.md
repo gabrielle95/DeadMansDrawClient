@@ -174,20 +174,20 @@ There are multiple ways to continue from here. Choose one that you like.
 
    Run the following commands in separate terminal windows:  
 ```
-java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
+   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
 ```
 
 ```
-java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies 
+   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies 
 ```
 
 2) running one instance, playing the role of both players.  
 ```
-java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
+   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
 ```
 3) waiting for a tag instead of connecting to the specific match.
 ```
-java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
+   java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies
 ```
 
 # REST API Interface
