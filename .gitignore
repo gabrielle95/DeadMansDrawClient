@@ -12,3 +12,6 @@ obj
 dist
 yarn.lock
 *.mongodb
+example_clients/javascript/.vscode/launch.json
+example_clients/javascript/_example_game.js
+.vscode/launch.json

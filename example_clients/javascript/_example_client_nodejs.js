@@ -1,47 +1,39 @@
 var Spc22Arena = require("spc22_arena");
 const pressAnyKey = require("press-any-key");
-const params = require('yargs')
-  .option('u', {
-    alias: 'username',
+const params = require("yargs")
+  .option("u", {
+    alias: "username",
     demandOption: false,
-    type: 'string',
-    default: "636438380ef778617e0e5be5"
+    type: "string",
   })
-  .option('p', {
-    alias: 'password',
+  .option("p", {
+    alias: "password",
     demandOption: false,
-    type: 'string',
-    default: "testpass"
+    type: "string",
   })
-  .option('m', {
-    alias: 'matchid',
+  .option("m", {
+    alias: "matchid",
     demandOption: false,
-    type: 'string'
+    type: "string",
   })
-  .option('wait', {
-    alias: 'w',
+  .option("wait", {
+    alias: "w",
     demandOption: false,
-    type: 'boolean'
+    type: "boolean",
   })
-  .help()
-  .argv
-//(process.argv.slice(2)).parse()
-//TODO: display help
+  .help().argv;
 
 console.log("input params: ", params);
 
 const defaultClient = Spc22Arena.ApiClient.instance;
-defaultClient.basePath = "http://localhost:8080";
-// defaultClient.basePath = "https://spc22-test1.appspot.com";
+//defaultClient.basePath = "http://localhost:8080";
+defaultClient.basePath = "https://slhpc2023.appspot.com/";
 console.log(`Using server: ${defaultClient.basePath}`);
 
 // Configure HTTP basic authorization: basic
 const basic = defaultClient.authentications["basic"];
 basic.username = params.username;
 basic.password = params.password;
-// const digest = defaultClient.authentications["digest"];
-// digest.username = params.userid || "636438380ef778617e0e5be5";
-// digest.password = "testpass";
 
 console.log(`Playing as user: ${basic.username}.\n`);
 
@@ -83,7 +75,7 @@ async function get_match_by_id(matchid) {
 
 async function wait_for_active_match() {
   var gameapi = new Spc22Arena.GameApi();
-  var opts = { at: "today", waitactive: "1" };
+  var opts = { at: "today", wait: "1", active: "1" };
 
   let matches = null;
   console.log(
@@ -96,7 +88,7 @@ async function wait_for_active_match() {
   } //-- end:WAITMATCH
 
   if (Array.isArray(matches)) {
-    //TODO: what to do when there are multiple ones - now: just pick first and play with it
+    //NOTE: what to do when there are multiple matches available - now: just pick first and play with it
     const picked_match = matches[0];
     return picked_match;
   }

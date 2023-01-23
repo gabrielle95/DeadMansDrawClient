@@ -1,9 +1,9 @@
 {
   "name": "spc22_arena_example",
   "version": "1.0.0",
-  "description": "SPC 22 Arena Example desciption",
+  "description": "SAP Labs CEE Hub 2023 Programming Competition NodeJs Example Client",
   "license": "ISC",
-  "main": "_example_game.js",
+  "main": "_example_client_nodejs.js",
   "dependencies": {
     "press-any-key": "^0.1.1",
     "slcee_2023_pc_arena": "file:lib",

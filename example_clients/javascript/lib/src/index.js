@@ -23,7 +23,6 @@ import CardSuit from './model/CardSuit';
 import CardValue from './model/CardValue';
 import DeleteMatchRequest from './model/DeleteMatchRequest';
 import ErrorResponse from './model/ErrorResponse';
-import GetMatches200ResponseInner from './model/GetMatches200ResponseInner';
 import HelloWorldResponse from './model/HelloWorldResponse';
 import IStateDelta from './model/IStateDelta';
 import IStateDeltaStack from './model/IStateDeltaStack';
@@ -34,9 +33,6 @@ import MatchCreationParams from './model/MatchCreationParams';
 import MatchDTO from './model/MatchDTO';
 import MatchEventDTO from './model/MatchEventDTO';
 import MatchEventType from './model/MatchEventType';
-import MatchHeaderFullDTO from './model/MatchHeaderFullDTO';
-import MatchHeaderFullDTOPlayerdataInner from './model/MatchHeaderFullDTOPlayerdataInner';
-import MatchHeaderFullDTOTable from './model/MatchHeaderFullDTOTable';
 import MoveDTO from './model/MoveDTO';
 import PlayerDTO from './model/PlayerDTO';
 import SessionData from './model/SessionData';
@@ -147,12 +143,6 @@ export {
     ErrorResponse,
 
     /**
-     * The GetMatches200ResponseInner model constructor.
-     * @property {module:model/GetMatches200ResponseInner}
-     */
-    GetMatches200ResponseInner,
-
-    /**
      * The HelloWorldResponse model constructor.
      * @property {module:model/HelloWorldResponse}
      */
@@ -211,24 +201,6 @@ export {
      * @property {module:model/MatchEventType}
      */
     MatchEventType,
-
-    /**
-     * The MatchHeaderFullDTO model constructor.
-     * @property {module:model/MatchHeaderFullDTO}
-     */
-    MatchHeaderFullDTO,
-
-    /**
-     * The MatchHeaderFullDTOPlayerdataInner model constructor.
-     * @property {module:model/MatchHeaderFullDTOPlayerdataInner}
-     */
-    MatchHeaderFullDTOPlayerdataInner,
-
-    /**
-     * The MatchHeaderFullDTOTable model constructor.
-     * @property {module:model/MatchHeaderFullDTOTable}
-     */
-    MatchHeaderFullDTOTable,
 
     /**
      * The MoveDTO model constructor.

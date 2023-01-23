@@ -15,7 +15,6 @@
 import ApiClient from "../ApiClient";
 import BoolLikeString from '../model/BoolLikeString';
 import ErrorResponse from '../model/ErrorResponse';
-import GetMatches200ResponseInner from '../model/GetMatches200ResponseInner';
 import IUserAction from '../model/IUserAction';
 import MatchCreateResponse from '../model/MatchCreateResponse';
 import MatchCreationParams from '../model/MatchCreationParams';
@@ -158,7 +157,7 @@ export default class GameApi {
      * @param {module:model/BoolLikeString} opts.showevents optionally add events associated with the match
      * @param {module:model/BoolLikeString} opts.showdebug 
      * @param {module:model/BoolLikeString} opts.condensed 
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/GetMatches200ResponseInner} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/MatchDTO} and HTTP response
      */
     getMatchWithHttpInfo(id, opts) {
       opts = opts || {};
@@ -185,7 +184,7 @@ export default class GameApi {
       let authNames = ['basic'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = GetMatches200ResponseInner;
+      let returnType = MatchDTO;
       return this.apiClient.callApi(
         '/api/matches/{id}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -202,7 +201,7 @@ export default class GameApi {
      * @param {module:model/BoolLikeString} opts.showevents optionally add events associated with the match
      * @param {module:model/BoolLikeString} opts.showdebug 
      * @param {module:model/BoolLikeString} opts.condensed 
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/GetMatches200ResponseInner}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/MatchDTO}
      */
     getMatch(id, opts) {
       return this.getMatchWithHttpInfo(id, opts)
@@ -270,7 +269,7 @@ export default class GameApi {
      * @param {String} opts.offset optional match id offset used for limiting
      * @param {module:model/BoolLikeString} opts.sortasc optional sorting order, default is descending - latest match first
      * @param {String} opts.id optional filter for list of match ids - comma separated list of values combined with or logic
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/GetMatches200ResponseInner>} and HTTP response
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/MatchDTO>} and HTTP response
      */
     getMatchesWithHttpInfo(opts) {
       opts = opts || {};
@@ -297,7 +296,7 @@ export default class GameApi {
       let authNames = ['basic'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = [GetMatches200ResponseInner];
+      let returnType = [MatchDTO];
       return this.apiClient.callApi(
         '/api/matches', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -318,7 +317,7 @@ export default class GameApi {
      * @param {String} opts.offset optional match id offset used for limiting
      * @param {module:model/BoolLikeString} opts.sortasc optional sorting order, default is descending - latest match first
      * @param {String} opts.id optional filter for list of match ids - comma separated list of values combined with or logic
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/GetMatches200ResponseInner>}
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/MatchDTO>}
      */
     getMatches(opts) {
       return this.getMatchesWithHttpInfo(opts)
