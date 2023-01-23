@@ -19,7 +19,10 @@ During the competition period there will be several practice tournaments, while 
       Teams host their solution either on any internet enabled local machine - e.g. dev laptop or may choose to publish their client in the cloud  
       _NOTE: This is an awesome opportunity to test Kyma, or any hyperscaler_
    2. Once all Matches are finished, Organizers announce ranking and winners
-   3. Teams are expected to react on matches within a short amount of time (e.g. 30 seconds - tbd) time otherwise a central watchdog may terminate the match forcefully and announce the other team as winner.
+   3. Teams are expected to react on matches within a short amount of time (e.g. 30 seconds - tbd) time otherwise a central watchdog may terminate the match forcefully and announce the other team as winner.  
+
+During the tournaments we will use double elimination. This means that teams are eliminated from the tournament when they lose against two opponents, i.e. every team has a second chance. When facing an opponent, the teams will play three matches against each other in a row and the winner will be the team winning more times. In case of a draw, subsequents matches will be played until a winner can be determined.
+The status of the current tournament can be tracked on the [Tournament Status](https://spc2023.s3.eu-central-1.amazonaws.com/index.html) page.
 
 # Interfaces available
 Game is available through a public server, the ___Arena___ as a collection of REST api's.
