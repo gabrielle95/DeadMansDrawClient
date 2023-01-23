@@ -14,24 +14,23 @@
 
 import ApiClient from "../ApiClient";
 import BoolLikeString from '../model/BoolLikeString';
+import DeleteMatchRequest from '../model/DeleteMatchRequest';
 import ErrorResponse from '../model/ErrorResponse';
 import GetMatches200ResponseInner from '../model/GetMatches200ResponseInner';
-import IUserAction from '../model/IUserAction';
 import MatchCreateResponse from '../model/MatchCreateResponse';
 import MatchCreationParams from '../model/MatchCreationParams';
 import MatchDTO from '../model/MatchDTO';
-import MatchEventDTO from '../model/MatchEventDTO';
 
 /**
-* Game service.
-* @module api/GameApi
+* GameAdmin service.
+* @module api/GameAdminApi
 * @version 1.0.0
 */
-export default class GameApi {
+export default class GameAdminApi {
 
     /**
-    * Constructs a new GameApi. 
-    * @alias module:api/GameApi
+    * Constructs a new GameAdminApi. 
+    * @alias module:api/GameAdminApi
     * @class
     * @param {module:ApiClient} [apiClient] Optional API client implementation to use,
     * default to {@link module:ApiClient#instance} if unspecified.
@@ -90,31 +89,27 @@ export default class GameApi {
 
 
     /**
-     * Execute an Action for a Match
-     * Execute an Action for an existing Match.  Supply the unique match ID and add Action details
-     * @param {String} id 
-     * @param {module:model/IUserAction} iUserAction Match action execution parameters
-     * @param {Object} opts Optional parameters
-     * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout executing the action - useful for waiting for other user to finish its action to avoid polling
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/MatchEventDTO>} and HTTP response
+     * Forceful central deletion of a Match
+     * Forceful central deletion of a Match
+     * @param {String} id game id
+     * @param {module:model/DeleteMatchRequest} deleteMatchRequest 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/MatchDTO} and HTTP response
      */
-    executeActionForMatchWithHttpInfo(id, iUserAction, opts) {
-      opts = opts || {};
-      let postBody = iUserAction;
+    deleteMatchWithHttpInfo(id, deleteMatchRequest) {
+      let postBody = deleteMatchRequest;
       // verify the required parameter 'id' is set
       if (id === undefined || id === null) {
-        throw new Error("Missing the required parameter 'id' when calling executeActionForMatch");
+        throw new Error("Missing the required parameter 'id' when calling deleteMatch");
       }
-      // verify the required parameter 'iUserAction' is set
-      if (iUserAction === undefined || iUserAction === null) {
-        throw new Error("Missing the required parameter 'iUserAction' when calling executeActionForMatch");
+      // verify the required parameter 'deleteMatchRequest' is set
+      if (deleteMatchRequest === undefined || deleteMatchRequest === null) {
+        throw new Error("Missing the required parameter 'deleteMatchRequest' when calling deleteMatch");
       }
 
       let pathParams = {
         'id': id
       };
       let queryParams = {
-        'wait': opts['wait']
       };
       let headerParams = {
       };
@@ -124,25 +119,23 @@ export default class GameApi {
       let authNames = ['basic'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = [MatchEventDTO];
+      let returnType = MatchDTO;
       return this.apiClient.callApi(
-        '/api/matches/{id}', 'POST',
+        '/api/matches/{id}/terminate', 'DELETE',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Execute an Action for a Match
-     * Execute an Action for an existing Match.  Supply the unique match ID and add Action details
-     * @param {String} id 
-     * @param {module:model/IUserAction} iUserAction Match action execution parameters
-     * @param {Object} opts Optional parameters
-     * @param {module:model/BoolLikeString} opts.wait optionally waits with timeout executing the action - useful for waiting for other user to finish its action to avoid polling
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/MatchEventDTO>}
+     * Forceful central deletion of a Match
+     * Forceful central deletion of a Match
+     * @param {String} id game id
+     * @param {module:model/DeleteMatchRequest} deleteMatchRequest 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/MatchDTO}
      */
-    executeActionForMatch(id, iUserAction, opts) {
-      return this.executeActionForMatchWithHttpInfo(id, iUserAction, opts)
+    deleteMatch(id, deleteMatchRequest) {
+      return this.deleteMatchWithHttpInfo(id, deleteMatchRequest)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -206,51 +199,6 @@ export default class GameApi {
      */
     getMatch(id, opts) {
       return this.getMatchWithHttpInfo(id, opts)
-        .then(function(response_and_data) {
-          return response_and_data.data;
-        });
-    }
-
-
-    /**
-     * Return the Busy days for any match exists
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.at 
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<String>} and HTTP response
-     */
-    getMatchStatisticsBusyDaysWithHttpInfo(opts) {
-      opts = opts || {};
-      let postBody = null;
-
-      let pathParams = {
-      };
-      let queryParams = {
-        'at': opts['at']
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
-
-      let authNames = ['basic'];
-      let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = ['String'];
-      return this.apiClient.callApi(
-        '/api/matches/busydays', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null
-      );
-    }
-
-    /**
-     * Return the Busy days for any match exists
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.at 
-     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<String>}
-     */
-    getMatchStatisticsBusyDays(opts) {
-      return this.getMatchStatisticsBusyDaysWithHttpInfo(opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -322,6 +270,53 @@ export default class GameApi {
      */
     getMatches(opts) {
       return this.getMatchesWithHttpInfo(opts)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
+     * Forceful central deletion of a match using a watchdog on timeout
+     * Forceful central deletion of a match using a watchdog on timeout
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.tags optional filter matches with matching tag/comma separated list of tags
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link Array.<module:model/MatchDTO>} and HTTP response
+     */
+    watchDogMatchesWithHttpInfo(opts) {
+      opts = opts || {};
+      let postBody = null;
+
+      let pathParams = {
+      };
+      let queryParams = {
+        'tags': opts['tags']
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['basic'];
+      let contentTypes = [];
+      let accepts = ['application/json'];
+      let returnType = [MatchDTO];
+      return this.apiClient.callApi(
+        '/api/matches/watchdog', 'POST',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null
+      );
+    }
+
+    /**
+     * Forceful central deletion of a match using a watchdog on timeout
+     * Forceful central deletion of a match using a watchdog on timeout
+     * @param {Object} opts Optional parameters
+     * @param {String} opts.tags optional filter matches with matching tag/comma separated list of tags
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link Array.<module:model/MatchDTO>}
+     */
+    watchDogMatches(opts) {
+      return this.watchDogMatchesWithHttpInfo(opts)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

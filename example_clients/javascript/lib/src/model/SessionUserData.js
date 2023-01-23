@@ -14,20 +14,21 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The PlayerDTO model module.
- * @module model/PlayerDTO
+ * The SessionUserData model module.
+ * @module model/SessionUserData
  * @version 1.0.0
  */
-class PlayerDTO {
+class SessionUserData {
     /**
-     * Constructs a new <code>PlayerDTO</code>.
-     * @alias module:model/PlayerDTO
-     * @param id {String} Stringified Object Id.
+     * Constructs a new <code>SessionUserData</code>.
+     * @alias module:model/SessionUserData
+     * @param role {String} 
      * @param name {String} 
+     * @param username {String} 
      */
-    constructor(id, name) { 
+    constructor(role, name, username) { 
         
-        PlayerDTO.initialize(this, id, name);
+        SessionUserData.initialize(this, role, name, username);
     }
 
     /**
@@ -35,58 +36,59 @@ class PlayerDTO {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, id, name) { 
-        obj['_id'] = id;
+    static initialize(obj, role, name, username) { 
+        obj['role'] = role;
         obj['name'] = name;
+        obj['username'] = username;
     }
 
     /**
-     * Constructs a <code>PlayerDTO</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>SessionUserData</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/PlayerDTO} obj Optional instance to populate.
-     * @return {module:model/PlayerDTO} The populated <code>PlayerDTO</code> instance.
+     * @param {module:model/SessionUserData} obj Optional instance to populate.
+     * @return {module:model/SessionUserData} The populated <code>SessionUserData</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new PlayerDTO();
+            obj = obj || new SessionUserData();
 
-            if (data.hasOwnProperty('_id')) {
-                obj['_id'] = ApiClient.convertToType(data['_id'], 'String');
+            if (data.hasOwnProperty('role')) {
+                obj['role'] = ApiClient.convertToType(data['role'], 'String');
             }
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
-            if (data.hasOwnProperty('email')) {
-                obj['email'] = ApiClient.convertToType(data['email'], 'String');
+            if (data.hasOwnProperty('username')) {
+                obj['username'] = ApiClient.convertToType(data['username'], 'String');
             }
         }
         return obj;
     }
 
     /**
-     * Validates the JSON data with respect to <code>PlayerDTO</code>.
+     * Validates the JSON data with respect to <code>SessionUserData</code>.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>PlayerDTO</code>.
+     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>SessionUserData</code>.
      */
     static validateJSON(data) {
         // check to make sure all required properties are present in the JSON string
-        for (const property of PlayerDTO.RequiredProperties) {
+        for (const property of SessionUserData.RequiredProperties) {
             if (!data[property]) {
                 throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
             }
         }
         // ensure the json data is a string
-        if (data['_id'] && !(typeof data['_id'] === 'string' || data['_id'] instanceof String)) {
-            throw new Error("Expected the field `_id` to be a primitive type in the JSON string but got " + data['_id']);
+        if (data['role'] && !(typeof data['role'] === 'string' || data['role'] instanceof String)) {
+            throw new Error("Expected the field `role` to be a primitive type in the JSON string but got " + data['role']);
         }
         // ensure the json data is a string
         if (data['name'] && !(typeof data['name'] === 'string' || data['name'] instanceof String)) {
             throw new Error("Expected the field `name` to be a primitive type in the JSON string but got " + data['name']);
         }
         // ensure the json data is a string
-        if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
-            throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
+        if (data['username'] && !(typeof data['username'] === 'string' || data['username'] instanceof String)) {
+            throw new Error("Expected the field `username` to be a primitive type in the JSON string but got " + data['username']);
         }
 
         return true;
@@ -95,28 +97,27 @@ class PlayerDTO {
 
 }
 
-PlayerDTO.RequiredProperties = ["_id", "name"];
+SessionUserData.RequiredProperties = ["role", "name", "username"];
 
 /**
- * Stringified Object Id.
- * @member {String} _id
+ * @member {String} role
  */
-PlayerDTO.prototype['_id'] = undefined;
+SessionUserData.prototype['role'] = undefined;
 
 /**
  * @member {String} name
  */
-PlayerDTO.prototype['name'] = undefined;
+SessionUserData.prototype['name'] = undefined;
 
 /**
- * @member {String} email
+ * @member {String} username
  */
-PlayerDTO.prototype['email'] = undefined;
+SessionUserData.prototype['username'] = undefined;
 
 
 
 
 
 
-export default PlayerDTO;
+export default SessionUserData;
 

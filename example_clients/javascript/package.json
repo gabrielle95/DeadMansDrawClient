@@ -6,6 +6,7 @@
   "main": "_example_game.js",
   "dependencies": {
     "press-any-key": "^0.1.1",
+    "slcee_2023_pc_arena": "file:lib",
     "slhpc23_arena": "file:lib",
     "spc22_arena": "file:lib",
     "yargs": "^17.6.2"

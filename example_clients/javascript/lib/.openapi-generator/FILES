@@ -1,6 +1,5 @@
 .babelrc
 .gitignore
-.openapi-generator-ignore
 .travis.yml
 README.md
 git_push.sh
@@ -8,10 +7,10 @@ mocha.opts
 package.json
 src/ApiClient.js
 src/api/DiagnosticApi.js
+src/api/GameAdminApi.js
 src/api/GameApi.js
 src/api/PlayersApi.js
 src/index.js
-src/model/ActionErrorResponse.js
 src/model/BoolLikeString.js
 src/model/Card.js
 src/model/CardEffect.js
@@ -22,6 +21,7 @@ src/model/CardSuit.js
 src/model/CardValue.js
 src/model/DeleteMatchRequest.js
 src/model/ErrorResponse.js
+src/model/GetMatches200ResponseInner.js
 src/model/HelloWorldResponse.js
 src/model/IStateDelta.js
 src/model/IStateDeltaStack.js
@@ -32,7 +32,11 @@ src/model/MatchCreationParams.js
 src/model/MatchDTO.js
 src/model/MatchEventDTO.js
 src/model/MatchEventType.js
+src/model/MatchHeaderFullDTO.js
+src/model/MatchHeaderFullDTOPlayerdataInner.js
+src/model/MatchHeaderFullDTOTable.js
 src/model/MoveDTO.js
 src/model/PlayerDTO.js
+src/model/SessionData.js
+src/model/SessionUserData.js
 src/model/State.js
-src/model/WhoAmiIResponse.js
