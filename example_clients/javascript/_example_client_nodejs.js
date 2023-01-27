@@ -131,6 +131,10 @@ async function play_a_match(match) {
         if (params.wait) await pressAnyKey().then(); //'Press any key to continue...'
         console.info("Drawing a new card");
 
+        // NOTE: Here I choose to perform a "draw of card" whatever happens in the meantime,
+        // for this I call the executeActionForMatch API call (POST /api/matches) and implement the long-polling wait there with 200/409 status.
+        // NOTE: Another feasible choice is to call the getMatch with waitactive=true parameter (GET /api/matches/<matchid>?waitactive=true) and implement the long-polling wait there with 200/409 status
+        // whis would enable you to first check what the other player has done, the execute the drawing of card
         doRetryDrawMove = true;
         //-- DRAW: successful carddraw
         while (doRetryDrawMove) {
@@ -154,14 +158,14 @@ async function play_a_match(match) {
             });
         } //-- end:DRAW
 
-        //-- turn has ended by itself (bust or matchend)
+        //-- check whether turn has ended by itself (bust or matchend)
         if (move_has_event(lastmove, _matcheventyypes.TurnEnded)) break;
         if (move_has_event(lastmove, _matcheventyypes.MatchEnded)) {
           isMatchRunning = false;
           break;
         }
 
-        //-- based on a random factor we might initiate ending the turn
+        //-- based on a random factor we might initiate ending the turn - this is where you need to make it much smarter :)
         if (Math.random() * 10 < 3) {
           console.info("Ending turn...");
           enduseraction = { etype: "EndTurn", autopick: true };
@@ -185,8 +189,9 @@ async function play_a_match(match) {
         break;
       }
     } //-- end:TURN
-  } //- end:MATCH
+  } //-- end:MATCH
 
+  //-- read match end status and display
   ri_matchend = move_has_event(lastmove, _matcheventyypes.MatchEnded);
   if (ri_matchend) {
     const endstatus =

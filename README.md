@@ -137,17 +137,17 @@ To ease the initial learning curve teams can use the autopick mechanism that pro
     "autopick": "true"
 }
 ```
-## Creating your first match
+## Creating your first match - simple example clients
 
 The next few steps describes the steps necessary to set up a test match and connect two clients to play against each other. The text refers to the java client, but it can be replaced with your favorite one.
 
-### Prerequisites
+### Prerequisites for the Java client
 
 * As a preparation please download the precompiled binary version of the java client "SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies.jar" from /example_clients/SPCJavaClient/taget.
 * Please make sure that SapMachine 17 or any other Java 17 compatible JDK or JRE is installed on your system. Check that entering java --version in a comand prompt reports a java version 17 or higher.
 * You also need a REST client to interactively create a match. We recommend Postman, but anything will do.
 
-### Creating a match
+### Creating a match using Postman
 - Using Postman create a POST request to the endpoint https://slhpc2023.appspot.com/api/matches.  
    In the body use the following text:  
 ``` 
@@ -171,6 +171,8 @@ The user id is the one we gave your team, the dummy user id is 00000000000000000
 
 Both \<match id\> and \<random seed\> are unique strings. We will not use the random seed in this guide, but the match id is essential, as it identifies the match that you want to connect your clients to.
 
+### Playing using the Java client
+
 There are multiple ways to continue from here. Choose one that you like.
 
 1) running two separate instances of the java client; one for each player.
@@ -193,6 +195,32 @@ There are multiple ways to continue from here. Choose one that you like.
    java -jar SpcJavaClient-1.0-SNAPSHOT-jar-with-dependencies.jar -w -l -t <your unique tag> -p <user id> -pw <your password> -p2 000000000000000000000000 -pw2 dummypass -s https://slhpc2023.appspot.com
 ```
    Obviously, during a real competition you must not add the credentials of the dummy user as you want to run a single instance of the client on behalf of your own user.
+
+### Playing using the Javascript/Node.js client
+
+You will also find an example client written in Javascript using Node.js.
+
+It will draw and on a random basis either draw a next card or end the turn.
+
+#### Prerequisites
+
+1. install nodejs from https://nodejs.org/en
+2. navigate a console to the `example_clients\javascript` directory
+3. install all dependencies by `npm install`
+
+#### Starting the game
+
+You can start the node client, wait for an active match for the user and play it through.  
+
+```
+node.exe _example_client_nodejs.js --u=<userid> --p=<password>
+```
+
+Additionally it is also possible to start a specific match.
+
+```
+node.exe _example_client_nodejs.js --u=<userid> --p=<password> --m=<matchid>
+```
 
 # REST API Interface
 There is an extensive OpenAPI documentation under [/docs](https://slhpc2023.appspot.com/docs) path of the server.
