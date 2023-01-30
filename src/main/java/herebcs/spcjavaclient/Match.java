@@ -18,6 +18,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.Route;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -94,56 +96,59 @@ public class Match {
                 }
             } else {
                 var orig = Suit.valueOf(status.state.pendingEffect.effectType);
+                Card card;
+                Map<String, Set<Integer>> bank;
+                Integer maxCardValue;
+                String firstCardType;
+                Integer firstCardValue;
 
                 switch (status.state.pendingEffect.effectType) {
-                    case "Oracle" -> {
+                    case "Oracle":
                         var rnd = (new Random()).nextFloat();
-                        Card card;
                         if (rnd < 0.3) {
                             card = null;
                         } else {
                             card = status.state.pendingEffect.cards[0];
                         }
                         respond(client, orig, card);
-                    }
-                    case "Hook" -> {
-                        var bank = status.state.banks[status.state.currentPlayerIndex];
-                        var firstCardType = bank.keySet().iterator().next();
-                        var maxCardValue = Collections.max(bank.get(firstCardType));
-                        var card = new Card();
+                        break;
+                    case "Hook":
+                        bank = status.state.banks[status.state.currentPlayerIndex];
+                        firstCardType = bank.keySet().iterator().next();
+                        maxCardValue = Collections.max(bank.get(firstCardType));
+                        card = new Card();
                         card.suit = Suit.valueOf(firstCardType);
                         card.value = maxCardValue;
                         respond(client, orig, card);
-                    }
-                    case "Sword" -> {
-                        var bank = status.state.banks[1 - status.state.currentPlayerIndex];
+                        break;
+                    case "Sword":
+                        bank = status.state.banks[1 - status.state.currentPlayerIndex];
                         var myBank = status.state.banks[status.state.currentPlayerIndex];
                         var cardTypes = bank.keySet();
                         var myCardTypes = myBank.keySet();
                         cardTypes.removeAll(myCardTypes);
-                        var firstCardType = cardTypes.iterator().next();
-                        var firstCardValue = Collections.max(bank.get(firstCardType));                     
-                        var card = new Card();
+                        firstCardType = cardTypes.iterator().next();
+                        firstCardValue = Collections.max(bank.get(firstCardType));                     
+                        card = new Card();
                         card.suit = Suit.valueOf(firstCardType);
                         card.value = firstCardValue;
                         respond(client, orig, card);
-                    }
-                    case "Cannon" -> {
-                        var bank = status.state.banks[1 - status.state.currentPlayerIndex];
-                        var firstCardType = bank.keySet().iterator().next();
-                        var maxCardValue = Collections.max(bank.get(firstCardType));
-                        var card = new Card();
+                        break;
+                    case "Cannon":
+                        bank = status.state.banks[1 - status.state.currentPlayerIndex];
+                        firstCardType = bank.keySet().iterator().next();
+                        maxCardValue = Collections.max(bank.get(firstCardType));
+                        card = new Card();
                         card.suit = Suit.valueOf(firstCardType);
                         card.value = maxCardValue;
                         respond(client, orig, card);
-                    }
-                    case "Kraken" -> {
+                        break;
+                    case "Kraken":
                         draw(client);
-                    }
-                    default -> {
-                        var card = status.state.pendingEffect.cards[0];
+                        break;
+                    default:
+                        card = status.state.pendingEffect.cards[0];
                         respond(client, orig, card);
-                    }
                 }
             }
         } while (true);
