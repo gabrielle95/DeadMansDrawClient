@@ -50,4 +50,4 @@ jobs:
           app-name: 'resting-octopus'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BB677E6D1EBB4998AF3E21C7466AC46C }}
-          package: '*.jar'
+          package: '*SNAPSHOT-jar-with-dependencies.jar'
