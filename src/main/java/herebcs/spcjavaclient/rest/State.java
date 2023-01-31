@@ -1,7 +1,7 @@
 package herebcs.spcjavaclient.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import herebcs.spcjavaclient.Card;
+import herebcs.spcjavaclient.types.Card;
 import java.util.Map;
 import java.util.Set;
 
