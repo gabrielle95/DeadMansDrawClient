@@ -6,6 +6,7 @@ import herebcs.spcjavaclient.rest.EffectResponse;
 import herebcs.spcjavaclient.rest.Status;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -100,15 +101,6 @@ public class Match {
 
                 switch (status.state.pendingEffect.effectType) {
                     case "Oracle" -> {
-                        // var rnd = (new Random()).nextFloat();
-                        // Card card;
-                        // if (rnd < 0.3) {
-                        //     card = null;
-                        // } else {
-                        //     card = status.state.pendingEffect.cards[0];
-                        // }
-                        // respond(client, orig, card);
-
                         Set<String> playAreaSet = getCardsFromPlayArea(status);
                         Card card;
 
@@ -120,14 +112,6 @@ public class Match {
                         respond(client, orig, card);
                     }
                     case "Hook" -> {
-                        // var mybank = status.state.banks[status.state.currentPlayerIndex];
-                        // var firstCardType = mybank.keySet().iterator().next();
-                        // var maxCardValue = Collections.max(mybank.get(firstCardType));
-                        // var card = new Card();
-                        // card.suit = Suit.valueOf(firstCardType);
-                        // card.value = maxCardValue;
-                        // respond(client, orig, card);
-
                         Set<String> playAreaSet = getCardsFromPlayArea(status);
                         var myBank = status.state.banks[status.state.currentPlayerIndex];
                         var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
@@ -167,18 +151,6 @@ public class Match {
                         }
                     }
                     case "Sword" -> {
-                        // var bank = status.state.banks[1 - status.state.currentPlayerIndex];
-                        // var myBank = status.state.banks[status.state.currentPlayerIndex];
-                        // var cardTypes = bank.keySet();
-                        // var myCardTypes = myBank.keySet();
-                        // cardTypes.removeAll(myCardTypes);
-                        // var firstCardType = cardTypes.iterator().next();
-                        // var firstCardValue = Collections.max(bank.get(firstCardType));                     
-                        // var card = new Card();
-                        // card.suit = Suit.valueOf(firstCardType);
-                        // card.value = firstCardValue;
-                        // respond(client, orig, card);
-
                         Set<String> playAreaSet = getCardsFromPlayArea(status);
                         var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
                         var opponentCardTypes = opponentBank.keySet();
@@ -207,14 +179,6 @@ public class Match {
                         }
                     }
                     case "Cannon" -> {
-                        // var bank = status.state.banks[1 - status.state.currentPlayerIndex];
-                        // var firstCardType = bank.keySet().iterator().next();
-                        // var maxCardValue = Collections.max(bank.get(firstCardType));
-                        // var card = new Card();
-                        // card.suit = Suit.valueOf(firstCardType);
-                        // card.value = maxCardValue;
-                        // respond(client, orig, card);
-
                         var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
                         var opponentCardTypes = opponentBank.keySet();
                         var card = new Card();
@@ -231,13 +195,106 @@ public class Match {
                         draw(client);
                     }
                     case "Chest" -> {
-                        // TODO
+                        var card = status.state.pendingEffect.cards[0];
+                        respond(client, orig, card);
                     }
                     case "Key" -> {
-                        // TODO
+                        var card = status.state.pendingEffect.cards[0];
+                        respond(client, orig, card);
                     }
                     case "Map" -> {
-                        // TODO
+                        Card responseCard = null;
+                        List<Card> chooseFromCards = Arrays.asList(status.state.pendingEffect.cards);
+                        
+                        // If there is no discarded card, then the next card must be drawn the standard way
+                        if (chooseFromCards.isEmpty()) {
+                            draw(client);
+                            break;
+                        }
+
+                        List<Card> usableCards = new ArrayList();
+                        List<Card> playAreaCards = Arrays.asList(status.state.playArea);
+                        
+                        for (Card card : chooseFromCards) {
+                            for(Card playCard : playAreaCards) {
+                                if (card.suit != playCard.suit) {
+                                    usableCards.add(card);
+                                }
+                            }
+                        }
+                        
+                        // if no usable cards are found we have to respond even if we loose
+                        if(usableCards.isEmpty()) {
+                            responseCard = status.state.pendingEffect.cards[0];
+                            respond(client, orig, responseCard);
+                            break;
+                        }
+                        
+                        var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
+                        var opponentCardTypes = opponentBank.keySet();
+                        var myBank = status.state.banks[status.state.currentPlayerIndex];
+                        var myCardTypes = myBank.keySet();
+                        
+                        boolean playAreaHasChest = false;
+                        boolean playAreaHasKey = false;
+                        boolean playAreaNeedsChest = false;
+                        boolean playAreaNeedsKey = false;
+                        boolean chestKeyComboUnlocked = false;
+                        
+                        // search for chest key combo
+                        for(Card playCard : playAreaCards) {
+                            if (playCard.suit == Suit.Chest) {
+                                playAreaHasChest = true;
+                            }
+                            if (playCard.suit == Suit.Key) {
+                                playAreaHasKey = true;
+                            }
+                        }
+
+                        chestKeyComboUnlocked = playAreaHasChest && playAreaHasKey;
+                        playAreaNeedsChest = playAreaHasKey;
+                        playAreaNeedsKey = playAreaHasChest;
+
+                        if (!chestKeyComboUnlocked) {
+                            if (playAreaNeedsChest) {
+                                for (Card card : usableCards) {
+                                    if (card.suit == Suit.Chest) {
+                                        responseCard = card;
+                                    }
+                                }
+                            }
+                            if (playAreaNeedsKey) {
+                                for (Card card : usableCards) {
+                                    if (card.suit == Suit.Key) {
+                                        responseCard = card;
+                                    }
+                                }
+                            }
+                        }
+
+                        // if no chest key combo possible, search for highest value card
+                        if (responseCard == null) { // TODO: get the highest possible value difference, compare with current bank
+                            Collections.sort(usableCards, (c1, c2) -> {
+                                return c1.value >= c2.value ? c1.value : c2.value;
+                            });
+                            responseCard = usableCards.get(0);
+                        }
+                        
+                        if (opponentCardTypes.isEmpty()) { // responds with either chest, key or highest possible value
+                            respond(client, orig, responseCard);
+                        }
+                        else { //TODO: decide what to choose depending on oponent card values vs play area values
+                            // choose sword, cannon, or alternatively chest key combo
+                            for(Card card : usableCards) {
+                                // TODO consider if value of oponent cards is worth it
+                                if (card.suit == Suit.Sword || card.suit == Suit.Cannon ) {
+                                    respond(client, orig, card); 
+                                }
+                                else {
+                                    respond(client, orig, responseCard);
+                                }
+                            }
+                        }
                     }
                     default -> {
                         var card = status.state.pendingEffect.cards[0];

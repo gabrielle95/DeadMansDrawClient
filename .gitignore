@@ -27,3 +27,5 @@ hs_err_pid*
 
 nbactions.xml
 nb-configuration.xml
+.vscode
+.idea
