@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Credentials;
 import okhttp3.MediaType;
@@ -85,6 +87,7 @@ public class Match {
                 if (status.state.playArea.length == 0) {
                     draw(client);
                 } else {
+                    // TODO: upravit: vypocitaj pravdepodobnost a na zaklade nej sa rozhodni
                     var rnd = (new Random()).nextFloat();
                     if (rnd < 0.3) {
                         stop(client);
@@ -97,9 +100,19 @@ public class Match {
 
                 switch (status.state.pendingEffect.effectType) {
                     case "Oracle" -> {
-                        var rnd = (new Random()).nextFloat();
+                        // var rnd = (new Random()).nextFloat();
+                        // Card card;
+                        // if (rnd < 0.3) {
+                        //     card = null;
+                        // } else {
+                        //     card = status.state.pendingEffect.cards[0];
+                        // }
+                        // respond(client, orig, card);
+
+                        Set<String> playAreaSet = getCardsFromPlayArea(status);
                         Card card;
-                        if (rnd < 0.3) {
+
+                        if (playAreaSet.contains(status.state.pendingEffect.cards[0].suit.name())) {
                             card = null;
                         } else {
                             card = status.state.pendingEffect.cards[0];
@@ -107,38 +120,124 @@ public class Match {
                         respond(client, orig, card);
                     }
                     case "Hook" -> {
-                        var bank = status.state.banks[status.state.currentPlayerIndex];
-                        var firstCardType = bank.keySet().iterator().next();
-                        var maxCardValue = Collections.max(bank.get(firstCardType));
+                        // var mybank = status.state.banks[status.state.currentPlayerIndex];
+                        // var firstCardType = mybank.keySet().iterator().next();
+                        // var maxCardValue = Collections.max(mybank.get(firstCardType));
+                        // var card = new Card();
+                        // card.suit = Suit.valueOf(firstCardType);
+                        // card.value = maxCardValue;
+                        // respond(client, orig, card);
+
+                        Set<String> playAreaSet = getCardsFromPlayArea(status);
+                        var myBank = status.state.banks[status.state.currentPlayerIndex];
+                        var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
+                        var myCardTypes = myBank.keySet();
+                        var opponentCardTypes = opponentBank.keySet();
                         var card = new Card();
-                        card.suit = Suit.valueOf(firstCardType);
-                        card.value = maxCardValue;
-                        respond(client, orig, card);
+                    
+                        myCardTypes.removeAll(playAreaSet);
+                        if (myCardTypes.isEmpty()) {
+                            // Dostaneme duplikat: zbav sa vrchnej karty s najnizsou hodnotou
+                            String foundType = "";
+                            int foundValue = 999;
+
+                            for (var entry: myBank.entrySet()) {
+                                if (foundValue > Collections.max(entry.getValue())) {
+                                    foundType = entry.getKey();
+                                    foundValue = Collections.max(entry.getValue());
+                                }
+                            }
+                            card.suit = Suit.valueOf(foundType);
+                            card.value = Collections.max(myBank.get(foundType));
+                            respond(client, orig, card);
+                        } else {
+                            if (opponentCardTypes.isEmpty()) {
+                                // nema ziadne karty
+                                String chosenCardType = getCardTypeScoredEmptyOpponent(myCardTypes);
+                                card.suit = Suit.valueOf(chosenCardType);
+                                card.value = Collections.max(myBank.get(chosenCardType));
+                                respond(client, orig, card);
+                            } else {
+                                // Ma nejake karty. Podme mu ublizit, ak sa da.
+                                String chosenCardType = getCardTypeScored(myCardTypes);
+                                card.suit = Suit.valueOf(chosenCardType);
+                                card.value = Collections.max(myBank.get(chosenCardType));
+                                respond(client, orig, card);
+                            }
+                        }
                     }
                     case "Sword" -> {
-                        var bank = status.state.banks[1 - status.state.currentPlayerIndex];
-                        var myBank = status.state.banks[status.state.currentPlayerIndex];
-                        var cardTypes = bank.keySet();
-                        var myCardTypes = myBank.keySet();
-                        cardTypes.removeAll(myCardTypes);
-                        var firstCardType = cardTypes.iterator().next();
-                        var firstCardValue = Collections.max(bank.get(firstCardType));                     
+                        // var bank = status.state.banks[1 - status.state.currentPlayerIndex];
+                        // var myBank = status.state.banks[status.state.currentPlayerIndex];
+                        // var cardTypes = bank.keySet();
+                        // var myCardTypes = myBank.keySet();
+                        // cardTypes.removeAll(myCardTypes);
+                        // var firstCardType = cardTypes.iterator().next();
+                        // var firstCardValue = Collections.max(bank.get(firstCardType));                     
+                        // var card = new Card();
+                        // card.suit = Suit.valueOf(firstCardType);
+                        // card.value = firstCardValue;
+                        // respond(client, orig, card);
+
+                        Set<String> playAreaSet = getCardsFromPlayArea(status);
+                        var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
+                        var opponentCardTypes = opponentBank.keySet();
                         var card = new Card();
-                        card.suit = Suit.valueOf(firstCardType);
-                        card.value = firstCardValue;
-                        respond(client, orig, card);
+                    
+                        opponentCardTypes.removeAll(playAreaSet);
+                        if (opponentCardTypes.isEmpty()) {
+                            // Dostaneme duplikat: zbav sa vrchnej karty s najvyssou hodnotou
+                            String foundType = "";
+                            int foundValue = 0;
+
+                            for (var entry: opponentBank.entrySet()) {
+                                if (foundValue < Collections.max(entry.getValue())) {
+                                    foundType = entry.getKey();
+                                    foundValue = Collections.max(entry.getValue());
+                                }
+                            }
+                            card.suit = Suit.valueOf(foundType);
+                            card.value = Collections.max(opponentBank.get(foundType));
+                            respond(client, orig, card);
+                        } else {
+                            String chosenCardType = getCardTypeScored(opponentCardTypes);
+                            card.suit = Suit.valueOf(chosenCardType);
+                            card.value = Collections.max(opponentBank.get(chosenCardType));
+                            respond(client, orig, card);
+                        }
                     }
                     case "Cannon" -> {
-                        var bank = status.state.banks[1 - status.state.currentPlayerIndex];
-                        var firstCardType = bank.keySet().iterator().next();
-                        var maxCardValue = Collections.max(bank.get(firstCardType));
+                        // var bank = status.state.banks[1 - status.state.currentPlayerIndex];
+                        // var firstCardType = bank.keySet().iterator().next();
+                        // var maxCardValue = Collections.max(bank.get(firstCardType));
+                        // var card = new Card();
+                        // card.suit = Suit.valueOf(firstCardType);
+                        // card.value = maxCardValue;
+                        // respond(client, orig, card);
+
+                        var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
+                        var opponentCardTypes = opponentBank.keySet();
                         var card = new Card();
-                        card.suit = Suit.valueOf(firstCardType);
-                        card.value = maxCardValue;
+                        
+                        if (opponentCardTypes.isEmpty() == false) {
+                            // TODO: Asi by bolo dobre zahrnut aj hodnotu katry do vyberu, nie len jej typ.
+                            String chosenCardType = getCardTypeScored(opponentCardTypes);
+                            card.suit = Suit.valueOf(chosenCardType);
+                            card.value = Collections.max(opponentBank.get(chosenCardType));
+                        }
                         respond(client, orig, card);
                     }
                     case "Kraken" -> {
                         draw(client);
+                    }
+                    case "Chest" -> {
+                        // TODO
+                    }
+                    case "Key" -> {
+                        // TODO
+                    }
+                    case "Map" -> {
+                        // TODO
                     }
                     default -> {
                         var card = status.state.pendingEffect.cards[0];
@@ -147,6 +246,86 @@ public class Match {
                 }
             }
         } while (true);
+    }
+
+    private Set<String> getCardsFromPlayArea(Status status) {
+        var playArea = status.state.playArea;
+        Set<String> playAreaSet = new HashSet<String>();
+
+        if (playArea != null) {
+            for (int i = 0; i < playArea.length; i++) {
+                playAreaSet.add(playArea[i].suit.name());
+            }
+        }
+        return playAreaSet;
+    }
+
+    private String getCardTypeScored(Set<String> cardtypes) {
+        // cards are ranked from the best to the worst according to my score
+
+        if (cardtypes.contains("Sword")) {
+            return "Sword";
+        }
+        if (cardtypes.contains("Cannon")) {
+            return "Cannon";
+        }
+        if (cardtypes.contains("Oracle")) {
+            return "Oracle";
+        }
+        if (cardtypes.contains("Map")) {
+            return "Map";
+        }
+        if (cardtypes.contains("Hook")) {
+            return "Hook";
+        }
+        if (cardtypes.contains("Anchor")) {
+            return "Anchor";
+        }
+        if (cardtypes.contains("Mermaid")) {
+            return "Mermaid";
+        }
+        if (cardtypes.contains("Chest")) {
+            return "Chest";
+        }
+        if (cardtypes.contains("Key")) {
+            return "Key";
+        }
+        // default :(
+        return "Kraken";
+    }
+
+    private String getCardTypeScoredEmptyOpponent(Set<String> cardtypes) {
+        // cards are ranked from the best to the worst according to my score
+
+        if (cardtypes.contains("Oracle")) {
+            return "Oracle";
+        }
+        if (cardtypes.contains("Map")) {
+            return "Map";
+        }
+        if (cardtypes.contains("Hook")) {
+            return "Hook";
+        }
+        if (cardtypes.contains("Anchor")) {
+            return "Anchor";
+        }
+        if (cardtypes.contains("Mermaid")) {
+            return "Mermaid";
+        }
+        if (cardtypes.contains("Chest")) {
+            return "Chest";
+        }
+        if (cardtypes.contains("Key")) {
+            return "Key";
+        }
+        if (cardtypes.contains("Cannon")) {
+            return "Cannon";
+        }
+        if (cardtypes.contains("Sword")) {
+            return "Sword";
+        }
+        // default :(
+        return "Kraken";
     }
     
     private void draw(OkHttpClient client) throws IOException {
