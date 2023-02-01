@@ -16,4 +16,6 @@ public class Status {
     public int moveCountInTurn;
     public int turnCount;
     public State state;
+    public Move[] moves;
+    public boolean finished;
 }

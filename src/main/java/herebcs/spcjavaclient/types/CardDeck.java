@@ -1,8 +1,6 @@
 package herebcs.spcjavaclient.types;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class CardDeck {
 
@@ -55,12 +53,49 @@ public class CardDeck {
         return Collections.min(cardDeck);
     }
 
-    public Card getCard(Suit suit, int value) {
-        for(Card c: cardDeck) {
-            if(c.suit == suit && c.value == value) {
+    public Card getHighestInSuit(Suit suit) {
+        var tmpDeck = cardDeck;
+        Collections.sort(tmpDeck);
+        Collections.reverse(tmpDeck);
+        for (Card c : tmpDeck) {
+            if (c.suit == suit) {
                 return c;
             }
         }
         return null;
+    }
+
+    public Card getCard(Suit suit, int value) {
+        for (Card c : cardDeck) {
+            if (c.suit == suit && c.value == value) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public void removeSuitCardsCommonWith(CardDeck otherDeck) {
+        List<Card> uniqueDeck = new ArrayList<>();
+        for (Card c : cardDeck) {
+            if (!otherDeck.containsSuit(c.suit)) {
+                uniqueDeck.add(c);
+            }
+        }
+        cardDeck = uniqueDeck;
+    }
+
+    public Set<Suit> getSuitsInDeck() {
+        Set<Suit> suits = new HashSet<>();
+        for (Card c : cardDeck) {
+            if (!suits.contains(c.suit)) {
+                suits.add(c.suit);
+            }
+        }
+        return suits;
+    }
+
+    @Override
+    public String toString() {
+        return cardDeck.toString();
     }
 }

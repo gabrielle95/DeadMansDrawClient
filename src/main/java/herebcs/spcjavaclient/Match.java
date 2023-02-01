@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import herebcs.spcjavaclient.types.Card;
+import herebcs.spcjavaclient.types.CardBank;
+import herebcs.spcjavaclient.types.CardDeck;
 import herebcs.spcjavaclient.types.Suit;
 import okhttp3.Credentials;
 import okhttp3.MediaType;
@@ -70,7 +72,7 @@ public class Match {
             while (status == null) {
                 status = getStatus(client, true);
             }
-            
+
             if (status.state.currentPlayerIndex == null) {
                 if (status.state.winnerIdx == null) {
                     System.out.println(playerID + ": The game ended in a draw.");
@@ -207,96 +209,61 @@ public class Match {
                     }
                     case "Map" -> {
                         Card responseCard = null;
-                        List<Card> chooseFromCards = Arrays.asList(status.state.pendingEffect.cards);
-                        
+                        CardDeck mapChoicesDeck = new CardDeck(status.state.pendingEffect.cards);
+
                         // If there is no discarded card, then the next card must be drawn the standard way
-                        if (chooseFromCards.isEmpty()) {
+                        if (mapChoicesDeck.isEmpty()) {
                             draw(client);
                             break;
                         }
 
-                        List<Card> usableCards = new ArrayList();
-                        List<Card> playAreaCards = Arrays.asList(status.state.playArea);
-                        
-                        for (Card card : chooseFromCards) {
-                            for(Card playCard : playAreaCards) {
-                                if (card.suit != playCard.suit) {
-                                    usableCards.add(card);
-                                }
-                            }
-                        }
-                        
+                        CardDeck playAreaDeck = new CardDeck(status.state.playArea);
+                        mapChoicesDeck.removeSuitCardsCommonWith(playAreaDeck);
+
                         // if no usable cards are found we have to respond even if we loose
-                        if(usableCards.isEmpty()) {
+                        if (mapChoicesDeck.isEmpty()) {
                             responseCard = status.state.pendingEffect.cards[0];
                             respond(client, orig, responseCard);
                             break;
                         }
-                        
-                        var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
-                        var opponentCardTypes = opponentBank.keySet();
-                        var myBank = status.state.banks[status.state.currentPlayerIndex];
-                        var myCardTypes = myBank.keySet();
-                        
-                        boolean playAreaHasChest = false;
-                        boolean playAreaHasKey = false;
-                        boolean playAreaNeedsChest = false;
-                        boolean playAreaNeedsKey = false;
-                        boolean chestKeyComboUnlocked = false;
-                        
-                        // search for chest key combo
-                        for(Card playCard : playAreaCards) {
-                            if (playCard.suit == Suit.Chest) {
-                                playAreaHasChest = true;
-                            }
-                            if (playCard.suit == Suit.Key) {
-                                playAreaHasKey = true;
-                            }
-                        }
 
-                        chestKeyComboUnlocked = playAreaHasChest && playAreaHasKey;
-                        playAreaNeedsChest = playAreaHasKey;
-                        playAreaNeedsKey = playAreaHasChest;
+                        CardBank opponentBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+                        Set<Suit> opponentCardTypes = opponentBank.getSuitsInBank();
 
-                        if (!chestKeyComboUnlocked) {
-                            if (playAreaNeedsChest) {
-                                for (Card card : usableCards) {
-                                    if (card.suit == Suit.Chest) {
-                                        responseCard = card;
-                                    }
-                                }
-                            }
-                            if (playAreaNeedsKey) {
-                                for (Card card : usableCards) {
-                                    if (card.suit == Suit.Key) {
-                                        responseCard = card;
-                                    }
-                                }
-                            }
-                        }
+                        boolean playAreaHasChest = playAreaDeck.containsSuit(Suit.Chest);
+                        boolean playAreaHasKey = playAreaDeck.containsSuit(Suit.Key);
+                        boolean playAreaNeedsChest = playAreaHasKey && !playAreaHasChest;
+                        boolean playAreaNeedsKey = playAreaHasChest && !playAreaHasKey;
 
-                        // if no chest key combo possible, search for highest value card
-                        if (responseCard == null) { // TODO: get the highest possible value difference, compare with current bank
-                            Collections.sort(usableCards);
-                            Collections.reverse(usableCards);
-                            responseCard = usableCards.get(0);
-                        }
-                        
+                        Utils utils = new Utils();
+
                         if (opponentCardTypes.isEmpty()) { // responds with either chest, key or highest possible value
-                            respond(client, orig, responseCard);
-                        }
-                        else { //TODO: decide what to choose depending on oponent card values vs play area values
-                            // choose sword, cannon, or alternatively chest key combo
-                            for(Card card : usableCards) {
-                                // TODO consider if value of oponent cards is worth it
-                                if (card.suit == Suit.Sword || card.suit == Suit.Cannon ) {
-                                    respond(client, orig, card); 
-                                }
-                                else {
-                                    respond(client, orig, responseCard);
-                                }
+                            if (playAreaNeedsChest) {
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Chest);
+                            } else if (playAreaNeedsKey) {
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Key);
+                            }
+                            if (responseCard == null) {
+                                var suits = mapChoicesDeck.getSuitsInDeck();
+                                var prioSuit = utils.getCardTypeScoredEmptyOpponent(suits);
+                                responseCard = mapChoicesDeck.getHighestInSuit(prioSuit);
+                            }
+                        } else { //TODO: decide what to choose depending on oponent card values vs play area values
+                            var suits = mapChoicesDeck.getSuitsInDeck();
+                            var prioSuit = utils.getCardTypeScored(suits);
+
+                            if (prioSuit == Suit.Sword || prioSuit == Suit.Cannon) {
+                                responseCard = mapChoicesDeck.getHighestInSuit(prioSuit);
+                            } else if (playAreaNeedsChest) {
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Chest);
+                            } else if (playAreaNeedsKey) {
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Key);
+                            }
+                            if (responseCard == null) {
+                                responseCard = mapChoicesDeck.getHighestInSuit(prioSuit);
                             }
                         }
+                        respond(client, orig, responseCard);
                     }
                     default -> {
                         var card = status.state.pendingEffect.cards[0];
@@ -432,6 +399,7 @@ public class Match {
             var body = objectMapper.writeValueAsString(eResp);
             response = call(client, body);
             System.out.println(playerID + ": Response for " + responseType + ".");
+            if(chosen != null) System.out.println(playerID + ": Responded with Card " + chosen.toString() + ".");
             if (response.code() != 200) {
                 throw new IOException();
             }
