@@ -112,4 +112,14 @@ public class CardDeck {
         }
         return Count;
     }
+
+    public int getSumOfCardsValuesBySuit(Suit suit) {
+        int SumOfCardsValuesBySuit = 0 ;
+        for (Card c : cardDeck) {
+            if (c.suit == suit) {
+                SumOfCardsValuesBySuit = SumOfCardsValuesBySuit + c.value;
+            }
+        }
+        return SumOfCardsValuesBySuit;
+    }
 }
