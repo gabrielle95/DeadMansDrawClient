@@ -1,7 +1,4 @@
 package herebcs.spcjavaclient;
-
-import java.lang.reflect.Method;
-
 import herebcs.spcjavaclient.types.CardBank;
 import herebcs.spcjavaclient.types.CardDeck;
 import herebcs.spcjavaclient.types.Suit;
@@ -14,7 +11,7 @@ public class OctopusBrain {
     public Double probabilityOfDrawingDuplicate;
     public Double probabilityOfDrawingOk;
     public Double possiblePointsToScore;
-    public Double AvgValueOfDrawableSuit;
+    public Double AvgValueOfDrawingOkSuit;
 
     private CardDeck playArea;
     private CardDeck discardPile;
@@ -66,25 +63,21 @@ public class OctopusBrain {
         return possiblePointsToScore;
     }
 
-    public Double calcAvgValueOfDrawableSuit() {
+    public Double calcAvgValueOfDrawingOkSuit() {
 
-        AvgValueOfDrawableSuit = 0.00;
+        AvgValueOfDrawingOkSuit = 0.00;
+        Double numberOfDrawingOkCards = 0.00;
+        Double sumOfCardsValues = 0.00;
         var drawPileSuits = drawPile.getSuitsInDeck();
         var playAreaSuits = playArea.getSuitsInDeck();
         drawPileSuits.removeAll(playAreaSuits);
 
-// @TODO.
+        for (Suit s : drawPileSuits) {
+            numberOfDrawingOkCards = numberOfDrawingOkCards + drawPile.getNumberOfCardsBySuit(s);
+            sumOfCardsValues = sumOfCardsValues + drawPile.getSumOfCardsValuesBySuit(s);
+        }
+        AvgValueOfDrawingOkSuit = sumOfCardsValues / numberOfDrawingOkCards;
 
-//        for (Suit s : drawPileSuits) {
-//            if (myBank.hasCardsInDeck(s)) {
-//                if (playArea.getHighestInSuit(s).value > myBank.getDeckBySuit(s).getHighestInSuit(s).value) {
-//                    possiblePointsToScore = possiblePointsToScore
-//                            + (playArea.getHighestInSuit(s).value - myBank.getDeckBySuit(s).getHighestInSuit(s).value);
-//                }
-//            } else {
-//                possiblePointsToScore = possiblePointsToScore + playArea.getHighestInSuit(s).value;
-//           }
-//        }
-        return AvgValueOfDrawableSuit;
+        return AvgValueOfDrawingOkSuit;
     }
 }
