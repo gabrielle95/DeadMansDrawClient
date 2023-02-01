@@ -43,5 +43,10 @@ public class Card implements Comparable<Card> {
         // Compare the data members and return accordingly
         return suit == c.suit && value == c.value;
     }
+
+    @Override
+    public String toString() {
+        return "Suit: " + this.suit + " Value: " + this.value;
+    }
 }
 
