@@ -1,7 +1,6 @@
 package herebcs.spcjavaclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import herebcs.spcjavaclient.Card.Suit;
 import herebcs.spcjavaclient.rest.EffectResponse;
 import herebcs.spcjavaclient.rest.Status;
 import java.io.IOException;
@@ -14,6 +13,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import herebcs.spcjavaclient.types.Card;
+import herebcs.spcjavaclient.types.Suit;
 import okhttp3.Credentials;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -133,21 +135,20 @@ public class Match {
                             }
                             card.suit = Suit.valueOf(foundType);
                             card.value = Collections.max(myBank.get(foundType));
+                            card = ( card.suit == null || card.value == 0 ? status.state.pendingEffect.cards[0] : card );
                             respond(client, orig, card);
                         } else {
+                            String chosenCardType;
                             if (opponentCardTypes.isEmpty()) {
                                 // nema ziadne karty
-                                String chosenCardType = getCardTypeScoredEmptyOpponent(myCardTypes);
-                                card.suit = Suit.valueOf(chosenCardType);
-                                card.value = Collections.max(myBank.get(chosenCardType));
-                                respond(client, orig, card);
+                                chosenCardType = getCardTypeScoredEmptyOpponent(myCardTypes);
                             } else {
                                 // Ma nejake karty. Podme mu ublizit, ak sa da.
-                                String chosenCardType = getCardTypeScored(myCardTypes);
-                                card.suit = Suit.valueOf(chosenCardType);
-                                card.value = Collections.max(myBank.get(chosenCardType));
-                                respond(client, orig, card);
+                                chosenCardType = getCardTypeScored(myCardTypes);
                             }
+                            card.suit = Suit.valueOf(chosenCardType);
+                            card.value = Collections.max(myBank.get(chosenCardType));
+                            respond(client, orig, card);
                         }
                     }
                     case "Sword" -> {
@@ -170,6 +171,8 @@ public class Match {
                             }
                             card.suit = Suit.valueOf(foundType);
                             card.value = Collections.max(opponentBank.get(foundType));
+
+                            card = ( card.suit == null || card.value == 0 ? status.state.pendingEffect.cards[0] : card );
                             respond(client, orig, card);
                         } else {
                             String chosenCardType = getCardTypeScored(opponentCardTypes);
@@ -274,9 +277,8 @@ public class Match {
 
                         // if no chest key combo possible, search for highest value card
                         if (responseCard == null) { // TODO: get the highest possible value difference, compare with current bank
-                            Collections.sort(usableCards, (c1, c2) -> {
-                                return c1.value >= c2.value ? c1.value : c2.value;
-                            });
+                            Collections.sort(usableCards);
+                            Collections.reverse(usableCards);
                             responseCard = usableCards.get(0);
                         }
                         
