@@ -98,4 +98,18 @@ public class CardDeck {
     public String toString() {
         return cardDeck.toString();
     }
+
+    public int size() {
+        return cardDeck.size();
+    }
+
+    public int getNumberOfCardsBySuit(Suit suit) {
+        int Count = 0 ;
+        for (Card c : cardDeck) {
+            if (c.suit == suit) {
+               Count = Count + 1;
+            }
+        }
+        return Count;
+    }
 }
