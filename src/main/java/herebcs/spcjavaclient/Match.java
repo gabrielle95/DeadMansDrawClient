@@ -44,6 +44,7 @@ public class Match {
     }
 
     private CardDeck initializeDrawPile() {
+        drawPile = new CardDeck(new ArrayList<>());
         Suit[] allSuits = {Suit.Anchor, Suit.Cannon, Suit.Chest, Suit.Hook, Suit.Key, Suit.Kraken, Suit.Map, Suit.Oracle, Suit.Sword};
         Suit[] mermaidSuit = {Suit.Mermaid};
 
@@ -62,6 +63,7 @@ public class Match {
     }
 
     private CardDeck initializeDiscardPile() {
+        discardPile = new CardDeck(new ArrayList<>());
         Suit[] allSuits = {Suit.Anchor, Suit.Cannon, Suit.Chest, Suit.Hook, Suit.Key, Suit.Kraken, Suit.Map, Suit.Oracle, Suit.Sword};
 
         for (Suit s : allSuits) {
@@ -71,6 +73,11 @@ public class Match {
         discardPile.addToDeck(new Card(Suit.Mermaid, 4));
 
         return discardPile;
+    }
+
+    private CardDeck removeCardFromDrawPile(Card card) {
+        drawPile.cardDeck.remove(card);
+        return drawPile;
     }
 
     public void play() throws IOException {
@@ -95,8 +102,8 @@ public class Match {
         initializeDiscardPile();
         initializeDrawPile();
         System.out.println(playerID + ": playing match " + matchID + ".");
-        System.out.println("Draw pile " + drawPile + ".");
-        System.out.println("Discard pile " + discardPile + ".");
+//        System.out.println("Draw pile " + drawPile + ".");
+//        System.out.println("Discard pile " + discardPile + ".");
 
         do {
             Status status = null;
@@ -115,6 +122,7 @@ public class Match {
                         System.out.println(playerID + ": I lost.");
                     }
                 }
+                //System.out.println("draw pile size:" + drawPile.cardDeck.size());
                 break;
             }
 
@@ -123,7 +131,6 @@ public class Match {
                 if (status.state.playArea.length == 0) {
                     draw(client);
                 } else {
-                    // TODO: upravit: vypocitaj pravdepodobnost a na zaklade nej sa rozhodni
 
                    CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
                    CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
@@ -139,23 +146,16 @@ public class Match {
 
                    var avgPointsScoredByDrawing = drawOkProb * (possiblePointsToScore + avgValueOfDrawingOkSuit);
 
-                   System.out.println("drawOkProb: " + drawOkProb);
-                   System.out.println("possiblePointsToScore: " + possiblePointsToScore);
-                   System.out.println("avgValueOfDrawingOkSuit: " + avgValueOfDrawingOkSuit);
-                   System.out.println("avgPointsScoredByDrawing: " + avgPointsScoredByDrawing);
+                   //System.out.println("drawOkProb: " + drawOkProb);
+                   //System.out.println("possiblePointsToScore: " + possiblePointsToScore);
+                   //System.out.println("avgValueOfDrawingOkSuit: " + avgValueOfDrawingOkSuit);
+                   //System.out.println("avgPointsScoredByDrawing: " + avgPointsScoredByDrawing);
 
                    if (possiblePointsToScore > avgPointsScoredByDrawing) {
                        stop(client);
                    } else {
                        draw(client);
                    }
-
-//                    var rnd = (new Random()).nextFloat();
-//                    if (rnd < 0.3) {
-//                        stop(client);
-//                    } else {
-//                        draw(client);
-//                    }
                 }
             } else {
                 var orig = Suit.valueOf(status.state.pendingEffect.effectType);
@@ -445,6 +445,17 @@ public class Match {
                 response.close();
             }
         }
+        var statusRealTime = getStatus(client, true);
+        CardDeck playAreaDeck = new CardDeck(statusRealTime.state.playArea);
+        //System.out.println("Last Play Area Array:" + playAreaDeck );
+        if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0 ){
+            //System.out.println("Last Play Area Card was empty");
+        } else {
+            Card lastPlayAreaCard = playAreaDeck.cardDeck.get(playAreaDeck.cardDeck.size() - 1);
+            //System.out.println("DRAW last play card: " + lastPlayAreaCard);
+            removeCardFromDrawPile(lastPlayAreaCard);
+            //System.out.println("DRAW draw pile size:" + drawPile.cardDeck.size());
+        }
     }
     
     private void stop(OkHttpClient client) throws IOException {
@@ -483,6 +494,17 @@ public class Match {
             if (response != null) {
                 response.close();
             }
+        }
+        var statusRealTime = getStatus(client, true);
+        CardDeck playAreaDeck = new CardDeck(statusRealTime.state.playArea);
+        //System.out.println("Last Play Area Array:" + playAreaDeck );
+        if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0 ){
+            //System.out.println("Last Play Area Card was empty");
+        } else {
+            Card lastPlayAreaCard = playAreaDeck.cardDeck.get(playAreaDeck.cardDeck.size() - 1);
+            //System.out.println("RESPONSE LAST CARD: " + lastPlayAreaCard);
+            removeCardFromDrawPile(lastPlayAreaCard);
+            //System.out.println("RESPONSE draw pile size:" + drawPile.cardDeck.size());
         }
     }
     
