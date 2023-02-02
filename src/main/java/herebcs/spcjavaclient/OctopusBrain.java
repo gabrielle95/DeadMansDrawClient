@@ -1,4 +1,5 @@
 package herebcs.spcjavaclient;
+import herebcs.spcjavaclient.types.Card;
 import herebcs.spcjavaclient.types.CardBank;
 import herebcs.spcjavaclient.types.CardDeck;
 import herebcs.spcjavaclient.types.Suit;

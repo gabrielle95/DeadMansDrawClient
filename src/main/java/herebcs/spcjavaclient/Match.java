@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
 
 import herebcs.spcjavaclient.types.Card;
 import herebcs.spcjavaclient.types.CardBank;
@@ -31,6 +32,8 @@ public class Match {
     private final String playerID;
     private final String BASE_URL;
     private final String password;
+    private CardDeck drawPile;
+    private CardDeck discardPile;
     
     public Match (String matchID, String tags, String playerID, String password, String BASE_URL) {
         this.matchID = matchID;
@@ -38,6 +41,36 @@ public class Match {
         this.playerID = playerID;
         this.BASE_URL = BASE_URL;
         this.password = password;
+    }
+
+    private CardDeck initializeDrawPile() {
+        Suit[] allSuits = {Suit.Anchor, Suit.Cannon, Suit.Chest, Suit.Hook, Suit.Key, Suit.Kraken, Suit.Map, Suit.Oracle, Suit.Sword};
+        Suit[] mermaidSuit = {Suit.Mermaid};
+
+        for (Suit s : allSuits) {
+            for (int value = 3; value <= 7; value++) {
+                drawPile.addToDeck(new Card(s, value));
+            }
+        }
+
+        for (Suit s : mermaidSuit) {
+            for (int value = 5; value <= 9; value++) {
+                drawPile.addToDeck(new Card(s, value));
+            }
+        }
+        return drawPile;
+    }
+
+    private CardDeck initializeDiscardPile() {
+        Suit[] allSuits = {Suit.Anchor, Suit.Cannon, Suit.Chest, Suit.Hook, Suit.Key, Suit.Kraken, Suit.Map, Suit.Oracle, Suit.Sword};
+
+        for (Suit s : allSuits) {
+            discardPile.addToDeck(new Card(s, 2));
+        }
+
+        discardPile.addToDeck(new Card(Suit.Mermaid, 4));
+
+        return discardPile;
     }
 
     public void play() throws IOException {
@@ -58,8 +91,12 @@ public class Match {
         if (matchID == null) {
             waitForMatch(client);
         }
-        
+
+        initializeDiscardPile();
+        initializeDrawPile();
         System.out.println(playerID + ": playing match " + matchID + ".");
+        System.out.println("Draw pile " + drawPile + ".");
+        System.out.println("Discard pile " + discardPile + ".");
 
         do {
             Status status = null;
@@ -88,30 +125,30 @@ public class Match {
                 } else {
                     // TODO: upravit: vypocitaj pravdepodobnost a na zaklade nej sa rozhodni
 
-//                    CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
-//                    CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
-//                    CardDeck playAreaDeck = new CardDeck(status.state.playArea);
-//                    CardDeck drawDeck = new CardDeck(status.state.drawPile);
-//                    CardDeck discardDeck = new CardDeck(status.state.discardPile);
-//
-//                    OctopusBrain brain = new OctopusBrain(playAreaDeck, discardDeck, drawDeck, myCardBank, opponentCardBank);
-//
-//                    var drawOkProb = brain.calcProbabilityOfDrawingOk();
-//                    var possiblePointsToScore = brain.calcPossiblePointsToScore();
-//                    var avgValueOfDrawingOkSuit = brain.calcAvgValueOfDrawingOkSuit();
-//
-//                    var avgPointsScoredByDrawing = drawOkProb * (possiblePointsToScore + avgValueOfDrawingOkSuit);
-//
-//                    System.out.println("drawOkProb: " + drawOkProb);
-//                    System.out.println("possiblePointsToScore: " + possiblePointsToScore);
-//                    System.out.println("avgValueOfDrawingOkSuit: " + avgValueOfDrawingOkSuit);
-//                    System.out.println("avgPointsScoredByDrawing: " + avgPointsScoredByDrawing);
-//
-//                    if (possiblePointsToScore > avgPointsScoredByDrawing) {
-//                        stop(client);
-//                    } else {
-//                        draw(client);
-//                    }
+                   CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+                   CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
+                   CardDeck playAreaDeck = new CardDeck(status.state.playArea);
+                   //CardDeck drawDeck = new CardDeck(status.state.drawPile);
+                   //CardDeck discardDeck = new CardDeck(status.state.discardPile);
+
+                   OctopusBrain brain = new OctopusBrain(playAreaDeck, discardPile, drawPile, myCardBank, opponentCardBank);
+
+                   var drawOkProb = brain.calcProbabilityOfDrawingOk();
+                   var possiblePointsToScore = brain.calcPossiblePointsToScore();
+                   var avgValueOfDrawingOkSuit = brain.calcAvgValueOfDrawingOkSuit();
+
+                   var avgPointsScoredByDrawing = drawOkProb * (possiblePointsToScore + avgValueOfDrawingOkSuit);
+
+                   System.out.println("drawOkProb: " + drawOkProb);
+                   System.out.println("possiblePointsToScore: " + possiblePointsToScore);
+                   System.out.println("avgValueOfDrawingOkSuit: " + avgValueOfDrawingOkSuit);
+                   System.out.println("avgPointsScoredByDrawing: " + avgPointsScoredByDrawing);
+
+                   if (possiblePointsToScore > avgPointsScoredByDrawing) {
+                       stop(client);
+                   } else {
+                       draw(client);
+                   }
 
                     var rnd = (new Random()).nextFloat();
                     if (rnd < 0.3) {
