@@ -270,7 +270,25 @@ public class Match {
 //                            Suit highestDifferenceSuit = Collections.max(differences.entrySet(), Map.Entry.comparingByValue()).getKey();
 //                            System.out.println("Highest Difference Suit: " + highestDifferenceSuit.name());
 //                            System.out.println(opponentCardBank.getDeckBySuit(highestDifferenceSuit));
-                            var preferredSuit = utils.getCardTypeScored(opponentCardSuits);
+                            
+
+                            Suit preferredSuit = null;
+                            Integer maxDiff = 0;
+                            for (Suit s: opponentCardSuits) {
+                                List<Card> tmpCardsList = opponentCardBank.getDeckBySuit(s).cardDeck;
+                                if (tmpCardsList.size() > 1) {
+                                    Collections.sort(tmpCardsList, Collections.reverseOrder());
+                                    int tmpDiff = tmpCardsList.get(0).value - tmpCardsList.get(1).value;
+                                    if (maxDiff < tmpDiff) {
+                                        maxDiff = tmpDiff;
+                                        preferredSuit = s;
+                                    }
+                                }
+                            }
+                            if (maxDiff < 2) {
+                                preferredSuit = utils.getCardTypeScored(opponentCardSuits);
+                            }
+
                             responseCard = opponentCardBank.getDeckBySuit(preferredSuit).getHighestValueCard();
                         }
                         respond(client, orig, responseCard);
