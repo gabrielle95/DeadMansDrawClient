@@ -150,12 +150,12 @@ public class Match {
                        draw(client);
                    }
 
-                    var rnd = (new Random()).nextFloat();
-                    if (rnd < 0.3) {
-                        stop(client);
-                    } else {
-                        draw(client);
-                    }
+//                    var rnd = (new Random()).nextFloat();
+//                    if (rnd < 0.3) {
+//                        stop(client);
+//                    } else {
+//                        draw(client);
+//                    }
                 }
             } else {
                 var orig = Suit.valueOf(status.state.pendingEffect.effectType);
