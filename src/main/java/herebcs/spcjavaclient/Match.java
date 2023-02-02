@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
 
+import javax.lang.model.util.ElementScanner14;
+
 import herebcs.spcjavaclient.types.Card;
 import herebcs.spcjavaclient.types.CardBank;
 import herebcs.spcjavaclient.types.CardDeck;
@@ -163,13 +165,21 @@ public class Match {
                 switch (status.state.pendingEffect.effectType) {
                     case "Oracle" -> {
                         Card revealedCard = status.state.pendingEffect.cards[0];
+                        System.out.println("Revelead card by oracle:" + revealedCard);
                         CardDeck playAreaDeck = new CardDeck(status.state.playArea);
                         Card card;
 
                         if (playAreaDeck.containsSuit(revealedCard.suit)) {
                             card = null;
+                            System.out.println("Don't draw, there is a card with same suit in play area");
                         } else {
-                            card = revealedCard;
+                            if (revealedCard.suit == Suit.Kraken && playAreaDeck.cardDeck.size() > 2 ){
+                                System.out.println("Don't draw, there are more than 2 cards in play area and Kraken might bust us");
+                                card = null;
+                            } else {
+                                card = revealedCard;
+                                System.out.println("Draw, there is no duplicate in play area");
+                            }
                         }
                         respond(client, orig, card);
                     }
