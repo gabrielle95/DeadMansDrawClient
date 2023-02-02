@@ -36,8 +36,8 @@ public class Match {
     private final String password;
     private CardDeck drawPile;
     private CardDeck discardPile;
-    
-    public Match (String matchID, String tags, String playerID, String password, String BASE_URL) {
+
+    public Match(String matchID, String tags, String playerID, String password, String BASE_URL) {
         this.matchID = matchID;
         this.tags = tags;
         this.playerID = playerID;
@@ -47,8 +47,9 @@ public class Match {
 
     private CardDeck initializeDrawPile() {
         drawPile = new CardDeck(new ArrayList<>());
-        Suit[] allSuits = {Suit.Anchor, Suit.Cannon, Suit.Chest, Suit.Hook, Suit.Key, Suit.Kraken, Suit.Map, Suit.Oracle, Suit.Sword};
-        Suit[] mermaidSuit = {Suit.Mermaid};
+        Suit[] allSuits = { Suit.Anchor, Suit.Cannon, Suit.Chest, Suit.Hook, Suit.Key, Suit.Kraken, Suit.Map,
+                Suit.Oracle, Suit.Sword };
+        Suit[] mermaidSuit = { Suit.Mermaid };
 
         for (Suit s : allSuits) {
             for (int value = 3; value <= 7; value++) {
@@ -66,7 +67,8 @@ public class Match {
 
     private CardDeck initializeDiscardPile() {
         discardPile = new CardDeck(new ArrayList<>());
-        Suit[] allSuits = {Suit.Anchor, Suit.Cannon, Suit.Chest, Suit.Hook, Suit.Key, Suit.Kraken, Suit.Map, Suit.Oracle, Suit.Sword};
+        Suit[] allSuits = { Suit.Anchor, Suit.Cannon, Suit.Chest, Suit.Hook, Suit.Key, Suit.Kraken, Suit.Map,
+                Suit.Oracle, Suit.Sword };
 
         for (Suit s : allSuits) {
             discardPile.addToDeck(new Card(s, 2));
@@ -104,8 +106,8 @@ public class Match {
         initializeDiscardPile();
         initializeDrawPile();
         System.out.println(playerID + ": playing match " + matchID + ".");
-//        System.out.println("Draw pile " + drawPile + ".");
-//        System.out.println("Discard pile " + discardPile + ".");
+        // System.out.println("Draw pile " + drawPile + ".");
+        // System.out.println("Discard pile " + discardPile + ".");
 
         do {
             Status status = null;
@@ -124,7 +126,7 @@ public class Match {
                         System.out.println(playerID + ": I lost.");
                     }
                 }
-                //System.out.println("draw pile size:" + drawPile.cardDeck.size());
+                // System.out.println("draw pile size:" + drawPile.cardDeck.size());
                 break;
             }
 
@@ -134,57 +136,64 @@ public class Match {
                     draw(client);
                 } else {
 
-                   CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
-                   CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
-                   CardDeck playAreaDeck = new CardDeck(status.state.playArea);
-                   //CardDeck drawDeck = new CardDeck(status.state.drawPile);
-                   //CardDeck discardDeck = new CardDeck(status.state.discardPile);
+                    CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+                    CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
+                    CardDeck playAreaDeck = new CardDeck(status.state.playArea);
+                    // CardDeck drawDeck = new CardDeck(status.state.drawPile);
+                    // CardDeck discardDeck = new CardDeck(status.state.discardPile);
 
-                   OctopusBrain brain = new OctopusBrain(playAreaDeck, discardPile, drawPile, myCardBank, opponentCardBank);
+                    OctopusBrain brain = new OctopusBrain(playAreaDeck, discardPile, drawPile, myCardBank,
+                            opponentCardBank);
 
-                   var drawOkProb = brain.calcProbabilityOfDrawingOk();
-                   var possiblePointsToScore = brain.calcPossiblePointsToScore();
-                   var avgValueOfDrawingOkSuit = brain.calcAvgValueOfDrawingOkSuit();
+                    var drawOkProb = brain.calcProbabilityOfDrawingOk();
+                    var possiblePointsToScore = brain.calcPossiblePointsToScore();
+                    var avgValueOfDrawingOkSuit = brain.calcAvgValueOfDrawingOkSuit();
 
-                   var avgPointsScoredByDrawing = drawOkProb * (possiblePointsToScore + avgValueOfDrawingOkSuit);
+                    var avgPointsScoredByDrawing = drawOkProb * (possiblePointsToScore + avgValueOfDrawingOkSuit);
 
-                   //System.out.println("drawOkProb: " + drawOkProb);
-                   //System.out.println("possiblePointsToScore: " + possiblePointsToScore);
-                   //System.out.println("avgValueOfDrawingOkSuit: " + avgValueOfDrawingOkSuit);
-                   //System.out.println("avgPointsScoredByDrawing: " + avgPointsScoredByDrawing);
+                    // System.out.println("drawOkProb: " + drawOkProb);
+                    // System.out.println("possiblePointsToScore: " + possiblePointsToScore);
+                    // System.out.println("avgValueOfDrawingOkSuit: " + avgValueOfDrawingOkSuit);
+                    // System.out.println("avgPointsScoredByDrawing: " + avgPointsScoredByDrawing);
 
-                   if (possiblePointsToScore > avgPointsScoredByDrawing) {
-                       stop(client);
-                   } else {
-                       draw(client);
-                   }
+                    if (possiblePointsToScore > avgPointsScoredByDrawing) {
+                        stop(client);
+                    } else {
+                        draw(client);
+                    }
                 }
             } else {
                 var orig = Suit.valueOf(status.state.pendingEffect.effectType);
 
                 switch (status.state.pendingEffect.effectType) {
+                    //partly finished
                     case "Oracle" -> {
                         Card revealedCard = status.state.pendingEffect.cards[0];
                         System.out.println("Revelead card by oracle:" + revealedCard);
                         CardDeck playAreaDeck = new CardDeck(status.state.playArea);
                         Card card;
+                        card = null;
 
                         if (playAreaDeck.containsSuit(revealedCard.suit)) {
-                            card = null;
                             System.out.println("Don't draw, there is a card with same suit in play area");
+                            stop(client);
                         } else {
-                            if (revealedCard.suit == Suit.Kraken && playAreaDeck.cardDeck.size() > 2 ){
-                                System.out.println("Don't draw, there are more than 2 cards in play area and Kraken might bust us");
-                                card = null;
+                            if (revealedCard.suit == Suit.Kraken && playAreaDeck.cardDeck.size() > 2) {
+                                System.out.println(
+                                        "Don't draw, there are more than 2 cards in play area and Kraken might bust us");
+                                stop(client);
                             } else {
                                 card = revealedCard;
                                 System.out.println("Draw, there is no duplicate in play area");
                             }
+                            //todo: hook and then bust care. sword and then bust care => both minor use cases, finish only when time is left.
                         }
                         respond(client, orig, card);
                     }
+                    //TODO debug
                     case "Hook" -> {
-                        CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+                        CardBank opponentCardBank = new CardBank(
+                                status.state.banks[1 - status.state.currentPlayerIndex]);
                         CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
 
                         var opponentCardSuits = opponentCardBank.getSuitsInBank();
@@ -213,13 +222,14 @@ public class Match {
                                 // Ma nejake karty. Podme mu ublizit, ak sa da.
                                 chosenSuit = utils.getCardTypeScored(myCardSuits);
                             }
-                            //vyberam od seba a musim top kartu, lebo tu pod tym nemozem, je to backup
+                            // vyberam od seba a musim top kartu, lebo tu pod tym nemozem, je to backup
                             responseCard = myCardBank.getDeckBySuit(chosenSuit).getHighestValueCard();
                         }
                         respond(client, orig, responseCard);
                     }
                     case "Sword" -> {
-                        CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+                        CardBank opponentCardBank = new CardBank(
+                                status.state.banks[1 - status.state.currentPlayerIndex]);
                         CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
 
                         var opponentCardSuits = opponentCardBank.getSuitsInBank();
@@ -232,59 +242,88 @@ public class Match {
                         opponentCardSuits.removeAll(myCardSuits);
 
                         // we also preferably dont want suits in play area
-                        opponentCardSuits.remove(playAreaCardSuits);
+                        opponentCardSuits.removeAll(playAreaCardSuits);
 
                         Utils utils = new Utils();
                         Card responseCard;
                         if (opponentCardSuits.isEmpty()) {
-                            // Dostaneme duplikat: zbav sa vrchnej karty s najvyssou hodnotou
+                            // Dostaneme duplikat: zbav sa superovej vrchnej karty s najvyssou hodnotou,
+                            // ubliz mu co najviac, aj ked bustnes.
                             CardDeck highestCards = new CardDeck(new ArrayList<>());
                             for (Suit o : playAreaCardSuits) {
                                 var odeck = opponentCardBank.getDeckBySuit(o);
-                                highestCards.addToDeck(odeck.getHighestValueCard()); // TODO: check backups
+                                if (odeck != null) {
+                                    highestCards.addToDeck(odeck.getHighestValueCard()); // TODO: najdi najvyssi DIFF a
+                                                                                         // ten znic, nie najvyssiu
+                                                                                         // kartu.
+                                }
+                                odeck = null;
                             }
 
                             responseCard = highestCards.getHighestValueCard();
                         } else {
+                            //TODO:
+                            // porozmyslat, ci nieje najlepsie vzdy zobrat kanon ak tam je.
+                            //key chest kombo possible.
+                            //anchor ako poistka moze byt fajn.
                             Suit chosenCardSuit = utils.getCardTypeScored(opponentCardSuits);
-                            responseCard = opponentCardBank.getDeckBySuit(chosenCardSuit).getHighestValueCard();
+                            responseCard = opponentCardBank.getDeckBySuit(chosenCardSuit).getHighestValueCard(); // TODO:
+                                                                                                                 // najdi
+                                                                                                                 // najvyssi
+                                                                                                                 // DIFF
+                                                                                                                 // a
+                                                                                                                 // ten
+                                                                                                                 // znic,
+                                                                                                                 // nie
+                                                                                                                 // najvyssiu
+                                                                                                                 // kartu.
 
                         }
                         respond(client, orig, responseCard);
                     }
+                    //finished
                     case "Cannon" -> {
-                        CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+                        CardBank opponentCardBank = new CardBank(
+                                status.state.banks[1 - status.state.currentPlayerIndex]);
                         var opponentCardSuits = opponentCardBank.getSuitsInBank();
 
                         Card responseCard = null;
                         Utils utils = new Utils();
                         if (!opponentCardSuits.isEmpty()) {
 
-//                            ConcurrentHashMap<Suit, Integer> differences = new ConcurrentHashMap<>();
-//                            for (Suit o : opponentCardSuits) {
-//                                CardDeck deck = opponentCardBank.getDeckBySuit(o);
-//                                System.out.println(deck);
-//                                differences.put(o, deck.getBackupDifference(o));
-//                            }
-//
-//                            Suit highestDifferenceSuit = Collections.max(differences.entrySet(), Map.Entry.comparingByValue()).getKey();
-//                            System.out.println("Highest Difference Suit: " + highestDifferenceSuit.name());
-//                            System.out.println(opponentCardBank.getDeckBySuit(highestDifferenceSuit));
-                            
+                            // ConcurrentHashMap<Suit, Integer> differences = new ConcurrentHashMap<>();
+                            // for (Suit o : opponentCardSuits) {
+                            // CardDeck deck = opponentCardBank.getDeckBySuit(o);
+                            // System.out.println(deck);
+                            // differences.put(o, deck.getBackupDifference(o));
+                            // }
+                            //
+                            // Suit highestDifferenceSuit = Collections.max(differences.entrySet(),
+                            // Map.Entry.comparingByValue()).getKey();
+                            // System.out.println("Highest Difference Suit: " +
+                            // highestDifferenceSuit.name());
+                            // System.out.println(opponentCardBank.getDeckBySuit(highestDifferenceSuit));
 
                             Suit preferredSuit = null;
                             Integer maxDiff = 0;
-                            for (Suit s: opponentCardSuits) {
+                            for (Suit s : opponentCardSuits) {
                                 List<Card> tmpCardsList = opponentCardBank.getDeckBySuit(s).cardDeck;
-                                if (tmpCardsList.size() > 1) {
-                                    Collections.sort(tmpCardsList, Collections.reverseOrder());
-                                    int tmpDiff = tmpCardsList.get(0).value - tmpCardsList.get(1).value;
-                                    if (maxDiff < tmpDiff) {
-                                        maxDiff = tmpDiff;
+                                if (tmpCardsList != null) {
+                                    if (tmpCardsList.size() == 1 && maxDiff < tmpCardsList.get(0).value) {
+                                        maxDiff = tmpCardsList.get(0).value;
                                         preferredSuit = s;
+                                    }
+                                    if (tmpCardsList.size() > 1) {
+                                        Collections.sort(tmpCardsList, Collections.reverseOrder());
+                                        int tmpDiff = tmpCardsList.get(0).value - tmpCardsList.get(1).value;
+                                        if (maxDiff < tmpDiff) {
+                                            maxDiff = tmpDiff;
+                                            preferredSuit = s;
+                                        }
                                     }
                                 }
                             }
+                            System.out.println("Current maxDiff:" + maxDiff);
                             if (maxDiff < 2) {
                                 preferredSuit = utils.getCardTypeScored(opponentCardSuits);
                             }
@@ -292,21 +331,24 @@ public class Match {
                             responseCard = opponentCardBank.getDeckBySuit(preferredSuit).getHighestValueCard();
                         }
                         respond(client, orig, responseCard);
-//                        var bank = status.state.banks[1 - status.state.currentPlayerIndex];
-//                        var firstCardType = bank.keySet().iterator().next();
-//                        var maxCardValue = Collections.max(bank.get(firstCardType));
-//                        var card = new Card();
-//                        card.suit = Suit.valueOf(firstCardType);
-//                        card.value = maxCardValue;
-//                        respond(client, orig, card);
+                        // var bank = status.state.banks[1 - status.state.currentPlayerIndex];
+                        // var firstCardType = bank.keySet().iterator().next();
+                        // var maxCardValue = Collections.max(bank.get(firstCardType));
+                        // var card = new Card();
+                        // card.suit = Suit.valueOf(firstCardType);
+                        // card.value = maxCardValue;
+                        // respond(client, orig, card);
                     }
+                    //finished
                     case "Kraken" -> {
                         draw(client);
                     }
+                    //finished
                     case "Chest" -> {
                         var card = status.state.pendingEffect.cards[0];
                         respond(client, orig, card);
                     }
+                    //finished
                     case "Key" -> {
                         var card = status.state.pendingEffect.cards[0];
                         respond(client, orig, card);
@@ -315,7 +357,8 @@ public class Match {
                         Card responseCard = null;
                         CardDeck mapChoicesDeck = new CardDeck(status.state.pendingEffect.cards);
 
-                        // If there is no discarded card, then the next card must be drawn the standard way
+                        // If there is no discarded card, then the next card must be drawn the standard
+                        // way
                         if (mapChoicesDeck.isEmpty()) {
                             draw(client);
                             break;
@@ -352,7 +395,8 @@ public class Match {
                                 var prioSuit = utils.getCardTypeScoredEmptyOpponent(suits);
                                 responseCard = mapChoicesDeck.getHighestInSuit(prioSuit);
                             }
-                        } else { //TODO: decide what to choose depending on oponent card values vs play area values
+                        } else { // TODO: decide what to choose depending on oponent card values vs play area
+                                 // values
                             var suits = mapChoicesDeck.getSuitsInDeck();
                             var prioSuit = utils.getCardTypeScored(suits);
 
@@ -376,6 +420,7 @@ public class Match {
                 }
             }
         } while (true);
+
     }
 
     private Set<String> getCardsFromPlayArea(Status status) {
@@ -457,7 +502,7 @@ public class Match {
         // default :(
         return "Kraken";
     }
-    
+
     private void draw(OkHttpClient client) throws IOException {
         Response response = null;
         try {
@@ -475,17 +520,17 @@ public class Match {
         }
         var statusRealTime = getStatus(client, true);
         CardDeck playAreaDeck = new CardDeck(statusRealTime.state.playArea);
-        //System.out.println("Last Play Area Array:" + playAreaDeck );
-        if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0 ){
-            //System.out.println("Last Play Area Card was empty");
+        // System.out.println("Last Play Area Array:" + playAreaDeck );
+        if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0) {
+            // System.out.println("Last Play Area Card was empty");
         } else {
             Card lastPlayAreaCard = playAreaDeck.cardDeck.get(playAreaDeck.cardDeck.size() - 1);
-            //System.out.println("DRAW last play card: " + lastPlayAreaCard);
+            // System.out.println("DRAW last play card: " + lastPlayAreaCard);
             removeCardFromDrawPile(lastPlayAreaCard);
-            //System.out.println("DRAW draw pile size:" + drawPile.cardDeck.size());
+            // System.out.println("DRAW draw pile size:" + drawPile.cardDeck.size());
         }
     }
-    
+
     private void stop(OkHttpClient client) throws IOException {
         Response response = null;
         try {
@@ -502,11 +547,11 @@ public class Match {
             }
         }
     }
-    
+
     private void respond(OkHttpClient client, Suit responseType, Card chosen) throws IOException {
         Response response = null;
-        
-        try {      
+
+        try {
             var eResp = new EffectResponse();
             eResp.effect.effectType = responseType.name();
             eResp.effect.card = chosen;
@@ -514,7 +559,8 @@ public class Match {
             var body = objectMapper.writeValueAsString(eResp);
             response = call(client, body);
             System.out.println(playerID + ": Response for " + responseType + ".");
-            if(chosen != null) System.out.println(playerID + ": Responded with Card " + chosen.toString() + ".");
+            if (chosen != null)
+                System.out.println(playerID + ": Responded with Card " + chosen.toString() + ".");
             if (response.code() != 200) {
                 throw new IOException();
             }
@@ -525,20 +571,20 @@ public class Match {
         }
         var statusRealTime = getStatus(client, true);
         CardDeck playAreaDeck = new CardDeck(statusRealTime.state.playArea);
-        //System.out.println("Last Play Area Array:" + playAreaDeck );
-        if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0 ){
-            //System.out.println("Last Play Area Card was empty");
+        // System.out.println("Last Play Area Array:" + playAreaDeck );
+        if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0) {
+            // System.out.println("Last Play Area Card was empty");
         } else {
             Card lastPlayAreaCard = playAreaDeck.cardDeck.get(playAreaDeck.cardDeck.size() - 1);
-            //System.out.println("RESPONSE LAST CARD: " + lastPlayAreaCard);
+            // System.out.println("RESPONSE LAST CARD: " + lastPlayAreaCard);
             removeCardFromDrawPile(lastPlayAreaCard);
-            //System.out.println("RESPONSE draw pile size:" + drawPile.cardDeck.size());
+            // System.out.println("RESPONSE draw pile size:" + drawPile.cardDeck.size());
         }
     }
-    
+
     private Response call(OkHttpClient client, String body) throws IOException {
         Response response = null;
-        
+
         try {
             var mediaType = MediaType.parse("application/json; charset=utf-8");
             var rbody = RequestBody.create(body, mediaType);
@@ -555,15 +601,15 @@ public class Match {
             }
         }
     }
-    
+
     private Status getStatus(OkHttpClient client, boolean wait) throws IOException {
-        
+
         Response response = null;
-        
+
         try {
-            String url = BASE_URL + "/api/matches/" + matchID + (wait ? "?waitactive=1" : "" );
+            String url = BASE_URL + "/api/matches/" + matchID + (wait ? "?waitactive=1" : "");
             var request = new Request.Builder()
-                    .url(url)              
+                    .url(url)
                     .get()
                     .build();
 
@@ -594,9 +640,9 @@ public class Match {
             }
         }
     }
-    
+
     private void waitForMatch(OkHttpClient client) throws IOException {
-        
+
         String url = BASE_URL + "/api/matches?wait=1";
         if ((tags == null || tags.isEmpty()) || tags.isBlank()) {
             System.out.println(playerID + ": Waiting for match.");
@@ -604,18 +650,18 @@ public class Match {
             url = url + "&tags=" + tags;
             System.out.println(playerID + ": Waiting for match with tags " + tags + ".");
         }
-        
+
         var request = new Request.Builder()
                 .url(url)
                 .get()
                 .build();
-        
+
         do {
-            
+
             Response response = null;
-            
+
             try {
-        
+
                 var call = client.newCall(request);
                 response = call.execute();
                 var code = response.code();
@@ -627,20 +673,20 @@ public class Match {
                     var statuses = objectMapper.readValue(resp, List.class);
                     if (statuses != null && !statuses.isEmpty()) {
                         var ids = new ArrayList<String>();
-                        for (var status: (List<HashMap>)statuses) {
+                        for (var status : (List<HashMap>) statuses) {
                             var player = status.get("activePlayerIndex");
                             if (player != null) {
-                                var id = (String)status.get("_id");
+                                var id = (String) status.get("_id");
                                 ids.add(id);
-                            }                           
-                        } 
+                            }
+                        }
                         if (!ids.isEmpty()) {
                             Collections.sort(ids);
                             matchID = ids.get(0);
                             return;
                         }
-                    }         
-                } 
+                    }
+                }
             } finally {
                 if (response != null) {
                     response.close();
