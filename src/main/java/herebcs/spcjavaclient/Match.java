@@ -5,12 +5,7 @@ import herebcs.spcjavaclient.rest.EffectResponse;
 import herebcs.spcjavaclient.rest.Status;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
-
-import javax.lang.model.util.ElementScanner14;
-
 import herebcs.spcjavaclient.types.Card;
 import herebcs.spcjavaclient.types.CardBank;
 import herebcs.spcjavaclient.types.CardDeck;
@@ -62,6 +57,7 @@ public class Match {
                 drawPile.addToDeck(new Card(s, value));
             }
         }
+        System.out.println("Draw Pile was initialized with size of: " + drawPile.cardDeck.size());
         return drawPile;
     }
 
@@ -76,11 +72,13 @@ public class Match {
 
         discardPile.addToDeck(new Card(Suit.Mermaid, 4));
 
+        System.out.println("Discard Pile was initialized with size of: " + discardPile.cardDeck.size());
         return discardPile;
     }
 
     private CardDeck removeCardFromDrawPile(Card card) {
         drawPile.cardDeck.remove(card);
+        System.out.println(card + " was removed from Draw Pile and the Draw Pile size is now: " + drawPile.cardDeck.size());
         return drawPile;
     }
 
@@ -103,11 +101,15 @@ public class Match {
             waitForMatch(client);
         }
 
-        initializeDiscardPile();
-        initializeDrawPile();
+        if (drawPile == null) {
+            initializeDrawPile();
+        }
+
+        if (discardPile == null) {
+            initializeDiscardPile();
+        }
+        
         System.out.println(playerID + ": playing match " + matchID + ".");
-        // System.out.println("Draw pile " + drawPile + ".");
-        // System.out.println("Discard pile " + discardPile + ".");
 
         do {
             Status status = null;
@@ -126,29 +128,25 @@ public class Match {
                         System.out.println(playerID + ": I lost.");
                     }
                 }
-                // System.out.println("draw pile size:" + drawPile.cardDeck.size());
+                System.out.println("Draw pile at the end of game: " + drawPile);
                 break;
             }
 
             if (status.state.pendingEffect == null) {
-                // draw or stop
                 if (status.state.playArea.length == 0) {
+                    //toto nastane pri zaciatku hry a pri kazdom buste, vtedy sa dobre nepremaze drawpile.
                     draw(client);
                 } else {
 
                     CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
                     CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
                     CardDeck playAreaDeck = new CardDeck(status.state.playArea);
-                    // CardDeck drawDeck = new CardDeck(status.state.drawPile);
-                    // CardDeck discardDeck = new CardDeck(status.state.discardPile);
 
-                    OctopusBrain brain = new OctopusBrain(playAreaDeck, discardPile, drawPile, myCardBank,
-                            opponentCardBank);
+                    OctopusBrain brain = new OctopusBrain(playAreaDeck, discardPile, drawPile, myCardBank, opponentCardBank);
 
                     var drawOkProb = brain.calcProbabilityOfDrawingOk();
                     var possiblePointsToScore = brain.calcPossiblePointsToScore();
                     var avgValueOfDrawingOkSuit = brain.calcAvgValueOfDrawingOkSuit();
-
                     var avgPointsScoredByDrawing = drawOkProb * (possiblePointsToScore + avgValueOfDrawingOkSuit);
 
                     // System.out.println("drawOkProb: " + drawOkProb);
@@ -158,6 +156,18 @@ public class Match {
 
                     if (possiblePointsToScore > avgPointsScoredByDrawing) {
                         stop(client);
+                        // Card lastPlayAreaCardX = playAreaDeck.cardDeck.get(playAreaDeck.cardDeck.size() - 1);
+                        
+                        // if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0) {
+                        //     System.out.println("Anchor -> Last Play Area Card was empty");
+                        // } else {
+                        //     if(lastPlayAreaCardX.suit == Suit.Anchor ){
+                        //         System.out.println("Anchor -> keep drawing, last card was: " + lastPlayAreaCardX );
+                        //         draw(client);
+                        //     }else{
+                        //         stop(client);
+                        //     }
+                        // }
                     } else {
                         draw(client);
                     }
@@ -169,31 +179,29 @@ public class Match {
                     //partly finished
                     case "Oracle" -> {
                         Card revealedCard = status.state.pendingEffect.cards[0];
-                        System.out.println("Revelead card by oracle:" + revealedCard);
+                        System.out.println("Oracle -> Revelead card: " + revealedCard);
                         CardDeck playAreaDeck = new CardDeck(status.state.playArea);
                         Card card;
                         card = null;
 
                         if (playAreaDeck.containsSuit(revealedCard.suit)) {
-                            System.out.println("Don't draw, there is a card with same suit in play area");
+                            System.out.println("Oracle -> don't draw, there is a card with same suit in play area");
                             stop(client);
                         } else {
                             if (revealedCard.suit == Suit.Kraken && playAreaDeck.cardDeck.size() > 2) {
-                                System.out.println(
-                                        "Don't draw, there are more than 2 cards in play area and Kraken might bust us");
+                                System.out.println("Oracle -> don't draw, there are more than 2 cards in play area and Kraken might bust us");
                                 stop(client);
                             } else {
                                 card = revealedCard;
-                                System.out.println("Draw, there is no duplicate in play area");
+                                System.out.println("Oracle -> draw, there is no duplicate in play area");
                             }
                             //todo: hook and then bust care. sword and then bust care => both minor use cases, finish only when time is left.
                         }
                         respond(client, orig, card);
                     }
-                    //TODO debug
+                    //partly finished.
                     case "Hook" -> {
-                        CardBank opponentCardBank = new CardBank(
-                                status.state.banks[1 - status.state.currentPlayerIndex]);
+                        CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
                         CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
 
                         var opponentCardSuits = opponentCardBank.getSuitsInBank();
@@ -207,84 +215,139 @@ public class Match {
                         Utils utils = new Utils();
                         Card responseCard;
                         if (myCardSuits.isEmpty()) { // Ak mozem vybrat od seba len nieco co uz je na play area
-                            CardDeck lowestCards = new CardDeck(new ArrayList<>());
+                            CardDeck highestCards = new CardDeck(new ArrayList<>());
                             for (Suit o : playAreaCardSuits) {
                                 var deck = myCardBank.getDeckBySuit(o);
-                                lowestCards.addToDeck(deck.getLowestValueCard()); // TODO: check backups
+                                highestCards.addToDeck(deck.getHighestValueCard()); // we have to return the highest card of suit -  rulebook.
                             }
-                            responseCard = lowestCards.getLowestValueCard();
+                            responseCard = highestCards.getLowestValueCard();
+                            System.out.println("Hook -> will bust, we take lowest top card of our bank: " + responseCard );
                         } else {
                             Suit chosenSuit;
                             if (opponentCardSuits.isEmpty()) {
-                                // nema ziadne karty
+                                //nema ziadne karty - urobme dake kombo ak sa da pre seba
+                                boolean myBankHasChest = myCardBank.hasCardsInDeck(Suit.Chest);
+                                boolean myBankHasKey = myCardBank.hasCardsInDeck(Suit.Key);
+                                boolean playAreaHasChest = playAreaDeck.containsSuit(Suit.Chest);
+                                boolean playAreaHasKey = playAreaDeck.containsSuit(Suit.Key);
+                                
+                                if(playAreaHasChest == true && myBankHasKey == true){
+                                    chosenSuit = Suit.Key;
+                                } else if(playAreaHasKey == true && myBankHasChest == true){
+                                    chosenSuit = Suit.Chest;
+                                } else {
+                                //if chest key combo is not possible, take anchor/oracle/map...etc
                                 chosenSuit = utils.getCardTypeScoredEmptyOpponent(myCardSuits);
+                                }
                             } else {
                                 // Ma nejake karty. Podme mu ublizit, ak sa da.
-                                chosenSuit = utils.getCardTypeScored(myCardSuits);
+
+                                boolean myBankHasCannon = myCardBank.hasCardsInDeck(Suit.Cannon);
+                                boolean myBankHasChest = myCardBank.hasCardsInDeck(Suit.Chest);
+                                boolean myBankHasKey = myCardBank.hasCardsInDeck(Suit.Key);
+                                boolean myBankHasAnchor = myCardBank.hasCardsInDeck(Suit.Anchor);
+                                boolean myBankHasOracle = myCardBank.hasCardsInDeck(Suit.Oracle);
+                                boolean playAreaHasOracle = playAreaDeck.containsSuit(Suit.Oracle);
+                                boolean playAreaHasAnchor = playAreaDeck.containsSuit(Suit.Anchor);
+                                boolean playAreaHasCannon = playAreaDeck.containsSuit(Suit.Cannon);
+                                boolean playAreaHasChest = playAreaDeck.containsSuit(Suit.Chest);
+                                boolean playAreaHasKey = playAreaDeck.containsSuit(Suit.Key);
+                                
+                                //todo: rething where to put sword -> sometimes risky sometimes good.
+                                if(myBankHasCannon == true && playAreaHasCannon == false){
+                                    chosenSuit = Suit.Cannon;
+                                } else if(playAreaHasChest == true && myBankHasKey == true){
+                                    chosenSuit = Suit.Key;
+                                } else if(playAreaHasKey == true && myBankHasChest == true){
+                                    chosenSuit = Suit.Chest;
+                                } else if(myBankHasAnchor == true && playAreaHasAnchor == false){
+                                    chosenSuit = Suit.Anchor;
+                                } else if(myBankHasOracle == true && playAreaHasOracle == false){
+                                    chosenSuit = Suit.Oracle;
+                                } else {
+                                    chosenSuit = utils.getCardTypeScored(myCardSuits);
+                                }
                             }
                             // vyberam od seba a musim top kartu, lebo tu pod tym nemozem, je to backup
                             responseCard = myCardBank.getDeckBySuit(chosenSuit).getHighestValueCard();
+                            System.out.println("Hook -> will not bust, we take: " + responseCard );
                         }
                         respond(client, orig, responseCard);
                     }
                     case "Sword" -> {
-                        CardBank opponentCardBank = new CardBank(
-                                status.state.banks[1 - status.state.currentPlayerIndex]);
+                        CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
                         CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
-
                         var opponentCardSuits = opponentCardBank.getSuitsInBank();
+                        var opponentCardSuitsNotCleared = opponentCardBank.getSuitsInBank();
                         var myCardSuits = myCardBank.getSuitsInBank();
-
                         CardDeck playAreaDeck = new CardDeck(status.state.playArea);
                         var playAreaCardSuits = playAreaDeck.getSuitsInDeck();
+                        Utils utils = new Utils();
+                        Card responseCard = null;
 
-                        // seems like I cant steal suit I already have in bank?
+                        // Remove Suits we have in bank -> we cant steal those.
                         opponentCardSuits.removeAll(myCardSuits);
+                        opponentCardSuitsNotCleared.removeAll(myCardSuits);
 
-                        // we also preferably dont want suits in play area
+                        // Remove suits that are in play area -> so we dont bust.
                         opponentCardSuits.removeAll(playAreaCardSuits);
 
-                        Utils utils = new Utils();
-                        Card responseCard;
+                        //There is no other option -> we must bust.
                         if (opponentCardSuits.isEmpty()) {
-                            // Dostaneme duplikat: zbav sa superovej vrchnej karty s najvyssou hodnotou,
-                            // ubliz mu co najviac, aj ked bustnes.
-                            CardDeck highestCards = new CardDeck(new ArrayList<>());
-                            for (Suit o : playAreaCardSuits) {
-                                var odeck = opponentCardBank.getDeckBySuit(o);
-                                if (odeck != null) {
-                                    highestCards.addToDeck(odeck.getHighestValueCard()); // TODO: najdi najvyssi DIFF a
-                                                                                         // ten znic, nie najvyssiu
-                                                                                         // kartu.
+                            //Skopceny Cannon, znicit mu najvacsi diff, ubliz mu co najviac, aj ked bustnes.
+                            Suit preferredSuit = null;
+                            Integer maxDiff = 0;
+                            for (Suit s : opponentCardSuitsNotCleared) {
+                                List<Card> tmpCardsList = opponentCardBank.getDeckBySuit(s).cardDeck;
+                                if (tmpCardsList != null) {
+                                    if (tmpCardsList.size() == 1 && maxDiff < tmpCardsList.get(0).value) {
+                                        maxDiff = tmpCardsList.get(0).value;
+                                        preferredSuit = s;
+                                    }
+                                    if (tmpCardsList.size() > 1) {
+                                        Collections.sort(tmpCardsList, Collections.reverseOrder());
+                                        int tmpDiff = tmpCardsList.get(0).value - tmpCardsList.get(1).value;
+                                        if (maxDiff < tmpDiff) {
+                                            maxDiff = tmpDiff;
+                                            preferredSuit = s;
+                                        }
+                                    }
                                 }
-                                odeck = null;
                             }
-
-                            responseCard = highestCards.getHighestValueCard();
+                            if (maxDiff < 2) {
+                                preferredSuit = utils.getCardTypeScored(opponentCardSuits);
+                            }
+                            responseCard = opponentCardBank.getDeckBySuit(preferredSuit).getHighestValueCard();
+                            System.out.println("Sword -> will bust, but we atleast destroy biggest diff of: " + maxDiff + " to destroy " + responseCard );
+                        
+                        // We will not bust and can use sword to steal + gain.
                         } else {
-                            //TODO:
-                            // porozmyslat, ci nieje najlepsie vzdy zobrat kanon ak tam je.
-                            //key chest kombo possible.
-                            //anchor ako poistka moze byt fajn.
+                            boolean opponentHasAnchor = opponentCardBank.hasCardsInDeck(Suit.Anchor);
+                            boolean playAreaHasAnchor = playAreaDeck.containsSuit(Suit.Anchor);
+                            boolean opponentHasCannon = opponentCardBank.hasCardsInDeck(Suit.Cannon);
+                            boolean playAreaHasCannon = playAreaDeck.containsSuit(Suit.Cannon);
+                            boolean playAreaHasChest = playAreaDeck.containsSuit(Suit.Chest);
+                            boolean playAreaHasKey = playAreaDeck.containsSuit(Suit.Key);
+                            
+                            if(opponentHasCannon == true && playAreaHasCannon == false){
+                                responseCard = opponentCardBank.getDeckBySuit(Suit.Cannon).getHighestValueCard();
+                            } else if(playAreaHasChest == true && playAreaHasKey == false){
+                                responseCard = opponentCardBank.getDeckBySuit(Suit.Key).getHighestValueCard();
+                            } else if(playAreaHasKey == true && playAreaHasChest == false){
+                                responseCard = opponentCardBank.getDeckBySuit(Suit.Chest).getHighestValueCard();
+                            } else if(opponentHasAnchor == true && playAreaHasAnchor == false){
+                                responseCard = opponentCardBank.getDeckBySuit(Suit.Anchor).getHighestValueCard();
+                            } else {
                             Suit chosenCardSuit = utils.getCardTypeScored(opponentCardSuits);
-                            responseCard = opponentCardBank.getDeckBySuit(chosenCardSuit).getHighestValueCard(); // TODO:
-                                                                                                                 // najdi
-                                                                                                                 // najvyssi
-                                                                                                                 // DIFF
-                                                                                                                 // a
-                                                                                                                 // ten
-                                                                                                                 // znic,
-                                                                                                                 // nie
-                                                                                                                 // najvyssiu
-                                                                                                                 // kartu.
-
+                            responseCard = opponentCardBank.getDeckBySuit(chosenCardSuit).getHighestValueCard();
+                            System.out.println("Sword -> will not bust, we take: " + responseCard );
+                            }
                         }
                         respond(client, orig, responseCard);
                     }
                     //finished
                     case "Cannon" -> {
-                        CardBank opponentCardBank = new CardBank(
-                                status.state.banks[1 - status.state.currentPlayerIndex]);
+                        CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
                         var opponentCardSuits = opponentCardBank.getSuitsInBank();
 
                         Card responseCard = null;
@@ -323,12 +386,12 @@ public class Match {
                                     }
                                 }
                             }
-                            System.out.println("Current maxDiff:" + maxDiff);
                             if (maxDiff < 2) {
                                 preferredSuit = utils.getCardTypeScored(opponentCardSuits);
                             }
 
                             responseCard = opponentCardBank.getDeckBySuit(preferredSuit).getHighestValueCard();
+                            System.out.println("Cannon -> biggest diff of: " + maxDiff + " to destroy " + responseCard );
                         }
                         respond(client, orig, responseCard);
                         // var bank = status.state.banks[1 - status.state.currentPlayerIndex];
@@ -352,6 +415,11 @@ public class Match {
                     case "Key" -> {
                         var card = status.state.pendingEffect.cards[0];
                         respond(client, orig, card);
+                    }
+                    //finished
+                    case "Anchor" -> {
+                        System.out.println("Anchor -> draw, we are safe");
+                        draw(client);
                     }
                     case "Map" -> {
                         Card responseCard = null;
@@ -520,14 +588,11 @@ public class Match {
         }
         var statusRealTime = getStatus(client, true);
         CardDeck playAreaDeck = new CardDeck(statusRealTime.state.playArea);
-        // System.out.println("Last Play Area Array:" + playAreaDeck );
         if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0) {
-            // System.out.println("Last Play Area Card was empty");
+            System.out.println("DRAW - Last Play Area Card was empty");
         } else {
             Card lastPlayAreaCard = playAreaDeck.cardDeck.get(playAreaDeck.cardDeck.size() - 1);
-            // System.out.println("DRAW last play card: " + lastPlayAreaCard);
             removeCardFromDrawPile(lastPlayAreaCard);
-            // System.out.println("DRAW draw pile size:" + drawPile.cardDeck.size());
         }
     }
 
