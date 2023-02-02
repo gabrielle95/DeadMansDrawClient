@@ -4,7 +4,7 @@ import java.util.*;
 
 public class CardDeck {
 
-    List<Card> cardDeck;
+    public List<Card> cardDeck;
 
     public CardDeck(List<Card> cardDeck) {
         this.cardDeck = cardDeck;
