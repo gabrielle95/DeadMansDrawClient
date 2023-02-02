@@ -16,5 +16,7 @@ public class State {
     public Pending pendingEffect;
     public Integer currentPlayerIndex;
     public Card[] playArea;
+    public Card[] drawPile;
+    public Card[] discardPile;
     public Map<String, Set<Integer>>[] banks;
 }

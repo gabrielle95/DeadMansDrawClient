@@ -11,7 +11,12 @@ public class CardDeck {
     }
 
     public CardDeck(Card[] cardArray) {
-        this.cardDeck = Arrays.asList(cardArray);
+        if(cardArray == null) {
+            this.cardDeck = new ArrayList<>();
+        }
+        else {
+            this.cardDeck = Arrays.asList(cardArray);
+        }
     }
 
     public boolean containsCard(Card card) {
@@ -65,6 +70,30 @@ public class CardDeck {
         return null;
     }
 
+    public Integer getBackupDifference(Suit suit) {
+        var tmpDeck = cardDeck;
+        Collections.sort(tmpDeck);
+        Collections.reverse(tmpDeck);
+
+        Card highest = new Card(suit, 0);
+        Card secondHighest = new Card(suit, 0);
+        for (Card c1 : tmpDeck) {
+            if (c1.suit == suit) {
+                highest = c1;
+                tmpDeck.remove(highest);
+                break;
+            }
+        }
+        for (Card c2 : tmpDeck) {
+            if (c2.suit == suit) {
+                secondHighest = c2;
+                break;
+            }
+        }
+
+        return highest.value - secondHighest.value;
+    }
+
     public Card getCard(Suit suit, int value) {
         for (Card c : cardDeck) {
             if (c.suit == suit && c.value == value) {
@@ -104,22 +133,26 @@ public class CardDeck {
     }
 
     public int getNumberOfCardsBySuit(Suit suit) {
-        int Count = 0 ;
+        int Count = 0;
         for (Card c : cardDeck) {
             if (c.suit == suit) {
-               Count = Count + 1;
+                Count = Count + 1;
             }
         }
         return Count;
     }
 
     public int getSumOfCardsValuesBySuit(Suit suit) {
-        int SumOfCardsValuesBySuit = 0 ;
+        int SumOfCardsValuesBySuit = 0;
         for (Card c : cardDeck) {
             if (c.suit == suit) {
                 SumOfCardsValuesBySuit = SumOfCardsValuesBySuit + c.value;
             }
         }
         return SumOfCardsValuesBySuit;
+    }
+
+    public void addToDeck(Card card) {
+        cardDeck.add(card);
     }
 }

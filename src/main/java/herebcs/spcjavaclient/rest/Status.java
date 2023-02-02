@@ -18,4 +18,6 @@ public class Status {
     public State state;
     public Move[] moves;
     public boolean finished;
+    public int drawPileSize;
+    public int discardPileSize;
 }

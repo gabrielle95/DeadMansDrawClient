@@ -23,13 +23,7 @@ public class CardBank {
     }
 
     public CardDeck getDeckBySuit(Suit suit) {
-        for (var e : cardBank.entrySet()) {
-            if (suit == e.getKey()) {
-                return e.getValue();
-            }
-        }
-        // returns an empty deck so we dont need to check for null
-        return new CardDeck(new ArrayList<>());
+        return cardBank.get(suit);
     }
 
     public boolean hasCardsInDeck(Suit suit) {

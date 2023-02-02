@@ -1,5 +1,6 @@
 package herebcs.spcjavaclient.types;
 
+
 public class Card implements Comparable<Card> {
     public Suit suit;
     public int value;
@@ -15,6 +16,15 @@ public class Card implements Comparable<Card> {
 
     @Override
     public int compareTo(Card o) {
+
+        if (o == this) {
+            return 0;
+        }
+
+        if (!(o instanceof Card)) {
+            return 1;
+        }
+
         if (this.value > o.value) {
             return 1;
         } else if (this.value == o.value) {

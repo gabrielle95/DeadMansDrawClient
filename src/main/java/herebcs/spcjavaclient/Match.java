@@ -4,14 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import herebcs.spcjavaclient.rest.EffectResponse;
 import herebcs.spcjavaclient.rest.Status;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import herebcs.spcjavaclient.types.Card;
@@ -93,6 +87,32 @@ public class Match {
                     draw(client);
                 } else {
                     // TODO: upravit: vypocitaj pravdepodobnost a na zaklade nej sa rozhodni
+
+//                    CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+//                    CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
+//                    CardDeck playAreaDeck = new CardDeck(status.state.playArea);
+//                    CardDeck drawDeck = new CardDeck(status.state.drawPile);
+//                    CardDeck discardDeck = new CardDeck(status.state.discardPile);
+//
+//                    OctopusBrain brain = new OctopusBrain(playAreaDeck, discardDeck, drawDeck, myCardBank, opponentCardBank);
+//
+//                    var drawOkProb = brain.calcProbabilityOfDrawingOk();
+//                    var possiblePointsToScore = brain.calcPossiblePointsToScore();
+//                    var avgValueOfDrawingOkSuit = brain.calcAvgValueOfDrawingOkSuit();
+//
+//                    var avgPointsScoredByDrawing = drawOkProb * (possiblePointsToScore + avgValueOfDrawingOkSuit);
+//
+//                    System.out.println("drawOkProb: " + drawOkProb);
+//                    System.out.println("possiblePointsToScore: " + possiblePointsToScore);
+//                    System.out.println("avgValueOfDrawingOkSuit: " + avgValueOfDrawingOkSuit);
+//                    System.out.println("avgPointsScoredByDrawing: " + avgPointsScoredByDrawing);
+//
+//                    if (possiblePointsToScore > avgPointsScoredByDrawing) {
+//                        stop(client);
+//                    } else {
+//                        draw(client);
+//                    }
+
                     var rnd = (new Random()).nextFloat();
                     if (rnd < 0.3) {
                         stop(client);
@@ -105,96 +125,115 @@ public class Match {
 
                 switch (status.state.pendingEffect.effectType) {
                     case "Oracle" -> {
-                        Set<String> playAreaSet = getCardsFromPlayArea(status);
+                        Card revealedCard = status.state.pendingEffect.cards[0];
+                        CardDeck playAreaDeck = new CardDeck(status.state.playArea);
                         Card card;
 
-                        if (playAreaSet.contains(status.state.pendingEffect.cards[0].suit.name())) {
+                        if (playAreaDeck.containsSuit(revealedCard.suit)) {
                             card = null;
                         } else {
-                            card = status.state.pendingEffect.cards[0];
+                            card = revealedCard;
                         }
                         respond(client, orig, card);
                     }
                     case "Hook" -> {
-                        Set<String> playAreaSet = getCardsFromPlayArea(status);
-                        var myBank = status.state.banks[status.state.currentPlayerIndex];
-                        var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
-                        var myCardTypes = myBank.keySet();
-                        var opponentCardTypes = opponentBank.keySet();
-                        var card = new Card();
-                    
-                        myCardTypes.removeAll(playAreaSet);
-                        if (myCardTypes.isEmpty()) {
-                            // Dostaneme duplikat: zbav sa vrchnej karty s najnizsou hodnotou
-                            String foundType = "";
-                            int foundValue = 999;
+                        CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+                        CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
 
-                            for (var entry: myBank.entrySet()) {
-                                if (foundValue > Collections.max(entry.getValue())) {
-                                    foundType = entry.getKey();
-                                    foundValue = Collections.max(entry.getValue());
-                                }
+                        var opponentCardSuits = opponentCardBank.getSuitsInBank();
+                        var myCardSuits = myCardBank.getSuitsInBank();
+
+                        CardDeck playAreaDeck = new CardDeck(status.state.playArea);
+                        var playAreaCardSuits = playAreaDeck.getSuitsInDeck();
+
+                        myCardSuits.removeAll(playAreaCardSuits);
+
+                        Utils utils = new Utils();
+                        Card responseCard;
+                        if (myCardSuits.isEmpty()) { // Ak mozem vybrat od seba len nieco co uz je na play area
+                            CardDeck lowestCards = new CardDeck(new ArrayList<>());
+                            for (Suit o : playAreaCardSuits) {
+                                var deck = myCardBank.getDeckBySuit(o);
+                                lowestCards.addToDeck(deck.getLowestValueCard()); // TODO: check backups
                             }
-                            card.suit = Suit.valueOf(foundType);
-                            card.value = Collections.max(myBank.get(foundType));
-                            card = ( card.suit == null || card.value == 0 ? status.state.pendingEffect.cards[0] : card );
-                            respond(client, orig, card);
+                            responseCard = lowestCards.getLowestValueCard();
                         } else {
-                            String chosenCardType;
-                            if (opponentCardTypes.isEmpty()) {
+                            Suit chosenSuit;
+                            if (opponentCardSuits.isEmpty()) {
                                 // nema ziadne karty
-                                chosenCardType = getCardTypeScoredEmptyOpponent(myCardTypes);
+                                chosenSuit = utils.getCardTypeScoredEmptyOpponent(myCardSuits);
                             } else {
                                 // Ma nejake karty. Podme mu ublizit, ak sa da.
-                                chosenCardType = getCardTypeScored(myCardTypes);
+                                chosenSuit = utils.getCardTypeScored(myCardSuits);
                             }
-                            card.suit = Suit.valueOf(chosenCardType);
-                            card.value = Collections.max(myBank.get(chosenCardType));
-                            respond(client, orig, card);
+                            //vyberam od seba a musim top kartu, lebo tu pod tym nemozem, je to backup
+                            responseCard = myCardBank.getDeckBySuit(chosenSuit).getHighestValueCard();
                         }
+                        respond(client, orig, responseCard);
                     }
                     case "Sword" -> {
-                        Set<String> playAreaSet = getCardsFromPlayArea(status);
-                        var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
-                        var opponentCardTypes = opponentBank.keySet();
-                        var card = new Card();
-                    
-                        opponentCardTypes.removeAll(playAreaSet);
-                        if (opponentCardTypes.isEmpty()) {
+                        CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+                        CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
+
+                        var opponentCardSuits = opponentCardBank.getSuitsInBank();
+                        var myCardSuits = myCardBank.getSuitsInBank();
+
+                        CardDeck playAreaDeck = new CardDeck(status.state.playArea);
+                        var playAreaCardSuits = playAreaDeck.getSuitsInDeck();
+
+                        // seems like I cant steal suit I already have in bank?
+                        opponentCardSuits.removeAll(myCardSuits);
+
+                        // we also preferably dont want suits in play area
+                        opponentCardSuits.remove(playAreaCardSuits);
+
+                        Utils utils = new Utils();
+                        Card responseCard;
+                        if (opponentCardSuits.isEmpty()) {
                             // Dostaneme duplikat: zbav sa vrchnej karty s najvyssou hodnotou
-                            String foundType = "";
-                            int foundValue = 0;
-
-                            for (var entry: opponentBank.entrySet()) {
-                                if (foundValue < Collections.max(entry.getValue())) {
-                                    foundType = entry.getKey();
-                                    foundValue = Collections.max(entry.getValue());
-                                }
+                            CardDeck highestCards = new CardDeck(new ArrayList<>());
+                            for (Suit o : playAreaCardSuits) {
+                                var odeck = opponentCardBank.getDeckBySuit(o);
+                                highestCards.addToDeck(odeck.getHighestValueCard()); // TODO: check backups
                             }
-                            card.suit = Suit.valueOf(foundType);
-                            card.value = Collections.max(opponentBank.get(foundType));
 
-                            card = ( card.suit == null || card.value == 0 ? status.state.pendingEffect.cards[0] : card );
-                            respond(client, orig, card);
+                            responseCard = highestCards.getHighestValueCard();
                         } else {
-                            String chosenCardType = getCardTypeScored(opponentCardTypes);
-                            card.suit = Suit.valueOf(chosenCardType);
-                            card.value = Collections.max(opponentBank.get(chosenCardType));
-                            respond(client, orig, card);
+                            Suit chosenCardSuit = utils.getCardTypeScored(opponentCardSuits);
+                            responseCard = opponentCardBank.getDeckBySuit(chosenCardSuit).getHighestValueCard();
+
                         }
+                        respond(client, orig, responseCard);
                     }
                     case "Cannon" -> {
-                        var opponentBank = status.state.banks[1 - status.state.currentPlayerIndex];
-                        var opponentCardTypes = opponentBank.keySet();
-                        var card = new Card();
-                        
-                        if (opponentCardTypes.isEmpty() == false) {
-                            // TODO: Asi by bolo dobre zahrnut aj hodnotu katry do vyberu, nie len jej typ.
-                            String chosenCardType = getCardTypeScored(opponentCardTypes);
-                            card.suit = Suit.valueOf(chosenCardType);
-                            card.value = Collections.max(opponentBank.get(chosenCardType));
+                        CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
+                        var opponentCardSuits = opponentCardBank.getSuitsInBank();
+
+                        Card responseCard = null;
+                        Utils utils = new Utils();
+                        if (!opponentCardSuits.isEmpty()) {
+
+//                            ConcurrentHashMap<Suit, Integer> differences = new ConcurrentHashMap<>();
+//                            for (Suit o : opponentCardSuits) {
+//                                CardDeck deck = opponentCardBank.getDeckBySuit(o);
+//                                System.out.println(deck);
+//                                differences.put(o, deck.getBackupDifference(o));
+//                            }
+//
+//                            Suit highestDifferenceSuit = Collections.max(differences.entrySet(), Map.Entry.comparingByValue()).getKey();
+//                            System.out.println("Highest Difference Suit: " + highestDifferenceSuit.name());
+//                            System.out.println(opponentCardBank.getDeckBySuit(highestDifferenceSuit));
+                            var preferredSuit = utils.getCardTypeScored(opponentCardSuits);
+                            responseCard = opponentCardBank.getDeckBySuit(preferredSuit).getHighestValueCard();
                         }
-                        respond(client, orig, card);
+                        respond(client, orig, responseCard);
+//                        var bank = status.state.banks[1 - status.state.currentPlayerIndex];
+//                        var firstCardType = bank.keySet().iterator().next();
+//                        var maxCardValue = Collections.max(bank.get(firstCardType));
+//                        var card = new Card();
+//                        card.suit = Suit.valueOf(firstCardType);
+//                        card.value = maxCardValue;
+//                        respond(client, orig, card);
                     }
                     case "Kraken" -> {
                         draw(client);
