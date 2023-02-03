@@ -155,20 +155,23 @@ public class Match {
                      System.out.println("avgPointsScoredByDrawing: " + avgPointsScoredByDrawing);
 
                     if (possiblePointsToScore > avgPointsScoredByDrawing) {
-                        //stop(client);
-                        
-                         Card lastPlayAreaCardX = playAreaDeck.cardDeck.get(playAreaDeck.cardDeck.size() - 1);
-                         if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0) {
-                             System.out.println("Anchor -> Last Play Area Card was empty");
-                             stop(client);
-                         } else {
-                             if(lastPlayAreaCardX.suit == Suit.Anchor ){
-                                 System.out.println("Anchor -> keep drawing, last card was: " + lastPlayAreaCardX );
-                                 draw(client);
-                             }else{
-                                 stop(client);
-                             }
-                         }
+                        stop(client);
+                        // System.out.println("Anchor -> playAreaDeck.cardDeck " + playAreaDeck.cardDeck);
+                        //  Card lastPlayAreaCardX = playAreaDeck.cardDeck.get(0);
+                        //  Card lastPlayAreaCard22 = status.state.playArea[0];
+                        //  System.out.println("Anchor -> lastPlayAreaCardX " + lastPlayAreaCardX);
+                        //  System.out.println("Anchor -> lastPlayAreaCard22 " + lastPlayAreaCard22);
+                        //  if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0) {
+                        //      System.out.println("Anchor -> Last Play Area Card was empty");
+                        //      stop(client);
+                        //  } else {
+                        //      if(lastPlayAreaCardX.suit == Suit.Anchor ){
+                        //          System.out.println("Anchor -> keep drawing, last card was: " + lastPlayAreaCardX );
+                        //          draw(client);
+                        //      }else{
+                        //          stop(client);
+                        //      }
+                        //  }
                     } else {
                         draw(client);
                     }
@@ -205,14 +208,13 @@ public class Match {
                         CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
                         CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
 
-                        var opponentCardSuits = opponentCardBank.getSuitsInBank();
-                        var myCardSuits = myCardBank.getSuitsInBank();
+                        var opponentCardSuits = new HashSet<>(opponentCardBank.getSuitsInBank());
+                        var myCardSuits = new HashSet<>(myCardBank.getSuitsInBank());
 
                         CardDeck playAreaDeck = new CardDeck(status.state.playArea);
                         var playAreaCardSuits = playAreaDeck.getSuitsInDeck();
 
                         myCardSuits.removeAll(playAreaCardSuits);
-
 
                         //todo: calculate diff in this scenario
                         Utils utils = new Utils();
@@ -224,7 +226,6 @@ public class Match {
                                 highestCards.addToDeck(deck.getHighestValueCard()); // we have to return the highest card of suit -  rulebook.
                             }
                             responseCard = highestCards.getLowestValueCard();
-                            System.out.println("Hook -> will bust, we take lowest top card of our bank: " + responseCard );
                         } else {
                             Suit chosenSuit;
                             if (opponentCardSuits.isEmpty()) {
