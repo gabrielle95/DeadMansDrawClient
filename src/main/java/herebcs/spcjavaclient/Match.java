@@ -231,7 +231,6 @@ public class Match {
                             if (opponentCardSuits.isEmpty()) {
                                 //nema ziadne karty - urobme dake kombo ak sa da pre seba
 
-                                //todo: kedy skor anchor a kedy chestku nejaka logika
                                 boolean myBankHasChest = myCardBank.hasCardsInDeck(Suit.Chest);
                                 boolean myBankHasKey = myCardBank.hasCardsInDeck(Suit.Key);
                                 boolean playAreaHasChest = playAreaDeck.containsSuit(Suit.Chest);
@@ -247,7 +246,10 @@ public class Match {
                                 }
                             } else {
                                 // Ma nejake karty. Podme mu ublizit, ak sa da.
-
+                                boolean opponentHasChest = opponentCardBank.hasCardsInDeck(Suit.Chest);
+                                boolean opponentHasKey = opponentCardBank.hasCardsInDeck(Suit.Key);
+                                boolean opponentHasAnchor = opponentCardBank.hasCardsInDeck(Suit.Anchor);
+                                boolean opponentHasCannon = opponentCardBank.hasCardsInDeck(Suit.Cannon);
                                 boolean myBankHasCannon = myCardBank.hasCardsInDeck(Suit.Cannon);
                                 boolean myBankHasChest = myCardBank.hasCardsInDeck(Suit.Chest);
                                 boolean myBankHasKey = myCardBank.hasCardsInDeck(Suit.Key);
@@ -258,26 +260,38 @@ public class Match {
                                 boolean playAreaHasCannon = playAreaDeck.containsSuit(Suit.Cannon);
                                 boolean playAreaHasChest = playAreaDeck.containsSuit(Suit.Chest);
                                 boolean playAreaHasKey = playAreaDeck.containsSuit(Suit.Key);
-                                
-                                //todo: choose sword, when he has cannon and you dont
-                                //todo: choose sword, when he has cannon and you dont
-                                //todo:  sword cannon, sword anchor, sword keychest, cannon, keychest, anchor, oracle
+                                boolean myCardSuitHasSword = playAreaDeck.containsSuit(Suit.Sword);
+                                boolean myCardSuitHasCannon = playAreaDeck.containsSuit(Suit.Cannon);
+                                boolean myCardSuitHasKey = playAreaDeck.containsSuit(Suit.Key);
+                                boolean myCardSuitHasChest = playAreaDeck.containsSuit(Suit.Chest);
+                                boolean myCardSuitHasAnchor = playAreaDeck.containsSuit(Suit.Anchor);
+                                boolean myCardSuitHasOracle = playAreaDeck.containsSuit(Suit.Oracle);
 
-                                if(myBankHasCannon == true && playAreaHasCannon == false){
+                                if (myCardSuitHasSword == true && myBankHasCannon == false && opponentHasCannon == true && playAreaHasCannon == false ){
+                                    chosenSuit = Suit.Sword;
+                                }else if (myCardSuitHasSword == true && myBankHasAnchor == false && opponentHasAnchor == true && playAreaHasAnchor == false ){
+                                    chosenSuit = Suit.Sword;
+                                }else if (myCardSuitHasSword == true && myBankHasKey == false && opponentHasKey == true && playAreaHasKey == false ){
+                                    chosenSuit = Suit.Sword;
+                                }else if (myCardSuitHasSword == true && myBankHasChest == false && opponentHasChest == true && playAreaHasChest == false ){
+                                    chosenSuit = Suit.Sword;
+                                }else if(myCardSuitHasCannon == true && myBankHasCannon == true && playAreaHasCannon == false){
                                     chosenSuit = Suit.Cannon;
-                                } else if(playAreaHasChest == true && myBankHasKey == true){
+                                } else if(myCardSuitHasKey == true && playAreaHasChest == true && myBankHasKey == true){
                                     chosenSuit = Suit.Key;
-                                } else if(playAreaHasKey == true && myBankHasChest == true){
+                                } else if(myCardSuitHasChest == true && playAreaHasKey == true && myBankHasChest == true){
                                     chosenSuit = Suit.Chest;
-                                } else if(myBankHasAnchor == true && playAreaHasAnchor == false){
+                                } else if(myCardSuitHasAnchor == true && myBankHasAnchor == true && playAreaHasAnchor == false){
+                                    System.out.println("Hook -> anchor if:" );
                                     chosenSuit = Suit.Anchor;
-                                } else if(myBankHasOracle == true && playAreaHasOracle == false){
+                                } else if(myCardSuitHasOracle == true && myBankHasOracle == true && playAreaHasOracle == false){
                                     chosenSuit = Suit.Oracle;
                                 } else {
                                     chosenSuit = utils.getCardTypeScored(myCardSuits);
                                 }
                             }
                             // vyberam od seba a musim top kartu, lebo tu pod tym nemozem, je to backup
+                            System.out.println("Hook -> chosen suit: " + chosenSuit );
                             responseCard = myCardBank.getDeckBySuit(chosenSuit).getHighestValueCard();
                             System.out.println("Hook -> will not bust, we take: " + responseCard );
                         }
@@ -431,11 +445,23 @@ public class Match {
 
                         CardBank opponentBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
                         Set<Suit> opponentCardTypes = opponentBank.getSuitsInBank();
-
+                        CardBank myCardBank = new CardBank(status.state.banks[status.state.currentPlayerIndex]);
                         boolean playAreaHasChest = playAreaDeck.containsSuit(Suit.Chest);
                         boolean playAreaHasKey = playAreaDeck.containsSuit(Suit.Key);
                         boolean playAreaNeedsChest = playAreaHasKey && !playAreaHasChest;
                         boolean playAreaNeedsKey = playAreaHasChest && !playAreaHasKey;
+                        boolean opponentHasChest = opponentBank.hasCardsInDeck(Suit.Chest);
+                        boolean opponentHasKey = opponentBank.hasCardsInDeck(Suit.Key);
+                        boolean opponentHasAnchor = opponentBank.hasCardsInDeck(Suit.Anchor);
+                        boolean opponentHasCannon = opponentBank.hasCardsInDeck(Suit.Cannon);
+                        boolean myBankHasCannon = myCardBank.hasCardsInDeck(Suit.Cannon);
+                        boolean myBankHasChest = myCardBank.hasCardsInDeck(Suit.Chest);
+                        boolean myBankHasKey = myCardBank.hasCardsInDeck(Suit.Key);
+                        boolean myBankHasAnchor = myCardBank.hasCardsInDeck(Suit.Anchor);
+                        boolean myBankHasOracle = myCardBank.hasCardsInDeck(Suit.Oracle);
+                        boolean playAreaHasOracle = playAreaDeck.containsSuit(Suit.Oracle);
+                        boolean playAreaHasAnchor = playAreaDeck.containsSuit(Suit.Anchor);
+                        boolean playAreaHasCannon = playAreaDeck.containsSuit(Suit.Cannon);
 
                         Utils utils = new Utils();
 
@@ -452,20 +478,39 @@ public class Match {
                             }
                         } else { //decide what to choose depending on oponent card values vs play area values
                             var suits = mapChoicesDeck.getSuitsInDeck();
-                            var prioSuit = utils.getCardTypeScored(suits);
+                            System.out.println("Map -> suits: " + suits);
 
+                            boolean mapHasSword = suits.contains(Suit.Sword);
+                            boolean mapHasCannon = suits.contains(Suit.Cannon);
+                            boolean mapHasKey = suits.contains(Suit.Key);
+                            boolean mapHasChest = suits.contains(Suit.Chest);
+                            boolean mapHasAnchor = suits.contains(Suit.Anchor);
+                            boolean mapHasOracle = suits.contains(Suit.Oracle);
+                            
                             //TODO: poradie: sword cannon, sword anchor, sword keychest, cannon, keychest, anchor, oracle
 
-                            if (prioSuit == Suit.Sword || prioSuit == Suit.Cannon) {
-                                responseCard = mapChoicesDeck.getHighestInSuit(prioSuit);
-                            } else if (playAreaNeedsChest) {
-                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Chest);
-                            } else if (playAreaNeedsKey) {
+                            if (mapHasSword == true && myBankHasCannon == false && opponentHasCannon == true && playAreaHasCannon == false ){
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Sword);
+                            } else if (mapHasSword == true && myBankHasAnchor == false && opponentHasAnchor == true && playAreaHasAnchor == false ){
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Sword);
+                            } else if (mapHasSword == true && myBankHasKey == false && opponentHasKey == true && playAreaHasKey == false ){
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Sword);
+                            } else if (mapHasSword == true && myBankHasChest == false && opponentHasChest == true && playAreaHasChest == false ){
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Sword);
+                            } else if(mapHasCannon == true && myBankHasCannon == true && playAreaHasCannon == false){
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Cannon);
+                            } else if(mapHasKey == true && playAreaHasChest == true && myBankHasKey == true){
                                 responseCard = mapChoicesDeck.getHighestInSuit(Suit.Key);
-                            }
-                            if (responseCard == null) {
-                                //todo: pozor na krakena, respektive == Suit.Kraken && playAreaDeck.cardDeck.size() > 2)
-                                responseCard = mapChoicesDeck.getHighestInSuit(prioSuit);
+                            } else if(mapHasChest == true && playAreaHasKey == true && myBankHasChest == true){
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Chest);
+                            } else if(mapHasAnchor == true && myBankHasAnchor == true && playAreaHasAnchor == false){
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Anchor);
+                            } else if(mapHasOracle == true && myBankHasOracle == true && playAreaHasOracle == false){
+                                responseCard = mapChoicesDeck.getHighestInSuit(Suit.Oracle);
+                            } else {
+                                System.out.println("else branch");
+                                responseCard = mapChoicesDeck.getHighestInSuit(utils.getCardTypeScored(suits));
+                                System.out.println("response card: " + responseCard );
                             }
                         }
                         respond(client, orig, responseCard);
