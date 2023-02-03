@@ -217,7 +217,7 @@ public class Match {
                         var myCardSuits = new HashSet<>(myCardBank.getSuitsInBank());
 
                         CardDeck playAreaDeck = new CardDeck(status.state.playArea);
-                        var playAreaCardSuits = playAreaDeck.getSuitsInDeck();
+                        var playAreaCardSuits = new HashSet<>(playAreaDeck.getSuitsInDeck());
 
                         myCardSuits.removeAll(playAreaCardSuits);
 
@@ -228,7 +228,10 @@ public class Match {
                             CardDeck highestCards = new CardDeck(new ArrayList<>());
                             for (Suit o : playAreaCardSuits) {
                                 var deck = myCardBank.getDeckBySuit(o);
-                                highestCards.addToDeck(deck.getHighestValueCard()); // we have to return the highest card of suit -  rulebook.
+                                if(deck != null){
+                                    highestCards.addToDeck(deck.getHighestValueCard()); // we have to return the highest card of suit -  rulebook.
+                                }
+                                deck = null;
                             }
                             responseCard = highestCards.getLowestValueCard();
                         } else {
