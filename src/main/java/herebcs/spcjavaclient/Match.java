@@ -2,6 +2,7 @@ package herebcs.spcjavaclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import herebcs.spcjavaclient.rest.EffectResponse;
+import herebcs.spcjavaclient.rest.Event;
 import herebcs.spcjavaclient.rest.Status;
 import java.io.IOException;
 import java.util.*;
@@ -111,8 +112,11 @@ public class Match {
         
         System.out.println(playerID + ": playing match " + matchID + ".");
 
+        Event lastDrawEvent = null;
+        Event cardPlacedToPlayArea = null;
         do {
             Status status = null;
+
             while (status == null) {
                 status = getStatus(client, true);
             }
@@ -135,7 +139,7 @@ public class Match {
             if (status.state.pendingEffect == null) {
                 if (status.state.playArea.length == 0) {
                     //toto nastane pri zaciatku hry a pri kazdom buste, vtedy sa dobre nepremaze drawpile.
-                    draw(client);
+                    lastDrawEvent = draw(client);
                 } else {
 
                     CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
@@ -155,25 +159,26 @@ public class Match {
                      System.out.println("avgPointsScoredByDrawing: " + avgPointsScoredByDrawing);
 
                     if (possiblePointsToScore > avgPointsScoredByDrawing) {
-                        stop(client);
-                        // System.out.println("Anchor -> playAreaDeck.cardDeck " + playAreaDeck.cardDeck);
-                        //  Card lastPlayAreaCardX = playAreaDeck.cardDeck.get(0);
-                        //  Card lastPlayAreaCard22 = status.state.playArea[0];
-                        //  System.out.println("Anchor -> lastPlayAreaCardX " + lastPlayAreaCardX);
-                        //  System.out.println("Anchor -> lastPlayAreaCard22 " + lastPlayAreaCard22);
-                        //  if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0) {
-                        //      System.out.println("Anchor -> Last Play Area Card was empty");
-                        //      stop(client);
-                        //  } else {
-                        //      if(lastPlayAreaCardX.suit == Suit.Anchor ){
-                        //          System.out.println("Anchor -> keep drawing, last card was: " + lastPlayAreaCardX );
-                        //          draw(client);
-                        //      }else{
-                        //          stop(client);
-                        //      }
-                        //  }
+                        //stop(client);
+
+                        if (cardPlacedToPlayArea == null) {
+                            System.out.println("Anchor -> Last cardPlacedToPlayArea was empty");
+                            stop(client);
+                        }
+                        else {
+                            if(cardPlacedToPlayArea.cardPlacedToPlayAreaCard == null) {
+                                stop(client);
+                            }
+                            Card cardPlacedToPlayAreaCard = new Card(cardPlacedToPlayArea.cardPlacedToPlayAreaCard.suit, cardPlacedToPlayArea.cardPlacedToPlayAreaCard.value);
+                            if (cardPlacedToPlayArea.cardPlacedToPlayAreaCard.suit == Suit.Anchor) {
+                                System.out.println("Anchor -> keep drawing, last card was: " + cardPlacedToPlayAreaCard);
+                                lastDrawEvent = draw(client);
+                            } else {
+                                stop(client);
+                            }
+                        }
                     } else {
-                        draw(client);
+                        lastDrawEvent = draw(client);
                     }
                 }
             } else {
@@ -201,7 +206,7 @@ public class Match {
                             }
                             //todo: hook and then bust care. sword and then bust care => both minor use cases, finish only when time is left.
                         }
-                        respond(client, orig, card);
+                        cardPlacedToPlayArea = respond(client, orig, card);
                     }
                     //partly finished.
                     case "Hook" -> {
@@ -281,7 +286,7 @@ public class Match {
                             responseCard = myCardBank.getDeckBySuit(chosenSuit).getHighestValueCard();
                             System.out.println("Hook -> will not bust, we take: " + responseCard );
                         }
-                        respond(client, orig, responseCard);
+                        cardPlacedToPlayArea = respond(client, orig, responseCard);
                     }
                     case "Sword" -> {
                         CardBank opponentCardBank = new CardBank(status.state.banks[1 - status.state.currentPlayerIndex]);
@@ -351,7 +356,7 @@ public class Match {
                             System.out.println("Sword -> will not bust, we take: " + responseCard );
                             }
                         }
-                        respond(client, orig, responseCard);
+                        cardPlacedToPlayArea = respond(client, orig, responseCard);
                     }
                     //finished
                     case "Cannon" -> {
@@ -387,26 +392,26 @@ public class Match {
                             responseCard = opponentCardBank.getDeckBySuit(preferredSuit).getHighestValueCard();
                             System.out.println("Cannon -> biggest diff of: " + maxDiff + " to destroy " + responseCard );
                         }
-                        respond(client, orig, responseCard);
+                        cardPlacedToPlayArea = respond(client, orig, responseCard);
                     }
                     //finished
                     case "Kraken" -> {
-                        draw(client);
+                        lastDrawEvent = draw(client);
                     }
                     //finished
                     case "Chest" -> {
                         var card = status.state.pendingEffect.cards[0];
-                        respond(client, orig, card);
+                        cardPlacedToPlayArea = respond(client, orig, card);
                     }
                     //finished
                     case "Key" -> {
                         var card = status.state.pendingEffect.cards[0];
-                        respond(client, orig, card);
+                        cardPlacedToPlayArea = respond(client, orig, card);
                     }
                     //finished
                     case "Anchor" -> {
                         System.out.println("Anchor -> draw, we are safe");
-                        draw(client);
+                        lastDrawEvent = draw(client);
                     }
                     case "Map" -> {
                         Card responseCard = null;
@@ -415,7 +420,7 @@ public class Match {
                         // If there is no discarded card, then the next card must be drawn the standard
                         // way
                         if (mapChoicesDeck.isEmpty()) {
-                            draw(client);
+                            lastDrawEvent = draw(client);
                             break;
                         }
 
@@ -425,7 +430,7 @@ public class Match {
                         // if no usable cards are found we have to respond even if we loose
                         if (mapChoicesDeck.isEmpty()) {
                             responseCard = status.state.pendingEffect.cards[0];
-                            respond(client, orig, responseCard);
+                            cardPlacedToPlayArea = respond(client, orig, responseCard);
                             break;
                         }
 
@@ -468,11 +473,11 @@ public class Match {
                                 responseCard = mapChoicesDeck.getHighestInSuit(prioSuit);
                             }
                         }
-                        respond(client, orig, responseCard);
+                        cardPlacedToPlayArea = respond(client, orig, responseCard);
                     }
                     default -> {
                         var card = status.state.pendingEffect.cards[0];
-                        respond(client, orig, card);
+                        cardPlacedToPlayArea = respond(client, orig, card);
                     }
                 }
             }
@@ -560,28 +565,52 @@ public class Match {
         return "Kraken";
     }
 
-    private void draw(OkHttpClient client) throws IOException {
+    private Event draw(OkHttpClient client) throws IOException {
         Response response = null;
+        Event drawEvent = null;
         try {
             var body = "{\"etype\":\"Draw\"}";
-            response = call(client, body);
+            //response = call(client, body);
+            var mediaType = MediaType.parse("application/json; charset=utf-8");
+            var rbody = RequestBody.create(body, mediaType);
+            var request = new Request.Builder()
+                    .url(BASE_URL + "/api/matches/" + matchID)
+                    .post(rbody)
+                    .build();
+            var call = client.newCall(request);
+            response = call.execute();
             System.out.println(playerID + ": Draw.");
 
-            if (response.code() != 200) {
+            var code = response.code();
+            if (code != 200) {
                 throw new IOException();
             }
+            var responseBody = response.body();
+
+            if (code == 200 && responseBody != null) {
+                var objectMapper = new ObjectMapper();
+                var resp = responseBody.string();
+                var events = objectMapper.readValue(resp, Event[].class);
+                for(int i = 0; i < events.length; i++) {
+                    System.out.println("Event type: " + events[i].eventType);
+                    if (events[i].eventType.equals("Draw")) {
+                        drawEvent = events[i];
+                        if(drawEvent.drawCard != null) {
+                            Card lastDrawCard = new Card(drawEvent.drawCard.suit, drawEvent.drawCard.value);
+                            removeCardFromDrawPile(lastDrawCard);
+                            System.out.println("DRAW -> lastDrawnCard : " + drawEvent.drawCard + "removed from draw Pile");
+                        }
+                    }
+                }
+            }
+            if (drawEvent == null) {
+                System.out.println("DRAW - Did not find Draw event");
+            }
+            return drawEvent;
         } finally {
             if (response != null) {
                 response.close();
             }
-        }
-        var statusRealTime = getStatus(client, true);
-        CardDeck playAreaDeck = new CardDeck(statusRealTime.state.playArea);
-        if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0) {
-            System.out.println("DRAW - Last Play Area Card was empty");
-        } else {
-            Card lastPlayAreaCard = playAreaDeck.cardDeck.get(playAreaDeck.cardDeck.size() - 1);
-            removeCardFromDrawPile(lastPlayAreaCard);
         }
     }
 
@@ -602,38 +631,50 @@ public class Match {
         }
     }
 
-    private void respond(OkHttpClient client, Suit responseType, Card chosen) throws IOException {
+    private Event respond(OkHttpClient client, Suit responseType, Card chosen) throws IOException {
         Response response = null;
-
+        Event cardPlacedToPlayArea = null;
         try {
             var eResp = new EffectResponse();
             eResp.effect.effectType = responseType.name();
             eResp.effect.card = chosen;
             var objectMapper = new ObjectMapper();
             var body = objectMapper.writeValueAsString(eResp);
-            response = call(client, body);
+            //response = call(client, body);
+
+            var mediaType = MediaType.parse("application/json; charset=utf-8");
+            var rbody = RequestBody.create(body, mediaType);
+            var request = new Request.Builder()
+                    .url(BASE_URL + "/api/matches/" + matchID)
+                    .post(rbody)
+                    .build();
+            var call = client.newCall(request);
+            response = call.execute();
+
             System.out.println(playerID + ": Response for " + responseType + ".");
             if (chosen != null)
                 System.out.println(playerID + ": Responded with Card " + chosen.toString() + ".");
             if (response.code() != 200) {
                 throw new IOException();
             }
+            var responseBody = response.body();
+            if (response.code() == 200 && responseBody != null) {
+                var resp = responseBody.string();
+                var events = objectMapper.readValue(resp, Event[].class);
+                for(int i = 0; i < events.length; i++) {
+                    System.out.println("Event type: " + events[i].eventType);
+                    if (events[i].eventType.equals("CardPlacedToPlayArea")) {
+                        cardPlacedToPlayArea = events[i];
+                    }
+                }
+            }
+
         } finally {
             if (response != null) {
                 response.close();
             }
         }
-        var statusRealTime = getStatus(client, true);
-        CardDeck playAreaDeck = new CardDeck(statusRealTime.state.playArea);
-        // System.out.println("Last Play Area Array:" + playAreaDeck );
-        if (playAreaDeck.cardDeck == null || playAreaDeck.cardDeck.size() == 0) {
-            // System.out.println("Last Play Area Card was empty");
-        } else {
-            Card lastPlayAreaCard = playAreaDeck.cardDeck.get(playAreaDeck.cardDeck.size() - 1);
-            // System.out.println("RESPONSE LAST CARD: " + lastPlayAreaCard);
-            removeCardFromDrawPile(lastPlayAreaCard);
-            // System.out.println("RESPONSE draw pile size:" + drawPile.cardDeck.size());
-        }
+        return cardPlacedToPlayArea;
     }
 
     private Response call(OkHttpClient client, String body) throws IOException {
