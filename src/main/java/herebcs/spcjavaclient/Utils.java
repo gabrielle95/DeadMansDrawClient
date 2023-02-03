@@ -48,6 +48,7 @@ public class Utils {
         if (cardSuits.contains(Suit.Oracle)) {
             return Suit.Oracle;
         }
+        //decide if map or mermaid is better in HOOK.
         if (cardSuits.contains(Suit.Map)) {
             return Suit.Map;
         }
